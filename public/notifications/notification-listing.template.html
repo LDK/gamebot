@@ -1,0 +1,12 @@
+<li class="dropdown-listing {{notification.seenness}}" id="notification-{{notification.id}}">
+	<ng-switch on="notification.type">
+		<span class="notification-subject" ng-switch-default>
+			<content-link
+				ng-click="user.notifications.closeDropdown()"
+				type="{{notification.link_model || 'notifications'}}"
+				content-id="{{notification.link_content_id || notification.id}}"
+				text="{{notification.subject}}"></content-link>
+		</span>
+	</span>
+	<span class="ts">{{notification.ts}}</span>
+</li>

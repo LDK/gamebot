@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en" ng-app="gamebotApp">
+<head>
+<meta charset="utf-8">
+<title>GameBot Interface</title>
+
+	<!-- <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/css/smoothness/jquery-ui-1.10.0.custom.min.css" /> -->
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+	<link rel="stylesheet" href="css/app.css" />
+	
+	<!-- Responsive and mobile friendly stuff -->
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- grid stylesheets -->
+	<link rel="stylesheet" href="css/grid/html5reset.css" media="all">
+	<link rel="stylesheet" href="css/grid/col.css" media="all">
+	<link rel="stylesheet" href="css/grid/2cols.css" media="all">
+	<link rel="stylesheet" href="css/grid/3cols.css" media="all">
+	<link rel="stylesheet" href="css/grid/4cols.css" media="all">
+	<link rel="stylesheet" href="css/grid/5cols.css" media="all">
+	<link rel="stylesheet" href="css/grid/6cols.css" media="all">
+	<link rel="stylesheet" href="css/grid/7cols.css" media="all">
+	<link rel="stylesheet" href="css/grid/8cols.css" media="all">
+	<link rel="stylesheet" href="css/grid/9cols.css" media="all">
+	<link rel="stylesheet" href="css/grid/10cols.css" media="all">
+	<link rel="stylesheet" href="css/grid/11cols.css" media="all">
+	<link rel="stylesheet" href="css/grid/12cols.css" media="all">
+	<!-- end grid stylesheets -->
+
+    <script type="text/javascript" src="fn.js"></script>
+
+	<script
+		src="http://code.jquery.com/jquery-3.1.1.js"
+		integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+		crossorigin="anonymous"></script>
+	<!-- jQuery and jQuery UI 
+
+	<script
+		src="http://code.jquery.com/ui/1.12.1/jquery-ui.js"
+		integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+		crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="/js/jquery.ui.touch-punch.js"></script>
+-->
+	<script type="text/javascript" src="/js/caman/caman.full.js"></script>
+
+	<link ref="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" media="all" />
+
+	<script type="text/javascript" src="moment.js"></script>
+	<script type="text/javascript" src="angular.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+	<script type="text/javascript" src="bower_components/angular-post-fix/postfix.js"></script>
+	<script type="text/javascript" src="ngStorage/ngStorage.min.js"></script>
+
+	<script src="gamebot.app.js"></script>
+	<script src="app.config.js"></script>
+	<script src="notifications/notification-icon-list.directive.js"></script>
+	<script src="notifications/notification-listing.directive.js"></script>
+	<script src="notifications/notification-list.module.js"></script>
+	<script src="notifications/notification-list.component.js"></script>
+	<script src="user/user-login-form.module.js"></script>
+	<script src="user/user-login-form.component.js"></script>
+	<script src="user/user-home.module.js"></script>
+	<script src="user/user-home.component.js"></script>
+	<script src="user/user.service.js"></script>
+	<script src="game/game-state.service.js"></script>
+	<script src="game/game-room.module.js"></script>
+	<script src="game/game-room.component.js"></script>
+	<script src="game/player-list.directive.js"></script>
+	<script src="game/channel-window.directive.js"></script>
+	<script src="game/hand.directive.js"></script>
+	<script src="game/play-area.directive.js"></script>
+	<script src="game/game-menu.directive.js"></script>
+	<script src="game/channel-selector.module.js"></script>
+	<script src="game/channel-selector.component.js"></script>
+
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<style type="text/css">
+	ul#yourHand {
+		list-style-type: none;
+		position: relative;
+	}
+	ul#yourHand li {
+		display: inline-block;
+		margin-left: -32px;
+		left: 32px;
+		position: relative !important;
+	}
+	ul#yourHand li.playable {
+	    top: -15px;
+		z-index: 9999;
+	}
+	.card.uno {
+		display: block;
+		height: 64px;
+		width: 43px;
+		background-image: url('/img/uno-cards.png');
+	}
+	.card.uno.label0 {
+		background-position-x: 0px;
+	}
+	.card.uno.label1 {
+		background-position-x: -43px;
+	}
+	.card.uno.label2 {
+		background-position-x: -85px;
+	}
+	.card.uno.label3 {
+		background-position-x: -128px;
+	}
+	.card.uno.label4 {
+		background-position-x: -171px;
+	}
+	.card.uno.label5 {
+		background-position-x: -213px;
+	}
+	.card.uno.label6 {
+		background-position-x: -256px;
+	}
+	.card.uno.label7 {
+		background-position-x: -299px;
+	}
+	.card.uno.label8 {
+		background-position-x: -341px;
+	}
+	.card.uno.label9 {
+		background-position-x: -384px;
+	}
+	.card.uno.labelskip {
+		background-position-x: -427px;
+	}
+	.card.uno.labelreverse {
+		background-position-x: -470px;
+	}
+	.card.uno.labeldrawtwo {
+		background-position-x: -512px;
+	}
+	.card.uno.back {
+		background-position-x: 0px;
+		background-position-y: 256px;
+	}
+	.card.uno.labelwild {
+		background-position-x: -555px;
+		background-position-y: 0px;
+	}
+	.card.uno.labelwilddrawfour {
+		background-position-x: 43px;
+		background-position-y: 64px;
+	}
+	.card.uno.colorBlue {
+		background-position-y: 320px;
+	}
+	.card.uno.colorGreen {
+		background-position-y: 384px;
+	}
+	.card.uno.colorYellow {
+		background-position-y: 448px;
+	}
+	.card.uno.colorRed {
+		background-position-y: 512px;
+	}
+	body {
+		background: green;
+	}
+	</style>
+</head>
+<body id="gamebot" ng-controller="MainCtrl as main">
+	<div id="header" class="section group" style="min-height: 48px; padding: 0; background: #7db6b0">
+		<channel-selector class="span_1_of_2"></channel-selector>
+		<notification-icon-list class="span_1_of_2"></notification-icon-list>
+	</div>
+	<div style="min-height:480px" class="section group" ng-click="main.closeDropdowns();">
+			<div ng-view></div>
+	</div>
+</body>
+</html>

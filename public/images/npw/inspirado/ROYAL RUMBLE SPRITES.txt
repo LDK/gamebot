@@ -1,0 +1,107 @@
+ROYAL RUMBLE SPRITES
+Final animation order and frame count:
+
+stand face down	1
+stand face up	1
+walk down face down *	6
+walk down face up *	6
+walk back face up *	6
+walk back face down *	6
+climb up top right *	7
+bounce left	6
+run	6
+punch 5
+kick	5
+hit	3
+run into	5
+lay	1
+get up	6
+ground hit	3
+roll up *	4
+climb out	11
+climb in	11
+eye gouge	6
+eye gouged	9
+start choke	1
+choke loop	4
+end choke	1
+start choked	1
+choked loop	4
+end choked	3
+tired loop	2
+grapple high start	1
+grapple high winning	1
+grapple high losing	1
+grapple low start	1
+grapple low winning	1
+grapple low losing	1
+suplex	7
+suplexed	8
+headbutt	6
+headbutted	7
+scoop slam	6
+scoop slammed	5
+atomic drop	11
+atomic dropped	11
+backbreaker	9
+backbreakered	9
+irish whip	6
+irish whipped *	2
+monkey toss	6
+monkey tossed	6
+throw out	6
+thrown out	8
+dropkick *	9
+clothesline	1
+clotheslined	4
+stomp *	4
+elbow drop *	8
+splash *	15
+knee drop *	9
+top rope elbow drop *	8
+pin	4
+pinned	1
+pinned kick out	5
+enter ring bottom*	3
+atomic drop throw out *	4
+chair pick up *	6
+stand face down	1
+stand face up	1
+walk down face down *	6
+walk down face up *	6
+walk back face up *	6
+walk back face down *	6
+chair swing *	3
+chair let go	1
+victory	1
+tag down	2
+tag up	2
+sleeper	3
+sleepered	3
+tombstoned	9
+sharpshootered	9
+razors edged	13
+figure foured	11
+perfect plexed	14
+cranium crushed	9
+back suplexed	12
+reverse slammed	11
+million dollar dreamed	4
+finisher	x
+
+* walk up is walk down reversed	
+* walk forward is walk back reversed	
+* climb down is climb up reversed	
+* roll down is roll up reversed	
+* irish whipped goes into run	
+* drop kicked is run into	
+* stomped, elbow dropped, splashed, knee dropped, top rope elbow dropped is ground hit	
+* enter ring bottom followed by roll from facing camera to on back and then get up	
+* exit ring bottom is enter ring reversed	
+* atomic drop throw out is preceded by first 5 frames of atomic drop	
+* atomic drop thrown out is first 5 frames of atomic dropped, followed by last frame of clotheslined	
+* chair put down is chair pick up reversed	
+* chair swing is followed by last 4 frames of chair pick up reversed	
+* running forearmed is clotheslined	
+* bonzai dropped is lay, first frame of ground hit, lay	
+* flying elbow dropped is lay, first frame of ground hit, lay

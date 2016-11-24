@@ -1,0 +1,54 @@
+<ul id="header-icons">
+	<li class="header-icon left" ng-click="user.notifications.closeDropdown();">
+		<a ng-click="user.menu.toggleDropdown()" title="User Menu" alt="User Menu" href="javascript:;" class="profile{{user.alerts.length ? ' alert' : ''}}"><span ng-if="user.alerts.length" class="alert-count">{{user.alerts.length}}</span></a>
+		<ul id="user-menu-dropdown" class="icon-dropdown-menu" ng-show="user.menu.open" style="right: 55px; width: 150px">
+			<li ng-if="user.logged_in" class="dropdown-listing icon-dropdown-menu-item logout" id="user-menu-logout">
+				<span>
+				<content-link
+					ng-click="user.menu.closeDropdown()"
+					type="{{'users'}}"
+					content-id="me"
+					text="My Profile"></content-link>
+				</span>
+			</li>
+			<li ng-if="user.logged_in" class="dropdown-listing icon-dropdown-menu-item logout" id="user-menu-logout">
+				<span>
+					<a href="javascript:;" ng-click="user.logout();user.menu.closeDropdown();">Log Out</a>
+				</span>
+			</li>
+			<li ng-if="!user.logged_in" class="dropdown-listing icon-dropdown-menu-item login" id="user-menu-login">
+				<span class="login-link">
+					<a ng-click="user.menu.closeDropdown()" href="/#!/login" id="login">Log In</a>
+				</span>
+			</li>
+		</ul>
+	</li>
+	<li class="header-icon right" ng-click="user.menu.closeDropdown();">
+		<a ng-click="user.notifications.toggleDropdown()" title="Notifications" alt="Notifications" href="javascript:;" class="notifications{{user.notifications.unseen > 0 ? ' alert' : ''}}"><span ng-if="user.notifications.unseen > 0" class="notification-count">{{user.notifications.unseen}}</span></a>
+		<ul id="notifications-dropdown" class="icon-dropdown-menu" ng-show="user.notifications.open">
+			<li style="background: white; text-align: left; width: 100%; border-top: 1px solid black">
+				<span style="padding-left: 10px; font-weight: bold">Notifications</span>
+			</li>
+			<notification-listing ng-if="user.logged_in" ng-repeat="notification in user.notifications.notifications"></notification-listing>
+			<li ng-if="user.logged_in && !user.notifications.notifications.length" style="background: white; text-align: left; padding-left: 10px">You have no notifications.</li>
+			<li ng-if="user.logged_in && user.notifications.notifications.length" class="dropdown-listing see-all" id="notification-all">
+				<span class="notification-subject">
+					<content-link
+						ng-click="user.notifications.closeDropdown()"
+						type="{{'notifications'}}"
+						content-id=""
+						text="See All Notifications"></content-link>
+				</span>
+			</li>
+			<li ng-if="!user.logged_in" class="dropdown-listing see-all" id="user-login-link">
+				<span class="login-link">
+					<content-link
+						ng-click="user.notifications.closeDropdown()"
+						type="{{'users'}}"
+						content-id="login"
+						text="Log in to Check Notifications"></content-link>
+				</span>
+			</li>
+		</ul>
+	</li>
+</ul>

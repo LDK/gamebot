@@ -1,0 +1,50 @@
+<div class="section group">
+	<div class="col span_4_of_4">
+		<h3>Notifications</h3>
+	<!-- Body content -->
+		<table id="notifications-table" class="table table-striped">
+			<thead>
+				<td><a href="javascript:;" ng-click="$ctrl.sortCol = 'subject'; $ctrl.sortReverse = !$ctrl.sortReverse;">Subject 
+					<span ng-show="$ctrl.sortCol == 'subject' && !$ctrl.sortReverse" class="fa fa-caret-up"></span>
+					<span ng-show="$ctrl.sortCol == 'subject' && $ctrl.sortReverse" class="fa fa-caret-down"></span>
+				</a></td>
+				<td><a href="javascript:;" ng-click="$ctrl.sortCol = 'type'; $ctrl.sortReverse = !$ctrl.sortReverse;">Type 
+					<span ng-show="$ctrl.sortCol == 'type' && !$ctrl.sortReverse" class="fa fa-caret-up"></span>
+					<span ng-show="$ctrl.sortCol == 'type' && $ctrl.sortReverse" class="fa fa-caret-down"></span>
+				</a></td>
+				<td class="hide-narrow"><a href="javascript:;" ng-click="$ctrl.sortCol = 'abbreviation'; $ctrl.sortReverse = !$ctrl.sortReverse;">Message
+					<span ng-show="$ctrl.sortCol == 'abbreviation' && !$ctrl.sortReverse" class="fa fa-caret-up"></span>
+					<span ng-show="$ctrl.sortCol == 'abbreviation' && $ctrl.sortReverse" class="fa fa-caret-down"></span>
+				</a></td>
+				<td><a href="javascript:;" ng-click="$ctrl.sortCol = 'established'; $ctrl.sortReverse = !$ctrl.sortReverse;">Sent
+					<span ng-show="$ctrl.sortCol == 'established' && !$ctrl.sortReverse" class="fa fa-caret-up"></span>
+					<span ng-show="$ctrl.sortCol == 'established' && $ctrl.sortReverse" class="fa fa-caret-down"></span>
+				</a></td>
+			</thead>
+			<tbody>
+				<tr ng-repeat="notification in $ctrl.user.notifications.notifications | orderBy:$ctrl.sortCol:$ctrl.sortReverse">
+					<td>
+						<content-link ng-if="notification.id" 
+							type="{{notification.link_model || 'notifications'}}" 
+							class="subject"
+							content-id="{{notification.link_content_id || notification.id}}" 
+							text="{{notification.subject}}">
+						</content-link>
+					</td>
+					<td>
+						<span ng-if="notification.type" class="join_type">{{notification.type}}</span>
+					</td>
+					<td class="hide-narrow">
+						<span ng-if="notification.body" class="abbreviation">{{notification.body}}</span>
+					</td>
+					<td>
+						<span class="sent">{{notification.ts || '--'}}</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	<!-- End body content -->
+
+	</div>
+</div>

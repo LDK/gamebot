@@ -1,0 +1,14 @@
+  <!-- <pre>user = {{$ctrl.user | json}}</pre> -->
+<div ng-if="!$ctrl.user.logged_in" class="section group">
+	<div id="" class="span_3_of_4 col center-narrow">
+		<h3>Log in or Register</h3>
+		<form novalidate class="simple-form">
+			<label>Username:</label><input type="text" name="username" id="username" ng-model="$ctrl.user.login_form.username" />
+			<label>Password:</label><input type="password" name="password" id="password" ng-model="$ctrl.user.login_form.password" />
+			<input type="submit" ng-click="$ctrl.loginFormSubmit()" value="Save" />
+		</form>
+	</div>
+</div>
+<div ng-if="$ctrl.user.logged_in" class="section group">
+	Logged in as {{$ctrl.user.logged_in.display}}.
+</div>
