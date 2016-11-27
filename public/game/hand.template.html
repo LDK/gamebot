@@ -1,10 +1,10 @@
 <ul id="yourHand" style="margin: 0" ng-controller="MainCtrl as main">
-	<li ng-repeat="card in user.cards" class="{{card.playable ? 'playable' : ''}}">
+	<li ng-repeat="card in user.cards" class="{{card.playable && !gameState.wild_active ? 'playable' : ''}}">
 		<div class="uno card color{{card.color}} label{{card.label.toLowerCase().replace(' ','').replace(' ','')}}">
 			<a ng-show="card.playable" style="width:100%;height:100%;display:block" ng-click="main.botCommand('play',[card.playable])"></a>
 		</div>
 	</li>
 </ul>
 <span style="color:white; text-align: center">Your Cards</span>
-<a ng-show="gameState.turn_user && user.logged_in && gameState.turn_user == user.logged_in.username && !user.playable_count"
+<a ng-show="gameState.turn_user && !gameState.wild_active && user.logged_in && gameState.turn_user == user.logged_in.username && !user.playable_count"
 	ng-click="main.botCommand('draw')">DRAW</a>

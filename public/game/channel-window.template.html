@@ -1,6 +1,6 @@
 <div id="channel-window" ng-show="gameState.channel">
 	<label>Channel:</label>
 	<ul id="channel-messages" ng-show="gameState && gameState.messages && gameState.messages.length" style="width: 100%; overflow: scroll; height: 150px">
-		<li ng-repeat="message in gameState.messages">{{message.user || '* '}}{{message.text}}</li>
+		<li ng-repeat="message in gameState.messages">* {{message.text}}</li>
 	</ul>
 </div>

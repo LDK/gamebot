@@ -1,4 +1,4 @@
-<div ng-show="gameState.channel" id="play-area" class="section group" style="max-width: 400px" ng-controller="MainCtrl as main">
+<div ng-show="gameState.channel && gameState.started" id="play-area" class="section group" style="max-width: 400px" ng-controller="MainCtrl as main">
 	<div ng-show="gameState.current_label" style="width: 49%; float: left">
 		<!-- Game deck -->
 		<div id="deck">

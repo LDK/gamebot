@@ -12,7 +12,7 @@ app.factory('gameState', function(user, $http, $timeout){
 				usernames.push(players[i].username);
 			}
 		}
-
+		gameState.usernames = usernames;
 		var promise = $http.post(api_server + '/users',{ usernames: usernames }).then(
 			function (response) {
 				var players = [];
@@ -118,6 +118,7 @@ app.factory('gameState', function(user, $http, $timeout){
 			gameState.pollCards();
 		}
 		$timeout(gameState.pollGameState,4000);
+		console.log('gameState',gameState);
 	};
 	return gameState;
 });
