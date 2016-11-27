@@ -118,7 +118,6 @@ app.factory('gameState', function(user, $http, $timeout){
 			gameState.pollCards();
 		}
 		$timeout(gameState.pollGameState,4000);
-		console.log('gameState',gameState);
 	};
 	return gameState;
 });
