@@ -711,3 +711,18 @@ h4.show-narrow, .show-narrow h4 {
 		background: #313131;
 		padding: 10px;
 	}
+	
+	div#login-form {
+		text-align: left;
+	}
+	
+	div#login-form label {
+		width: 160px;
+		margin: 10px;
+	}
+	div#login-form input[type=radio] {
+		margin: 10px 5px 10px 10px;
+	}
+	div#login-form input[type=submit] {
+		margin: 10px;
+	}
