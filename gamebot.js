@@ -6,7 +6,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
 
-var uno = require('./uno.js');
+var uno = require('./games/uno.js');
 
 var restapi = express();
 restapi.use(bodyParser.json());
