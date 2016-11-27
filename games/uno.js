@@ -1,3 +1,4 @@
+	var exports = exports || {};
 var uno = exports;
 
 uno.games = {};
@@ -130,7 +131,7 @@ uno.playerPlayableCards = function(user,game) {
 // Returns a comma separated string of cards.
 uno.cardList = function (stack, options) {
 	options = options || {};
-	if (!stack.length) {
+	if (!stack || !stack.length) {
 		return 'No cards.';
 	}
 	var result = '';
@@ -156,57 +157,51 @@ uno.cardList = function (stack, options) {
 }
 
 uno.gameStart = function(channel, creator) {
-	if (uno.games[channel]) {
-		return 'There is already a game in <#' + channel + '>';
+	if (uno.games[channel] && uno.games[channel].active) {
+		return { channel: creator, text: 'There is already a game in <#' + channel + '>.' };
 	}
 	uno.game_counter++;
 	uno.games[channel] = {
 		id: uno.game_counter,
 		channel: channel,
-		created: (Date.now() / 1000 | 0),
 		creator: creator,
-		deck: uno.initDeck(),
-		discard: [],
-		players: [creator],
-		hands: {},
-		points: {},
+		created: (Date.now() / 1000 | 0),
 		started: false,
+		turn: null,
+		winner: null,
 		current_color: null,
 		current_label: null,
 		reverse: false,
 		wild_active: false,
 		wild_skip: false,
-		turn: null
+		discard: [],
+		deck: uno.initDeck(),
+		players: [creator],
+		hands: {},
+		points: {},
+		active: true
 	};
 	uno.games[channel].hands[creator] = [];
 	uno.games[channel].points[creator] = 0;
 	shuffle(uno.games[channel].deck);
-	return 'Started a game in <#' + channel + '>';
-}
-
-uno.addPlayer = function(channel, user) {
-	if (!uno.games[channel]) {
-		return false;
-	}
-	uno.games[channel].players.push(user);
-	return true;
+	return { channel: channel, text: "Game started by <@" + creator + ">" };
 }
 
 // Returns array
 uno.playerLeave = function(channel, player) {
 	var game = uno.games[channel];
 	var responses = [];
-	if (!game) {
-		responses.push({ channel: player, text: 'No game in <#' + channel + '>.' });
+	if (!game || !game.active) {
+		responses.push({ channel: player, text: 'No active game in <#' + channel + '>.' });
 	}
 	for (var i=0; i < game.players.length; i++) {
-		if (game.players[i] == player) {
+ 		if (game.players[i] == player) {
 			game.players.splice(i, 1);
 			responses.push({ channel: channel, text: '<@' + player + '> has left the game.' });
 		}
 	}
 	// Check for last-player-standing scenario.
-	if (game.started && game.players.length == 1) {
+	if (game.started && game.players.length < 2) {
 		responses.push({ channel: channel, text: uno.gameDeclareWinner(game,game.players[0]) });
 	}
 	// Check for NO player-standing scenario.
@@ -221,15 +216,17 @@ uno.playerLeave = function(channel, player) {
 uno.playerJoin = function(channel, player) {
 	var game = uno.games[channel];
 	var responses = [];
-	if (!game) {
-		responses.push({ channel: player, text: 'No game in <#' + channel + '>.' });
+	if (!game || !game.active) {
+		responses.push({ channel: player, text: 'No active game in <#' + channel + '>.' });
+		return responses;
 	}
 	if (game.started) {
 		responses.push({ channel: player, text: 'Game has already begun play.' });
+		return responses;
 	}
 	for (var i=0; i < game.players.length; i++) {
 		if (game.players[i] == player) {
-			return false;
+			return [];
 		}
 	}
 	game.players.push(player);
@@ -244,19 +241,21 @@ uno.playerSetColor = function(game, player, color) {
 		var f = str.charAt(0).toUpperCase();
 		return f + str.substr(1);
 	};
-	if (fn.inArray(color.toLowerCase(),['blue','yellow','red','green'])) {
+	if (['blue','yellow','red','green'].indexOf(color.toLowerCase()) != -1) {
 		game.current_color = ucfirst(color.toLowerCase());
 		game.wild_active = false;
 	}
-	return 'The new active color is '+game.current_color+'.';
+	return { channel: game.channel, text: '<@' + player + '> sets the active color to '+game.current_color+'.'};
 }
 uno.endGame = function(game,message) {
 	if (game.channel) {
-		uno.games[game.channel] = null;
+		uno.games[game.channel].active = false;
+		uno.games[game.channel].started = false;
 		return message;
 	}
 };
 uno.gameDeclareWinner = function(game, player) {
+	uno.games[game.channel].winner = player;
 	return uno.endGame(game, "<@" + player + "> IS THE WINNER!");
 };
 uno.cardName = function(card) {
@@ -283,6 +282,7 @@ uno.playerCardList = function(game, player) {
 			responses.push({ channel: player, text: "No playable cards. Type `uno draw #" + uno.getChannelName(game.channel) +"` to draw a card." });
 		}
 	}
+	responses.push({ channel: game.channel, data: game.hands[player], user: player });
 	return responses;
 }
 uno.gameAdvanceTurn = function(game) { 
@@ -331,7 +331,7 @@ uno.nextTurn = function(game,skip,draw) {
 			}
 			responses = responses.concat(uno.playerDraw(game, game.players[next_turn], draw));
 		}
-		responses.push({ channel: game.channel, text: "<@" + game.players[game.turn] + ">, Set the color by typing `uno color (color)`, example: `uno color blue`." });
+		responses.push({ channel: game.players[game.turn], text: "<@" + game.players[game.turn] + ">, Set the color by typing `uno color (color)`, example: `uno color blue`." });
 		return responses;
 	}
 	uno.gameAdvanceTurn(game);
@@ -428,7 +428,7 @@ uno.playerDraw = function(game, player, num, autoplay) {
 }
 // Returns array 
 uno.playCard = function(game, player, index) {
-	if (!game || !player || !index) {
+	if (!game || !player || (!index && index !== 0)) {
 		return [];
 	}
 	var hand = game.hands[player];
@@ -468,14 +468,18 @@ uno.playCard = function(game, player, index) {
 		responses.push({ channel: game.channel, text: "<@" + player + "> HAS ONE CARD LEFT!" });
 	}
 	if (hand.length === 0) {
-		responses.push({ channel: game.channel, text: uno.gameDeclareWinner(game, player) });
+		var winnerObj = { channel: game.channel };
+		winnerObj.text = uno.gameDeclareWinner(game, player)
+		responses.push(winnerObj);
 	}
-	responses = responses.concat(uno.nextTurn(game,skip,draw));
+	else {
+		responses = responses.concat(uno.nextTurn(game,skip,draw));
+	}
 	return responses;
 }
 
 uno.getChannelId = function(channel, options) {
-	if (!channel) {
+	if (!channel || !uno.channels) {
 		return null;
 	}
 	channel = channel.replace('#','');
@@ -522,15 +526,35 @@ uno.getChannelName = function(channel, options) {
  */
 
 uno.command = function(cmd, options, params) {
+	var res = {}
 	if (uno.commands[cmd]) {
-		return uno.commands[cmd](options, params);
+		var channel = options.channel;
+		res.messages = uno.commands[cmd](options, params);
+		for (var i in res.messages) {
+			var message = res.messages[i];
+			if (message.data) {
+				switch (cmd) {
+					case 'cards':
+						res.data = message.data;
+						res.type = 'cards';
+					break;
+				}
+			}
+		}
+		if (res.messages && res.messages.constructor != Array) {
+			res.messages = [res.messages];
+		}
+		if (channel) {
+			res.game_state = uno.games[channel];
+		}
 	}
+	return res;
 };
-
 
 /**
 	THE COMMANDS OBJECT
-	Each property of this object is a function that takes an options array (likely a slack message)
+	Each property of this object is a function that takes an options 
+ (likely a slack message)
 	and a params array, and returns a text response or else a null value.
 	The name of each command corresponds to a text command sent by a user in slack
  */
@@ -581,17 +605,19 @@ uno.commands.cards = function(options, params) {
 		return [{ channel: options.user, text: 'No active game in <#' + channel + '>.' }];
 	}
 	else {
-		return uno.playerCardList(game,options.user);
+		var response = uno.playerCardList(game,options.user)
+		return response;
 	}	
 };
 uno.commands.status = function(options, params) {
-	var channel = params[0] ? uno.getChannelId(params[0], options) : options.channel;
+	options = options || {};
+	var channel = params[0] ? uno.getChannelId(params[0], options) : options.channel || null;
 	if (!channel || channel == options.user || channel[0] == 'D') {
-		return { channel: options.user, text: 'Specify which channel, example: `uno status #uno`.' };
+		return [{ channel: options.user, text: 'Specify which channel, example: `uno status #uno`.' }];
 	}
 	var game = uno.games[channel];
 	if (!game) {
-		return 'No active game in <#' + channel + '>.';
+		return ['No active game in <#' + channel + '>.', { channel: channel } ] ;
 	}
 	else {
 		var cards_in_deck = game.deck.length;
@@ -662,10 +688,6 @@ uno.commands.play = function(options, params) {
 		return result;
 	}
 };
-uno.commands.discard = function(options, params) {
-	var game = uno.games[options.channel];
-	return (JSON.stringify(game.discard));
-};
 // Returns array
 uno.commands.draw = function(options, params) {
 	var channel = params[0] ? uno.getChannelId(params[0], options) : options.channel;
@@ -688,15 +710,8 @@ uno.commands.leave = function(options, params) {
 	var channel = params[0] ? uno.getChannelId(params[0], options) : options.channel;
 	return uno.playerLeave(channel, options.user);
 };
-uno.commands.gameJSON = function(options, params) {
-	if (!uno.games[options.channel]) {
-		return false;
-	}
-	else {
-		return (JSON.stringify(uno.games[options.channel]));
-	}
-};
 uno.commands.start = function(options, params) {
+	options = options || {};
 	var channel = params[0] ? uno.getChannelId(params[0], options) : options.channel;
 	uno.gameStart(channel,options.user);
 	return { channel: channel, text: "Game started by <@" + options.user + ">" };
