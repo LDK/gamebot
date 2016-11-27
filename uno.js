@@ -195,14 +195,19 @@ uno.playerLeave = function(channel, player) {
 		responses.push({ channel: player, text: 'No active game in <#' + channel + '>.' });
 	}
 	for (var i=0; i < game.players.length; i++) {
- 		if (game.players[i] == user) {
+ 		if (game.players[i] == player) {
 			game.players.splice(i, 1);
-			responses.push({ channel: channel, text: '<@' + user + '> has left the game.' });
+			responses.push({ channel: channel, text: '<@' + player + '> has left the game.' });
 		}
 	}
 	// Check for last-player-standing scenario.
 	if (game.started && game.players.length < 2) {
 		responses.push({ channel: channel, text: uno.gameDeclareWinner(game,game.players[0]) });
+	}
+	// Check for NO player-standing scenario.
+	if (!game.players.length) {
+		game.active = false;
+		responses.push({ channel: channel, text: 'All players have left game.  Game cancelled.' });
 	}
 	return responses;
 }
