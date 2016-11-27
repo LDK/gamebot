@@ -39,12 +39,6 @@ String.prototype.replaceAll = function(search, replace)
 };
 
 db.serialize(function() {
-	// db.run(`
-	// 	CREATE TABLE 'users' ( 'id' INTEGER PRIMARY KEY AUTOINCREMENT, 'username' TEXT NOT NULL, 'password' TEXT NOT NULL, 'display' TEXT DEFAULT NULL )
-	// `);
-	// db.run(`
-	// 	CREATE TABLE "channels" ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL UNIQUE, `display` TEXT DEFAULT NULL UNIQUE, `type` TEXT DEFAULT 'channel', `extra` TEXT NOT NULL DEFAULT '{}' )
-	// `);
 	db.run(`
 		CREATE TABLE IF NOT EXISTS  'channels' (
 			'id'	INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,7 +61,6 @@ db.serialize(function() {
 			'id'	INTEGER PRIMARY KEY AUTOINCREMENT,
 			'channel'	TEXT DEFAULT NULL,
 			'channel_type'	TEXT DEFAULT NULL,
-			'user'	TEXT DEFAULT NULL,
 			'text'	TEXT DEFAULT NULL,
 			'extra'	TEXT NOT NULL DEFAULT '{}',
 			'ts'	NUMERIC DEFAULT NULL,
@@ -192,7 +185,7 @@ restapi.get('/channel/:channelName', function(req, res){
 });
 
 restapi.get('/messages/:channel', function(req, res){
-	var query = 'SELECT id, text, user, ts FROM messages WHERE channel = "' + req.params.channel + '" ORDER BY id asc';
+	var query = 'SELECT id, text, ts FROM messages WHERE channel = "' + req.params.channel + '" ORDER BY id asc';
 	var messages = [];
 	db.each(query, 
 		function(err, message){
@@ -234,8 +227,8 @@ restapi.post('/messages', function(req, res){
 			}
 			var text = restapi.replaceUsernames(message.text);
 			var query = `
-				INSERT INTO messages (channel, channel_type, user, text)
-				VALUES ('` + message.channel + `', 'channel', '`+ message.user +`', "` + text + `");
+				INSERT INTO messages (channel, channel_type, text)
+				VALUES ('` + message.channel + `', 'channel', "` + text + `");
 			`;
 			db.run(query, function(err, row){
 		        if (err){
@@ -273,13 +266,16 @@ restapi.post('/register', function(req, res) {
 
 	db.run(query, function(err, row) {
 		if (err) {
+			console.log('ERROR',query,err);
 			res.json(err);
 		}
 		var user_query = "SELECT id, username, display FROM users WHERE display = '" + req.body.username + "' and password = '" + req.body.password + "'";
 		db.get(user_query, function(err, user){
 			if (err) {
+				console.log('ERROR',query,err);
 				res.json(err);
 			}
+			restapi.userLookup[user.username] = user;
 			res.json(user);
 		});
 	});
