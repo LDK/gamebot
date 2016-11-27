@@ -4,6 +4,7 @@ var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('data/uno');
 var express = require('express');
 var bodyParser = require('body-parser');
+var _ = require('underscore');
 
 var uno = require('./uno.js');
 
@@ -11,6 +12,31 @@ var restapi = express();
 restapi.use(bodyParser.json());
 restapi.use(bodyParser.urlencoded({ extended: true })); 
 restapi.use(express.static('public'));
+
+restapi.replaceUsernames = function(text) {
+	var re = /(<@(.*?)>)/gi;
+	var usernames = text.match(re);
+	if (usernames) {
+		_.each(usernames,function(username,key){
+			username = username.replace('<@','').replace('>','');
+			if (restapi.userLookup[username]) {
+				text = text.replace('<@' + username + '>', restapi.userLookup[username].display);
+			}
+		});
+	}
+	return text;
+}
+
+String.prototype.replaceAll = function(search, replace)
+{
+    //if replace is not sent, return original string otherwise it will
+    //replace search string with 'undefined'.
+    if (replace === undefined) {
+        return this.toString();
+    }
+
+    return this.replace(new RegExp('[' + search + ']', 'g'), replace);
+};
 
 db.serialize(function() {
 	// db.run(`
@@ -29,39 +55,11 @@ db.serialize(function() {
 		);
 	`);
 	db.run(`
-		CREATE TABLE IF NOT EXISTS 'game_decks' ( 
-			'channel' TEXT NOT NULL, 
-			'cards' TEXT DEFAULT '[]', 
-			'deck_type' TEXT DEFAULT 'deck', 
-			'username' TEXT DEFAULT NULL, 
-			FOREIGN KEY('channel') REFERENCES channel(name) 
-		);
-		`);
-	db.run(`
 		CREATE TABLE IF NOT EXISTS 'users' (
 			'id'	INTEGER PRIMARY KEY AUTOINCREMENT,
 			'username'	TEXT NOT NULL,
 			'password'	TEXT NOT NULL,
 			'display'	TEXT DEFAULT NULL
-		);
-	`);
-	db.run(`
-		CREATE TABLE IF NOT EXISTS 'games' ( 
-			'id' INTEGER PRIMARY KEY AUTOINCREMENT, 
-			'channel' TEXT NOT NULL, 
-			'creator' TEXT DEFAULT NULL, 
-			'created' NUMERIC DEFAULT NULL, 
-			'started' NUMERIC DEFAULT 0, 
-			'turn' INTEGER DEFAULT NULL, 
-			'winner' TEXT DEFAULT NULL, 
-			'current_color' TEXT DEFAULT NULL, 
-			'current_label' TEXT DEFAULT NULL, 
-			'reverse' NUMERIC DEFAULT 0, 
-			'wild_active' NUMERIC DEFAULT 0, 
-			'wild_skip' NUMERIC DEFAULT 0, 
-			FOREIGN KEY('channel') REFERENCES 'channels'('name'), 
-			FOREIGN KEY('creator') REFERENCES 'users'('username'), 
-			FOREIGN KEY('winner') REFERENCES 'users'('username') 
 		);
 	`);
 	db.run(`
@@ -78,22 +76,13 @@ db.serialize(function() {
 			FOREIGN KEY('user') REFERENCES users(username)
 		);
 	`);
-	db.run(`
-		CREATE TABLE IF NOT EXISTS 'game_players' (
-			'game_id'	INTEGER NOT NULL,
-			'username'	TEXT NOT NULL,
-			'position'	INTEGER DEFAULT 0,
-			'points'	INTEGER DEFAULT 0,
-			PRIMARY KEY('game_id','username'),
-			FOREIGN KEY('game_id') REFERENCES games(id),
-			FOREIGN KEY('username') REFERENCES users(username)
-		);
-	`);
+	restapi.userLookup = {};
 	uno.users = [];
 	uno.channels = [];
-	db.each("SELECT username FROM users", 
+	db.each("SELECT username, display FROM users", 
 		function(err, user){
 			uno.users.push(user.username);
+			restapi.userLookup[user.username] = user;
 		},
 		function(err, cntx){
 	        if (err) return err;
@@ -107,61 +96,6 @@ db.serialize(function() {
 	        if (err) return err;
 		}
 	);
-});
-
-restapi.get('/games', function(req, res){
-	var rows = [];
-	db.each(`
-		SELECT games.id, games.channel, channel.display as channel_name, creator.display as creator_name, winner.display as winner_name
-		FROM games 
-		INNER JOIN channels channel
-		ON games.channel = channel.name
-		LEFT JOIN users creator
-		ON games.creator = creator.username
-		LEFT JOIN users winner
-		ON games.winner = winner.username
-	`,
-	    function (err, row) {
-	        if (err) return err;
-			rows.push(row);
-	    },
-	    function (err, cntx) {
-	        if (err) return err;
-			res.json(rows);
-	    }
-	);
-});
-
-restapi.get('/game/:channel', function(req, res){
-	var query = "SELECT * FROM games WHERE channel = '" + req.params.channel + "'";
-	db.get(query, function(err, row){
-		if (!row) {
-			return;
-		}
-		var players = [];
-		var query = `
-			SELECT player.username, player.display, game_players.points, game_players.position
-			FROM games 
-			INNER JOIN game_players
-				ON games.id = game_players.game_id
-			INNER JOIN users player
-				ON player.username = game_players.username
-			WHERE games.channel = '`+ req.params.channel +`'
-			AND games.winner IS NULL
-			ORDER BY game_players.position ASC;
-		`;
-		console.log('query',query);
-		db.each(query,
-			function(err, player){
-		        if (err) return err;
-				players.push(player);
-			},
-			function(err, cntx){
-		        if (err) return err;
-				row.players = players;
-				res.json(row);
-			});
-	});
 });
 
 restapi.post('/command/:command', function(req, res){
@@ -258,10 +192,11 @@ restapi.get('/channel/:channelName', function(req, res){
 });
 
 restapi.get('/messages/:channel', function(req, res){
-	var query = 'SELECT id, text, ts FROM messages WHERE channel = "' + req.params.channel + '" ORDER BY id asc';
+	var query = 'SELECT id, text, user, ts FROM messages WHERE channel = "' + req.params.channel + '" ORDER BY id asc';
 	var messages = [];
 	db.each(query, 
 		function(err, message){
+			message.text = restapi.replaceUsernames(message.text);
 			messages.push(message);
 		},
 		function(err, cntx){
@@ -272,13 +207,14 @@ restapi.get('/messages/:channel', function(req, res){
 });
 
 restapi.post('/messages/:channel', function(req, res){
+	var text = restapi.replaceUsernames(req.body.text);
 	var query = `
-		INSERT INTO messages (channel, channel_type, user, text)
-		VALUES ('` + req.params.channel + `', 'channel', '`+ req.body.user +`', "` + req.body.text + `");
+		INSERT INTO messages (channel, channel_type, text)
+		VALUES ('` + req.params.channel + `', 'channel', "` + text + `");
 	`;
 	db.run(query, function(err, row){
         if (err){
-            console.log(err);
+            console.log('messages/:channel',err);
             res.status(500);
         }
         else {
@@ -289,7 +225,6 @@ restapi.post('/messages/:channel', function(req, res){
 });
 
 restapi.post('/messages', function(req, res){
-	console.log('MESSAGES POST BODY',req.body);
 	if (req.body.messages && req.body.messages.length) {
 		for (var i in req.body.messages) {
 			var message = req.body.messages[i];
@@ -297,14 +232,14 @@ restapi.post('/messages', function(req, res){
 				console.log('breaking on',message);
 				break;
 			}
+			var text = restapi.replaceUsernames(message.text);
 			var query = `
 				INSERT INTO messages (channel, channel_type, user, text)
-				VALUES ('` + message.channel + `', 'channel', '`+ message.user +`', "` + message.text + `");
+				VALUES ('` + message.channel + `', 'channel', '`+ message.user +`', "` + text + `");
 			`;
-			console.log('message insert query',query);
 			db.run(query, function(err, row){
 		        if (err){
-		            console.log(err);
+		            console.log('/messages',err);
 		            res.status(500);
 		        }
 		        else {
@@ -316,27 +251,41 @@ restapi.post('/messages', function(req, res){
 	}
 });
 
-restapi.post('/data', function(req, res){
-    db.run("UPDATE counts SET value = value + 1 WHERE key = ?", "counter", function(err, row){
-        if (err){
-            console.log(err);
-            res.status(500);
-        }
-        else {
-            res.status(202);
-        }
-        res.end();
-    });
-});
-
 restapi.post('/login', function(req, res) {
 	var query = "SELECT id, username, display FROM users WHERE display = '" + req.body.username + "' and password = '" + req.body.password + "'";
-	console.log('query',query);
 	db.get(query, function(err, row){
 		res.json(row);
 	});
 });
 
-restapi.listen(3000);
+restapi.post('/register', function(req, res) {
+	function guid() {
+	  function s4() {
+	    return Math.floor((1 + Math.random()) * 0x10000)
+	      .toString(16)
+	      .substring(1);
+	  }
+	  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+	    s4() + '-' + s4() + s4() + s4();
+	};
+	
+	var query = "INSERT INTO users (username, display, password) VALUES((SELECT 'U' || (MAX(id) + 1) FROM users), '" + req.body.username + "', '"+ req.body.password +"')";
 
-console.log("Submit GET or POST to http://localhost:3000/data");
+	db.run(query, function(err, row) {
+		if (err) {
+			res.json(err);
+		}
+		var user_query = "SELECT id, username, display FROM users WHERE display = '" + req.body.username + "' and password = '" + req.body.password + "'";
+		db.get(user_query, function(err, user){
+			if (err) {
+				res.json(err);
+			}
+			res.json(user);
+		});
+	});
+});
+
+var listenPort = 3000;
+restapi.listen(listenPort);
+
+console.log("GameBot server running on port "+listenPort+".");

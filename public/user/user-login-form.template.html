@@ -1,11 +1,19 @@
   <!-- <pre>user = {{$ctrl.user | json}}</pre> -->
 <div ng-if="!$ctrl.user.logged_in" class="section group">
-	<div id="" class="span_3_of_4 col center-narrow">
+	<div id="login-form" class="span_3_of_4 col center-narrow">
 		<h3>Log in or Register</h3>
 		<form novalidate class="simple-form">
-			<label>Username:</label><input type="text" name="username" id="username" ng-model="$ctrl.user.login_form.username" />
-			<label>Password:</label><input type="password" name="password" id="password" ng-model="$ctrl.user.login_form.password" />
-			<input type="submit" ng-click="$ctrl.loginFormSubmit()" value="Save" />
+			<input ng-change="$ctrl.update()" name="usertype" value="returning" type="radio" ng-model="$ctrl.userType">Returning User 
+			<input ng-change="$ctrl.update()" ng-model="$ctrl.userType" name="usertype" value="new" type="radio">New User
+			<br />
+			<label>Username:</label><input ng-change="$ctrl.update()" type="text" name="username" id="username" ng-model="$ctrl.user.login_form.username" /><br />
+			<label>Password:</label><input ng-change="$ctrl.update()" type="password" name="password" id="password" ng-model="$ctrl.user.login_form.password" /><br />
+			<label ng-show="$ctrl.userType == 'new'">Confirm Password:</label><input ng-change="$ctrl.update()" ng-show="$ctrl.userType == 'new'" type="password" name="confirm-password" id="confirm-password" ng-model="$ctrl.user.login_form.password_confirm" /><br />
+			<input type="submit" 
+				ng-click="$ctrl.loginFormSubmit()" 
+				ng-disabled="$ctrl.submitDisabled"
+				value="{{ $ctrl.userType == 'new' ? 'Register' : 'Log In' }}" 
+				/>
 		</form>
 	</div>
 </div>

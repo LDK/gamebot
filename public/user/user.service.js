@@ -1,4 +1,4 @@
-app.factory('user', function($http,$timeout,$localStorage){
+app.factory('user', function($http,$timeout,$localStorage,$location){
 	var user = {
 		login_form: {
 			username: null,
@@ -12,8 +12,9 @@ app.factory('user', function($http,$timeout,$localStorage){
 		logged_in: false
 	};
 	var api_server = ''; // empty string, same domain
-	var login_url= '/login';
-	var logout_url= '/logout';
+	var login_url = '/login';
+	var register_url = '/register';
+	var logout_url = '/logout';
 	var mark_seen_url = '/mark_seen/';
 	user.getUser = function(username) {
 		var promise = $http.get(api_server + '/user/' + username).then(
@@ -81,6 +82,28 @@ app.factory('user', function($http,$timeout,$localStorage){
 			if (response.data.id) {
 				$localStorage.user = user.logged_in = response.data;
 				delete user.logged_in.password;
+				$location.path('/');
+			}
+			else {
+				user.logout();
+			}
+			delete user.login_form.password;
+			return response.data;
+			
+		});
+		// Return the promise to the controller
+		return promise;
+	};
+	user.register = function(username, password) {
+		var post_data = { username: user.login_form.username, password: user.login_form.password, new: true };
+		// $http returns a promise, which has a then function, which also returns a promise
+
+		var promise = $http.post(api_server+register_url, post_data).then(function (response) {
+			// The then function here is an opportunity to modify the response
+			if (response.data.id) {
+				$localStorage.user = user.logged_in = response.data;
+				delete user.logged_in.password;
+				$location.path('/');
 			}
 			else {
 				user.logout();
