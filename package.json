@@ -1,11 +1,11 @@
 {
-  "name": "rest",
-  "version": "0.0.0",
+  "name": "GameBot",
+  "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "gamebot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node gamebot.js"
   },
   "author": "",
   "license": "ISC",
