@@ -130,8 +130,9 @@ restapi.get('/users', function(req, res){
 restapi.post('/users', function(req, res){
 	var users = {};
 	var usernames = req.body.usernames;
-	if (!usernames || !usernames.length) {
+	if (!usernames || typeof(usernames) == 'undefined' || !usernames.length) {
 		res.json([]);
+		return;
 	}
 	var in_string = "'" + usernames.join("','") + "'";
 	var query = 'SELECT id, username, display FROM users WHERE username IN (' + in_string + ')';
