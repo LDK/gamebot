@@ -86,10 +86,6 @@ describe('Uno', function() {
 			uno.command('join', { channel: 'CFake', user: 'UAlsoFake' });
 			uno.command('deal', { channel: 'CFake', user: 'UFake' });
 		});
-		it("should be someone's turn", function(){
-			expect(uno.games['CFake'].turn).toBeDefined();
-			expect(uno.games['CFake'].players[uno.games['CFake'].turn]).toEqual(jasmine.any(String));
-		});
 		it("should not be possible to join the game", function(){
 			uno.command('join', { channel: 'CFake', user: 'UAnotherFake' });
 			expect(uno.games['CFake'].players.length).toEqual(2);
@@ -99,6 +95,49 @@ describe('Uno', function() {
 			var result = uno.command('leave', { channel: 'CFake', user: 'UAlsoFake' });
 			expect(uno.games['CFake'].players.length).toEqual(1);
 			expect(uno.games['CFake'].players[0]).toEqual('UFake');
+		});
+		it("should be someone's turn", function(){
+			expect(uno.games['CFake'].turn).toBeDefined();
+			expect(uno.games['CFake'].players[uno.games['CFake'].turn]).toEqual(jasmine.any(String));
+		});
+		it("should be possible to get a list of your cards", function(){
+			expect(uno.games['CFake'].hands).toBeDefined();
+			expect(uno.games['CFake'].hands[uno.games['CFake'].players[uno.games['CFake'].turn]]).toEqual(jasmine.any(Array));
+			var response = uno.command('cards', { channel: 'CFake', user: 'UAlsoFake' });
+			expect(response.data).toBeDefined();
+			expect(response.data).toEqual(jasmine.any(Object));
+			expect(response.game_state).toBeDefined();
+			expect(response.game_state).toEqual(jasmine.any(Object));
+		});
+	});
+	
+	describe("when it's your turn", function(){
+		beforeEach(function(){
+			uno.games = {};
+			uno.gameStart('CFake','UFake');
+			uno.command('join', { channel: 'CFake', user: 'UAlsoFake' });
+			uno.command('deal', { channel: 'CFake', user: 'UFake' });
+			uno.games['CFake'].turn = 1;
+		});
+		it('should be possible to fetch the player whose turn it is',function(){
+			var player = uno.games['CFake'].players[uno.games['CFake'].turn];
+			expect(player).toEqual(jasmine.any(String));
+		});
+		it('should be possible to get a list of your playable cards',function(){
+			var game = uno.games['CFake']
+			var player = game.players[game.turn];
+			var playable = uno.playerPlayableCards(player,game);
+			expect(playable).toEqual(jasmine.any(Array));
+		});
+		it('should be possible to draw a card',function(){
+			var game = uno.games['CFake']
+			var player = game.players[game.turn];
+			var starting_count = parseInt(game.hands[player].length);
+			expect(starting_count).toEqual(7);
+			var response = uno.command('draw', { channel: 'CFake', user: player });
+			expect(game.hands[player].length).not.toBeLessThan(7);
+			expect(game.hands[player].length).not.toBeGreaterThan(8);
+			expect(response.messages.length).not.toBeLessThan(1);
 		});
 	});
 });
