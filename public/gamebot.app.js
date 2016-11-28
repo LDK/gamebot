@@ -8,8 +8,7 @@ var app = angular.module('gamebotApp', [
 	'notificationList',
 	'channelSelector',
 	'httpPostFix',
-	'userLoginForm',
-	'userHome'
+	'userLoginForm'
 ]).controller('MainCtrl', function (gameState, user, $scope, $localStorage, $http){
 	var self = this;
 	var api_server = '';
