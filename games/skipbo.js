@@ -504,7 +504,7 @@ uno.getChannelId = function(channel, options) {
 };
 
 uno.getChannelName = function(channel, options) {
-	if (!channel || !uno.channels) {
+	if (!channel) {
 		return null;
 	}
 	channel = channel.replace('#','');
@@ -530,8 +530,7 @@ uno.getChannelName = function(channel, options) {
  */
 
 uno.command = function(cmd, options, params) {
-	var res = {};
-	params = params || [];
+	var res = {}
 	if (uno.commands[cmd]) {
 		var channel = options.channel;
 		res.messages = uno.commands[cmd](options, params);
