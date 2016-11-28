@@ -50,6 +50,9 @@ div#header {
 	.center-narrow {
 		text-align: center;
 	}
+	ul#channel-messages {
+		height: 100px;
+	}
 }
 @media screen and (min-width: 481px) {
 	ul#header-icons li.header-icon {
