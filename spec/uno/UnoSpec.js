@@ -5,6 +5,10 @@ describe('Uno', function() {
 		expect(uno.games).toEqual(jasmine.any(Object));
 	});
 
+	beforeEach(function() {
+		uno.games = {};
+	});
+	
 	it("should contain a settings object", function() {
 		expect(uno.settings).toEqual(jasmine.any(Object));
 	});
@@ -36,6 +40,7 @@ describe('Uno', function() {
 	describe('when game has been created', function(){
 
 		beforeEach(function() {
+			uno.games = {};
 			uno.gameStart('CFake','UFake');
 		});
 
@@ -45,19 +50,55 @@ describe('Uno', function() {
 		});
 
 		it("should be able to add a player via join command", function(){
-			var result = uno.command('join', { channel: 'CFake', user: 'UAlsoFake' });
+			uno.command('join', { channel: 'CFake', user: 'UAlsoFake' });
 			expect(uno.games['CFake'].players.length).toEqual(2);
 			expect(uno.games['CFake'].players[1]).toEqual('UAlsoFake');
 		});
 
 		it("should be able to deal cards via command message", function(){
-			var result = uno.command('deal', { channel: 'CFake', user: 'UFake' });
+			uno.command('join', { channel: 'CFake', user: 'UAlsoFake' });
+			uno.command('deal', { channel: 'CFake', user: 'UFake' });
 			for (var player in uno.games['CFake'].players) {
+				// Each player should be accounted for with 7 cards in the game's hands object.
 				var username = uno.games['CFake'].players[player];
 				var hand = uno.games['CFake'].hands[username];
 				expect(hand).toEqual(jasmine.any(Object));
 				expect(hand.length).toEqual(7);
 			}
+		});
+		
+		it("should be possible to leave the game", function(){
+			var result = uno.command('leave', { channel: 'CFake', user: 'UFake' });
+			expect(uno.games['CFake'].players.length).toEqual(0);
+		});
+
+		it("should cancel the game if the creator leaves before anyone else joins", function(){
+			var result = uno.command('leave', { channel: 'CFake', user: 'UFake' });
+			expect(uno.games['CFake'].active).toEqual(false);
+			expect(uno.games['CFake'].started).toEqual(false);
+		});
+	});
+	
+	describe('when cards have been dealt', function(){
+		beforeEach(function() {
+			uno.games = {};
+			uno.gameStart('CFake','UFake');
+			uno.command('join', { channel: 'CFake', user: 'UAlsoFake' });
+			uno.command('deal', { channel: 'CFake', user: 'UFake' });
+		});
+		it("should be someone's turn", function(){
+			expect(uno.games['CFake'].turn).toBeDefined();
+			expect(uno.games['CFake'].players[uno.games['CFake'].turn]).toEqual(jasmine.any(String));
+		});
+		it("should not be possible to join the game", function(){
+			uno.command('join', { channel: 'CFake', user: 'UAnotherFake' });
+			expect(uno.games['CFake'].players.length).toEqual(2);
+			expect(uno.games['CFake'].players[2]).toBeUndefined();
+		});
+		it("should be possible to leave the game", function(){
+			var result = uno.command('leave', { channel: 'CFake', user: 'UAlsoFake' });
+			expect(uno.games['CFake'].players.length).toEqual(1);
+			expect(uno.games['CFake'].players[0]).toEqual('UFake');
 		});
 	});
 });
