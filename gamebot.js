@@ -1,17 +1,26 @@
 var md5 = require('md5');
 var async = require('async');
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('data/uno');
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
-
-var uno = require('./games/uno.js');
 
 var restapi = express();
 restapi.use(bodyParser.json());
 restapi.use(bodyParser.urlencoded({ extended: true })); 
 restapi.use(express.static('public'));
+
+var games = ['uno','skipbo'];
+
+for (var i = 0; i < games.length; i++) {
+	restapi[games[i]] = require('./games/'+games[i]+'.js');
+	restapi[games[i]].users = [];
+	restapi[games[i]].channels = [];
+}
+
+restapi.game = 'uno';
+
+var db = new sqlite3.Database('data/'+restapi.game);
 
 restapi.replaceUsernames = function(text) {
 	var re = /(<@(.*?)>)/gi;
@@ -70,11 +79,9 @@ db.serialize(function() {
 		);
 	`);
 	restapi.userLookup = {};
-	uno.users = [];
-	uno.channels = [];
 	db.each("SELECT username, display FROM users", 
 		function(err, user){
-			uno.users.push(user.username);
+			restapi[restapi.game].users.push(user.username);
 			restapi.userLookup[user.username] = user;
 		},
 		function(err, cntx){
@@ -83,7 +90,7 @@ db.serialize(function() {
 	);
 	db.each("SELECT name FROM channels", 
 		function(err, channel){
-			uno.channels.push({ id: channel.name, name: channel.display });
+			restapi[restapi.game].channels.push({ id: channel.name, name: channel.display });
 		},
 		function(err, cntx){
 	        if (err) return err;
@@ -96,7 +103,7 @@ restapi.post('/command/:command', function(req, res){
 	var options = req.body.source;
 	var params = req.body.params || [];
 	var username = req.body.user || null;
-	var cmd_result = uno.command(command, options, params);
+	var cmd_result = restapi[restapi.game].command(command, options, params);
 	var messages = cmd_result.messages;
 	var game_state = cmd_result.game_state;
 	var response = {};
