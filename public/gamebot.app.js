@@ -4,7 +4,6 @@
 var app = angular.module('gamebotApp', [
 	'ngRoute',
 	'ngStorage',
-	'gameRoom',
 	'notificationList',
 	'channelSelector',
 	'httpPostFix',

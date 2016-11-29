@@ -1,0 +1,12 @@
+<div id="player-list" ng-show="gameState.channel">
+	<label>Players:</label>
+	<span style="float:right; margin-right: 5px"><b>Order:</b> {{gameState.reverse ? 'Reverse' : 'Normal'}}</span>
+	<div class="section group">
+		<ul style="float: left; width: 49%">
+			<li data-ng-repeat="i in [0,1]" class="{{gameState.turn == i ? 'current' : ''}}"">
+				{{(i+1)}}. <span ng-show="gameState.players[i]">{{gameState.players[i].display}}</span>
+			</li>
+		</ul>
+
+	</div>
+</div>
