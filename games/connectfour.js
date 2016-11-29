@@ -79,6 +79,8 @@ connectfour.gameStart = function(channel, creator) {
 		winner: null,
 		grid: connectfour.initGrid(),
 		players: [creator],
+		game: 'connectfour',
+		poll: ['status'],
 		active: true
 	};
 	return { channel: channel, text: "Game started by <@" + creator + ">" };

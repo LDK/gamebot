@@ -9,28 +9,35 @@ angular.
 		function channelSelectorController($http, $routeParams, gameState, user) {
 			var self = this;
 			var api_server = '';
-			self.channels = [];
-			self.active_channel = gameState.channel || null;
+			self.channels = {};
 			self.gameState = gameState;
+			self.user = user;
 			var dataUrl = api_server + '/channels';
 			$http.get(dataUrl).then(function(response) {
-				self.channels = response.data;
+				for (var i in response.data) {
+					var channel = response.data[i];
+					self.channels[channel.name] = channel;
+				}
 			});
 			self.update = function() {
-				// Start with the defaults
-				user.cards = [];
-				self.gameState.players = [];
-				self.gameState.setGameData({ channel: self.active_channel });
-				self.gameState.started = false;
-				self.gameState.wild_active = false;
-				self.gameState.wild_skip = false;
-				self.gameState.current_color = null;
-				self.gameState.current_label = '';
-				// Then get the real deal
-				self.gameState.pollMessages();
-				$http.post(api_server + '/command/status', { source: { channel: self.active_channel }} ).then(function(response){
-					self.gameState.setGameData( response.data.game_state );
-				});
+				var game = false;
+				console.log('self.channels!',self.channels,user.channel,self.channels[user.channel]);
+				if (self.channels && user.channel && self.channels[user.channel] && self.channels[user.channel].game) {
+					user.game = self.channels[user.channel].game;
+				}
+				if (user.game) {
+					console.log('user.game',user.game);
+					// Start with the defaults
+					self.gameState.players = [];
+					self.gameState.setGameData({ channel: user.channel });
+					self.gameState.started = false;
+					// Then get the real deal
+					self.gameState.pollMessages();
+					$http.post(api_server + '/command/status', { game: user.game, source: { channel: user.channel } } ).then(function(response){
+						self.gameState.setGameData( response.data.game_state );
+					});
+				}
+				console.log('user channel',user.channel);
 			}
 		}]
 	});

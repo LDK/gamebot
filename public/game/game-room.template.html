@@ -1,10 +1,10 @@
 <div class="section group">
 	<div class="col span_4_of_4" style="background: green; min-height: 480px">
-		<game-menu ng-show="gameState.channel"></game-menu>
+		<game-menu game="{{user.game}}"></game-menu>
 		<div class="section group">
 			<player-list class="col span_2_of_4"></player-list>
 			<channel-window class="col span_2_of_4"></channel-window>
 		</div>
-		<play-area ng-show="gameState.channel"></play-area>
+		<play-area game="{{user.game}}"></play-area>
 	</div>
 </div>

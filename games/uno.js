@@ -166,6 +166,8 @@ uno.gameStart = function(channel, creator) {
 	uno.game_counter++;
 	uno.games[channel] = {
 		id: uno.game_counter,
+		game: 'uno',
+		poll: ['status','cards'],
 		channel: channel,
 		creator: creator,
 		created: (Date.now() / 1000 | 0),

@@ -1,0 +1,27 @@
+<div ng-show="gameState.channel && gameState.started" id="play-area" class="section group" style="max-width: 400px" ng-controller="MainCtrl as main">
+	<div ng-show="gameState.current_label" style="width: 49%; float: left">
+		<!-- Game deck -->
+		<div id="deck">
+			<div class="uno card back"></div>
+			<span style="color:white; text-align: center">Deck</span>
+		</div>
+		<!-- Discard pile -->
+		<div id="discard">
+			<div class="uno card {{gameState.current_color ? 'color'+gameState.current_color : ''}} label{{gameState.current_label.toLowerCase().replace(' ', '').replace(' ','')}}"></div>
+			<span style="color:white; text-align: center">Active</span>
+		</div>
+	</div>
+	<div ng-show="user.cards" style="width: 49%; float: right">
+		<hand></hand>
+	</div>
+	<!-- user.logged_in && gameState.turn_user = user.logged_in.username &&  -->
+	<div ng-show="gameState.wild_active && user.logged_in && gameState.turn_user == user.logged_in.username">
+		<ul id="color-picker">
+			<a ng-click="main.botCommand('uno','color',['blue'])">Blue</a> | 
+			<a ng-click="main.botCommand('uno','color',['red'])">Red</a> | 
+			<a ng-click="main.botCommand('uno','color',['green'])">Green</a> | 
+			<a ng-click="main.botCommand('uno','color',['yellow'])">Yellow</a>
+		</ul>
+	</div>
+</div>
+

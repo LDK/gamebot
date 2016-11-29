@@ -10,17 +10,16 @@ restapi.use(bodyParser.json());
 restapi.use(bodyParser.urlencoded({ extended: true })); 
 restapi.use(express.static('public'));
 
-var games = ['uno','skipbo'];
+var games = ['uno','connectfour'];
+
+restapi.users = [];
+restapi.channels = [];
 
 for (var i = 0; i < games.length; i++) {
 	restapi[games[i]] = require('./games/'+games[i]+'.js');
-	restapi[games[i]].users = [];
-	restapi[games[i]].channels = [];
 }
 
-restapi.game = 'uno';
-
-var db = new sqlite3.Database('data/'+restapi.game);
+var db = new sqlite3.Database('data/gamebot');
 
 restapi.replaceUsernames = function(text) {
 	var re = /(<@(.*?)>)/gi;
@@ -54,6 +53,7 @@ db.serialize(function() {
 			'name'	TEXT NOT NULL UNIQUE,
 			'display'	TEXT DEFAULT NULL UNIQUE,
 			'type'	TEXT DEFAULT 'channel',
+			'game' TEXT,
 			'extra'	TEXT NOT NULL DEFAULT '{}'
 		);
 	`);
@@ -81,29 +81,39 @@ db.serialize(function() {
 	restapi.userLookup = {};
 	db.each("SELECT username, display FROM users", 
 		function(err, user){
-			restapi[restapi.game].users.push(user.username);
+			restapi.users.push(user.username);
 			restapi.userLookup[user.username] = user;
 		},
 		function(err, cntx){
 	        if (err) return err;
+			for (var i = 0; i < games.length; i++) {
+				restapi[games[i]].users = restapi.users;
+			}
 		}
 	);
-	db.each("SELECT name FROM channels", 
+	db.each("SELECT id, name, display, game FROM channels", 
 		function(err, channel){
-			restapi[restapi.game].channels.push({ id: channel.name, name: channel.display });
+			restapi.channels.push({ id: channel.name, name: channel.display, game: channel.game });
 		},
 		function(err, cntx){
 	        if (err) return err;
+			for (var i = 0; i < games.length; i++) {
+				restapi[games[i]].channels = restapi.channels;
+			}
 		}
 	);
 });
 
 restapi.post('/command/:command', function(req, res){
 	var command = req.params.command;
+	var game = req.body.game;
+	if (!game) {
+		res.json([]);
+	}
 	var options = req.body.source;
 	var params = req.body.params || [];
 	var username = req.body.user || null;
-	var cmd_result = restapi[restapi.game].command(command, options, params);
+	var cmd_result = restapi[game].command(command, options, params);
 	var messages = cmd_result.messages;
 	var game_state = cmd_result.game_state;
 	var response = {};
@@ -162,7 +172,7 @@ restapi.get('/user/:username', function(req, res){
 });
 
 restapi.get('/channel/:channelName', function(req, res){
-	var query = "SELECT id, name, display FROM channels WHERE name = '" + req.params.channelName + "'";
+	var query = "SELECT id, name, display, game FROM channels WHERE name = '" + req.params.channelName + "'";
 	db.get(query, function(err, row){
 		res.json(row);
 	});
@@ -172,7 +182,7 @@ restapi.get('/channel/:channelName', function(req, res){
 restapi.get('/channels', function(req, res){
 	var rows = [];
 	db.each(`
-		SELECT id, name, display FROM channels WHERE type = 'channel'
+		SELECT id, name, display, game FROM channels WHERE type = 'channel'
 	`,
 	    function (err, row) {
 	        if (err) return err;

@@ -75,8 +75,8 @@ app.factory('gameState', function(user, $http, $timeout){
 	};
 	gameState.pollCards = function() {
 		var list = null;
-		if (gameState.channel && user.logged_in) {
-			$http.post(api_server + '/command/cards', { source: { channel: gameState.channel, user: user.logged_in.username } }).then(function(response){
+		if (user && user.channel && user.logged_in && user.game) {
+			$http.post(api_server + '/command/cards', { game: user.game, source: { channel: gameState.channel, user: user.logged_in.username } }).then(function(response){
 				var cards = response.data.cards;
 				var playable = 0;
 				user.cards = cards;
@@ -109,13 +109,16 @@ app.factory('gameState', function(user, $http, $timeout){
 	};
 	gameState.pollGameState = function() {
 		var list = null;
-		if (gameState.channel) {
-			$http.post(api_server + '/command/status', { source: { channel: gameState.channel }} ).then(function(response){
+		if (user.channel) {
+			var game = user.game;
+			$http.post(api_server + '/command/status', { game: user.game, source: { channel: user.channel }} ).then(function(response){
 				gameState.setGameData( response.data.game_state );
 				gameState.setTurnUser();
 			});
 			gameState.pollMessages();
-			gameState.pollCards();
+			if (gameState.poll && gameState.poll.indexOf('cards') != -1) {
+				gameState.pollCards();
+			}
 		}
 		$timeout(gameState.pollGameState,4000);
 	};

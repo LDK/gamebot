@@ -16,11 +16,11 @@ var app = angular.module('gamebotApp', [
 		user.notifications.closeDropdown();
 		user.menu.closeDropdown();
 	}
-	self.botCommand = function(cmd, params) {
+	self.botCommand = function(game, cmd, params) {
 		var source = { user: user.logged_in ? user.logged_in.username : null, channel: gameState.channel || null };
 		// $http returns a promise, which has a then function, which also returns a promise
 		var cmd_url = '/command/'+cmd;
-		var post_data = { source: source };
+		var post_data = { source: source, game: game };
 		if (params) {
 			post_data.params = params;
 		}
@@ -34,7 +34,9 @@ var app = angular.module('gamebotApp', [
 					gameState.pollMessages();
 				});
 				gameState.setGameData(response.data.game_state);
-				gameState.pollCards();
+				if (gameState.poll && gameState.poll.indexOf('cards') != -1) {
+					gameState.pollCards();
+				}
 			}
 
 			return response.data;
