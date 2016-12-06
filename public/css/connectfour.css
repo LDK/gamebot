@@ -108,7 +108,12 @@ a.connectfour.col6 {
 }
 
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 401px) {
+	div#connectfour-grid {
+		left: 0;
+	}
+}
+@media screen and (min-width:402px) and (max-width: 480px) {
 	div#connectfour-grid {
 		left: 10%;
 	}
