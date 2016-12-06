@@ -25,20 +25,20 @@ var inArray = function(a,b) {
  * Using Math.round() will give you a non-uniform distribution!
  */
 function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 connectfour.initGrid = function() {
 	var square = (
 		function(col,row,owner){ 
-			if (!col || !row) {
+			if (isNaN(col) || isNaN(row)) { 
 				return null;
 			}
 			return { 
 				col: col,
 				row: row,
-				owner: owner || null
-			}; 
+				owner: owner || false
+			};
 		}
 	);
 	var grid = {};
@@ -51,7 +51,6 @@ connectfour.initGrid = function() {
 			grid[col][row] = new square(col, row);
 		}
 	}
-	console.log('init grid',grid);
 	return grid;
 }
 
@@ -79,6 +78,7 @@ connectfour.gameStart = function(channel, creator) {
 		winner: null,
 		grid: connectfour.initGrid(),
 		players: [creator],
+		player_count: 1,
 		game: 'connectfour',
 		poll: ['status'],
 		active: true
@@ -108,6 +108,7 @@ connectfour.playerLeave = function(channel, player) {
 		game.active = false;
 		responses.push({ channel: channel, text: 'All players have left game.  Game cancelled.' });
 	}
+	game.player_count = game.players.length;
 	return responses;
 }
 
@@ -136,8 +137,9 @@ connectfour.playerJoin = function(channel, player) {
 	}
 	game.players.push(player);
 	responses.push({ channel: game.channel, text: '<@' + player + '> has joined the game.' });
+	game.player_count = game.players.length;
 	return responses;
-}
+};
 connectfour.endGame = function(game,message) {
 	if (game.channel) {
 		connectfour.games[game.channel].active = false;
@@ -158,11 +160,11 @@ connectfour.gameDroppableColumns = function(game) {
 	for (var i in game.grid) {
 		var col = game.grid[i];
 		if (col && game.grid[i].pieces < connectfour.settings.rows) {
-			droppable.push(col);
+			droppable.push(i);
 		}
 	}
 	return droppable;
-}
+};
 connectfour.gameAdvanceTurn = function(game) { 
 	if (game.turn >= game.players.length - 1) {
 		game.turn = 0;
@@ -181,8 +183,7 @@ connectfour.nextTurn = function(game,skip,draw) {
 	var player = game.players[game.turn];
 	responses.push({ channel: player, text: "Your turn."});
 	return responses;
-}
-
+};
 connectfour.begin = function(channel) {
 	var game = connectfour.games[channel];
 	if (!game) {
@@ -197,9 +198,133 @@ connectfour.begin = function(channel) {
 	responses.push({ channel: channel, text: "<@" + game.players[game.turn] + "> has been selected to go first." });
 	game.started = true;
 	return responses;
-}
+};
+connectfour.checkDiagonalStreak = function (game,col,row,hor,vert) {
+	var streak = 1;
+	var grid_square = game.grid[col][row];
+	var owner = grid_square.owner;
 
+	while (streak < 4) {
+		switch (vert) {
+			case 'up':
+				row++;
+			break;
+			case 'down':
+				row--;
+			break;
+		}
+		switch (hor) {
+			case 'right':
+				col++;
+			break;
+			case 'left':
+				col--;
+			break;
+		}
+		grid_square = game.grid[col][row];
+		if (owner && grid_square.owner && grid_square.owner == owner) {
+			streak++;
+			owner = grid_square.owner;
+			if (streak > 3) {
+				return owner;
+			}
+		}
+		else {
+			return false;
+		}
+	}
+
+	return false;
+};
 connectfour.checkWin = function(game) {
+	var streak = 1;
+	var owner = false;
+	var winner = false;
+	// 1. check each column for a vertical win
+	for (var col in game.grid) {
+		if (winner) {
+			break;
+		}
+		for (var row in game.grid[col]) {
+			if (winner) {
+				break;
+			}
+			var grid_square = game.grid[col][row];
+			if (owner && grid_square.owner == owner) {
+				streak++;
+				if (streak > 3) {
+					winner = owner;
+				}
+			}
+			else {
+				owner = grid_square.owner;
+				streak = 1;
+			}
+		}
+	}
+	if (winner) {
+		return winner;
+	}
+	streak = 1;
+	owner = false;
+	winner = false;
+	// 2. check each row for a horizontal win
+	for (var row = 0; row < connectfour.settings.rows; row++) {
+		if (winner) {
+			break;
+		}
+		for (var col in game.grid) {
+			if (winner) {
+				break;
+			}
+			var grid_square = game.grid[col][row];
+			if (owner && grid_square.owner == owner) {
+				streak++;
+				if (streak > 3) {
+					winner = owner;
+				}
+			}
+			else {
+				owner = grid_square.owner;
+				streak = 1;
+			}
+		}
+	}
+	if (winner) {
+		return winner;
+	}
+	// 3. for all columns that are at least 3 columns from the right edge:
+	for (var col = connectfour.settings.columns - 4; col >= 0; col--) {
+		// 	a. for all rows that are at least 3 rows from the bottom:
+		for (var row = 3; row < connectfour.settings.rows; row++) {			
+			// (i). check each square as starting point for right-down-diagonal win
+			winner = connectfour.checkDiagonalStreak(game,col,row,'right','down');
+		}
+		// 	b. for all rows that are at least 3 rows from the top:
+		for (var row = connectfour.settings.rows - 4; row >= 0; row--) {			
+			// (i). check each square as starting point for right-up-diagonal-win
+			winner = connectfour.checkDiagonalStreak(game,col,row,'right','up');
+		}
+	}
+	if (winner) {
+		return winner;
+	}
+	// 4. for all columns that are at least 3 columns from the left edge:
+	for (var col = 3; col < connectfour.settings.columns; col++) {
+		// a. for all rows that are at least 3 rows from the bottom:
+		for (var row = 3; row < connectfour.settings.rows; row++) {			
+			// (i). check each square as starting point for left-down-diagonal win
+			winner = connectfour.checkDiagonalStreak(game,col,row,'left','down');
+		}
+		// b. for all rows that are at least 3 rows from the top:
+		for (var row = connectfour.settings.rows - 4; row >= 0; row--) {			
+			// (i). check each square as starting point for left-up-diagonal-win
+			winner = connectfour.checkDiagonalStreak(game,col,row,'left','up');
+		}
+	}
+	if (winner) {
+		return winner;
+	}
 	return false;
 };
 
@@ -209,18 +334,24 @@ connectfour.checkDraw = function(game) {
 
 // Returns array 
 connectfour.dropPiece = function(game, player, col) {
+	var grid = game.grid;
+	var col_data = grid[col];
 	var responses = [];
-	if (!game || !player || (!col && index !== 0)) {
+	if (!game || !player || !grid || !col_data || (!col && col !== 0)) {
 		return responses;
 	}
-	if (col.pieces >= connectfour.settings.rows) {
+	if (col_data.pieces >= connectfour.settings.rows) {
 		responses.push({ channel: player, text: "Column "+col+" is Full." });
 		return responses;
 	}
-	var grid = game.grid;
-	var row = parseInt(col.pieces); // If there are 0 pieces in the column, it falls to row 0.
+	var row = parseInt(col_data.pieces); // If there are 0 pieces in the column, it falls to row 0.
+	
+	if (isNaN(row)) {
+		row = 0;
+	}
+
 	grid[col][row].owner = player;
-	col.pieces++;
+	col_data.pieces++;
 	
 	responses.push({ channel: game.channel, text: "<@" + player + "> drops a piece in column " + col + "." });
 
@@ -354,17 +485,18 @@ connectfour.commands.status = function(options, params) {
 		}
 		return responses;
 	}
-}
+};
 connectfour.commands.drop = function(options, params) {
 	var channel = params[1] ? connectfour.getChannelId(params[1], options) : options.channel;
 	if (!channel || channel == options.user || channel[0] == 'D') {
 		return { channel: options.user, text: 'Specify which channel, example: `connectfour status #connectfour`.' };
 	}
 	var game = connectfour.games[channel];
-	var col = params[0];
 	if (!game) {
 		return { channel: options.user, text: 'No active game in this channel.' };
 	}
+	var col = params[0];
+	var col_data = col ? game.grid[col] : false;
 	if (game.players[game.turn] != options.user) {
 		return { channel: options.user, text: 'Not your turn.' };
 	}
@@ -395,5 +527,5 @@ connectfour.commands.start = function(options, params) {
 	options = options || {};
 	var channel = params[0] ? connectfour.getChannelId(params[0], options) : options.channel;
 	connectfour.gameStart(channel,options.user);
-	return { channel: channel, text: "Game started by <@" + options.user + ">" };
+	return [{ channel: channel, text: "Game started by <@" + options.user + ">" }];
 };

@@ -2,5 +2,5 @@
 	<input type="button" ng-disabled="!user.logged_in || gameState.active" value="New Game" ng-click="main.botCommand('connectfour','start')"></input>
 	<input type="button" ng-disabled="!user.logged_in || gameState.usernames.indexOf(user.logged_in.username) != -1 || !gameState.active || gameState.started || !gameState.active" value="Join Game" ng-click="main.botCommand('connectfour','join')"></input>
 	<input type="button" ng-disabled="!user.logged_in || gameState.usernames.indexOf(user.logged_in.username) == -1 || !gameState.active" value="Leave Game" ng-click="main.botCommand('connectfour','leave')"></input>
-	<input type="button" ng-disabled="!user.logged_in || gameState.usernames.indexOf(user.logged_in.username) == -1 || !gameState.active || gameState.started || !gameState.active" value="Begin Game" ng-click="main.botCommand('connectfour','begin')"></input>
+	<input type="button" ng-disabled="!user.logged_in || gameState.usernames.indexOf(user.logged_in.username) == -1 || !gameState.active || (gameState.player_count < 2) || gameState.started || !gameState.active" value="Begin Game" ng-click="main.botCommand('connectfour','begin')"></input>
 </div>
