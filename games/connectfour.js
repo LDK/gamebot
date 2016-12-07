@@ -78,11 +78,13 @@ connectfour.gameStart = function(channel, creator) {
 		winner: null,
 		grid: connectfour.initGrid(),
 		players: [creator],
+		colors: {},
 		player_count: 1,
 		game: 'connectfour',
 		poll: ['status'],
 		active: true
 	};
+	connectfour.games[channel].colors[creator] = 'colorRed';
 	return { channel: channel, text: "Game started by <@" + creator + ">" };
 }
 
@@ -130,11 +132,12 @@ connectfour.playerJoin = function(channel, player) {
 			return responses;
 		}
 	}
-	if (game.players > 1) {
+	if (game.players.length > 1) {
 		// More-than-2-player Connect Four is something I don't want to think about.
 		responses.push({ channel: player, text: 'Game is full.' });
 		return responses;
 	}
+	game.colors[player] = 'colorBlack';
 	game.players.push(player);
 	responses.push({ channel: game.channel, text: '<@' + player + '> has joined the game.' });
 	game.player_count = game.players.length;
