@@ -1,4 +1,4 @@
-app.directive('connectfourGrid', function (user, gameState) {
+app.directive('connectfourGrid', function (user, gameState, bot) {
 	return {
 		restrict: 'E',
 		templateUrl: 'game/connectfour-grid.template.html',
@@ -6,7 +6,7 @@ app.directive('connectfourGrid', function (user, gameState) {
 			scope.gameState = gameState;
 			scope.grid = gameState.grid
 			scope.user = user;
-			console.log('grid',scope.grid);
+			scope.bot = bot;
 		},
 	};
 });
