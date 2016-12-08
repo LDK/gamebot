@@ -82,7 +82,8 @@ connectfour.gameStart = function(channel, creator) {
 		player_count: 1,
 		game: 'connectfour',
 		poll: ['status'],
-		active: true
+		active: true,
+		last_turn_ts: null
 	};
 	connectfour.games[channel].colors[creator] = 'colorRed';
 	return { channel: channel, text: "Game started by <@" + creator + ">" };
@@ -175,6 +176,7 @@ connectfour.gameAdvanceTurn = function(game) {
 	else {
 		game.turn++;
 	}
+	game.last_turn_ts = (Date.now() / 1000 | 0);
 };
 // Returns array
 connectfour.nextTurn = function(game,skip,draw) {

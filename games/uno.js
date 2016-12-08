@@ -184,7 +184,12 @@ uno.gameStart = function(channel, creator) {
 		players: [creator],
 		hands: {},
 		points: {},
-		active: true
+		active: true,
+		settings: {
+			time_limit: 120000, // 2 minutes in milliseconds
+			time_limit_event: 'skip'
+		},
+		next_turn_ts: null
 	};
 	uno.games[channel].hands[creator] = [];
 	uno.games[channel].points[creator] = 0;
