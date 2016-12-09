@@ -1,0 +1,13 @@
+<div class="wrestler-column" id="wrestler-column-{{side}}">
+	<ul>
+		<div class="wrestler-name">
+			<select ng-show="!game.started && user.logged_in && user.logged_in.username == player" ng-model="user_wrestler" ng-options="wrestler.id as wrestler.display for wrestler in bot.wrestlers" ng-change="pickWrestler()"></select>
+			<label ng-show="game.started || (player && (!user.logged_in || user.logged_in.username != player))">{{bot.wrestlers[gameState.player_wrestlers[player]].short_name}}<br /></label>
+		</div>
+		<li ng-show="user.logged_in && user.logged_in.username == player" 
+			ng-repeat="move in bot.wrestlers[gameState.player_wrestlers[player]].moves" 
+			class="{{$index + 1 == selected_move_index ? 'selected' : ''}}"><a ng-click="pickMove($index + 1)" href="javascript:;">{{move.name}}</a></li>
+		<li ng-show="!user.logged_in || user.logged_in.username != player" ng-repeat="move in bot.wrestlers[gameState.player_wrestlers[player]].moves">{{move.name}}</li>
+		<li ng-show="player">Block</li>
+	</ul>
+</div>

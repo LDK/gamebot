@@ -1,0 +1,60 @@
+/* Styles specific to Wrestling for GameBot */
+
+div#play-area {
+	background: #313131;
+	padding: 10px;
+}
+div#game-menu {
+	background: #313131;
+	padding: 10px;
+}
+div.wrestler-column {
+	max-width: 48%;
+	min-width:120px;
+	display: block;
+	background: #0000A8;
+}
+div#wrestler-column-right {
+	float: right;
+}
+div#wrestler-column-left {
+	float: left;
+}
+div.wrestler-name {
+	height: 24px;
+}
+div.wrestler-name select {
+	width: 100%;
+}
+div.wrestler-name label {
+	padding:2px;
+	text-transform: uppercase;
+	color: #fcfc54;
+	width: 100%;
+	text-align: center;
+}
+div.wrestler-column ul {
+	background-color: #00004C;
+}
+div.wrestler-column ul li {
+	background: #5454FC;
+}
+div.wrestler-column ul li.selected {
+	background: #a80000;
+}
+div.wrestler-column ul li,
+div.wrestler-column ul li a {
+	text-transform: uppercase;
+	text-align: center;
+	font-weight: bold;
+	color: #a8a8a8;
+}
+div.wrestler-column ul li.selected,
+div.wrestler-column ul li.selected a {
+	color: #fff;
+}
+@media screen and (max-width: 490px) {
+	#channel-window-container, div#channel-window {
+		display: none !important;
+	}
+}

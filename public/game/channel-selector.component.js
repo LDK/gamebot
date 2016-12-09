@@ -5,13 +5,14 @@ angular.
 	module('channelSelector').
 	component('channelSelector', {
 		templateUrl: 'game/channel-selector.template.html',
-		controller: ['$http', '$routeParams', 'gameState', 'user', 
-		function channelSelectorController($http, $routeParams, gameState, user) {
+		controller: ['$http', '$routeParams', 'gameState', 'user', 'bot',
+		function channelSelectorController($http, $routeParams, gameState, user, bot) {
 			var self = this;
 			var api_server = '';
 			self.channels = {};
 			self.gameState = gameState;
 			self.user = user;
+			self.bot = bot;
 			var dataUrl = api_server + '/channels';
 			$http.get(dataUrl).then(function(response) {
 				for (var i in response.data) {
@@ -21,23 +22,20 @@ angular.
 			});
 			self.update = function() {
 				var game = false;
-				console.log('self.channels!',self.channels,user.channel,self.channels[user.channel]);
 				if (self.channels && user.channel && self.channels[user.channel] && self.channels[user.channel].game) {
 					user.game = self.channels[user.channel].game;
 				}
 				if (user.game) {
-					console.log('user.game',user.game);
 					// Start with the defaults
 					self.gameState.players = [];
 					self.gameState.setGameData({ channel: user.channel });
 					self.gameState.started = false;
 					// Then get the real deal
-					self.gameState.pollMessages();
+					self.bot.pollMessages();
 					$http.post(api_server + '/command/status', { game: user.game, source: { channel: user.channel } } ).then(function(response){
 						self.gameState.setGameData( response.data.game_state );
 					});
 				}
-				console.log('user channel',user.channel);
 			}
 		}]
 	});

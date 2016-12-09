@@ -10,7 +10,7 @@ restapi.use(bodyParser.json());
 restapi.use(bodyParser.urlencoded({ extended: true })); 
 restapi.use(express.static('public'));
 
-var games = ['uno','connectfour'];
+var games = ['uno','connectfour','wrestling'];
 
 restapi.users = [];
 restapi.channels = [];
@@ -240,7 +240,6 @@ restapi.post('/messages', function(req, res){
 		for (var i in req.body.messages) {
 			var message = req.body.messages[i];
 			if (!message.channel || !message.text) {
-				console.log('breaking on',message);
 				break;
 			}
 			var text = restapi.replaceUsernames(message.text);

@@ -1,0 +1,13 @@
+<div class="section group">
+	<div class="col span_4_of_4" style="background: black; height: 100%; min-height: 528px; overflow: hidden">
+		<game-menu game="{{user.game}}"></game-menu>
+		<div class="section group">
+			<!-- <player-list game="{{user.game}}" class="col span_4_of_4"></player-list> -->
+			<div class="section group">
+				<wrestler-column player="{{gameState.players[0].username}}" side="left"></wrestler-column>
+				<channel-window id="channel-window-container" class="col span_2_of_4"></channel-window>
+				<wrestler-column player="{{gameState.players[1].username}}" side="right"></wrestler-column>
+			</div>
+		</div>
+	</div>
+</div>
