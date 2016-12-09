@@ -1,4 +1,4 @@
-app.directive('hand', function (user, gameState) {
+app.directive('hand', function (user, gameState, bot) {
 	return {
 		restrict: 'E',
 		templateUrl: 'game/hand.template.html',

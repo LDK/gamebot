@@ -1,4 +1,3 @@
 <div style="height: 48px; padding-left: 12px; padding-top: 12px; display: block; margin: 0;" ng-click="main.closeDropdowns();">
-	<label>Game Room:</label>
 	<select ng-model="$ctrl.user.channel" ng-options="channel.name as channel.display for channel in $ctrl.channels" ng-change="$ctrl.update()"></select>
 </div>

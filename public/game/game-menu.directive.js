@@ -1,5 +1,5 @@
 // TODO: Make button options update on channel change... May have to do with blanking gameState in non-game-started rooms.
-app.directive('gameMenu', function (user, gameState) {
+app.directive('gameMenu', function (user, gameState, bot) {
 	var gameMenuUrl = user.game ? 'game/'+user.game+'/game-menu.template.html' : false;
 	return {
 		restrict: 'E',
@@ -13,6 +13,7 @@ app.directive('gameMenu', function (user, gameState) {
             });
 			scope.gameState = gameState;
 			scope.user = user;
+			scope.bot = bot;
 		},
 	};
 });
