@@ -111,12 +111,26 @@ wrestling.useWrestler = function(game, player, wrestler) {
 
 wrestling.attemptMoves = function(game) {
 	var chances = [];
+	var i = 0;
 	for (var player in game.move_picks) {
 		var wrestler = wrestling.wrestlers[game.player_wrestlers[player]];
 		var move = wrestler.moves[game.move_picks[player]];
-		for (var i = 0; i < parseInt(move.probability); i++) {
+		if (move.finisher) {
+			var opponent_damage = i == 0 ? game.damage[game.players[1]] : game.damage[game.players[0]];
+			i++;
+			if ((opponent_damage && opponent_damage < 35) || opponent_damage === 0) {
+				// Finisher will not work until you do 35 points of damage.
+				console.log('Finisher will not work until you do 35 points of damage.',opponent_damage,game.damage,i);
+				continue;
+			}
+		}
+		for (var j = 0; j < parseInt(move.probability); j++) {
 			chances.push(player);
 		}
+	}
+	if (chances.length < 1) {
+		wrestling.clearPicks(game);
+		return [{ channel: game.channel, text: 'Neither wrestler manages to gain an advantage.' }];
 	}
 	var winner = chances[getRandomInt(0, chances.length - 1)];
 	wrestler = wrestling.wrestlers[game.player_wrestlers[winner]];
@@ -131,14 +145,29 @@ wrestling.attemptMoves = function(game) {
 	game.damage[loser] += parseInt(move.damage);
 	wrestling.clearPicks(game);
 	var response_text = '';
-	var winner_name = wrestling.wrestlers[game.player_wrestlers[winner]].short_name
-	var loser_name = wrestling.wrestlers[game.player_wrestlers[loser]].short_name
+	var winner_name = wrestling.wrestlers[game.player_wrestlers[winner]].short_name;
+	var loser_name = wrestling.wrestlers[game.player_wrestlers[loser]].short_name;
 	
 	response_text += winner_name + " hits a " + move.name + " on " + loser_name;
 	var responses = [{ channel: game.channel, text: response_text }];
 	if (move.finisher && game.damage[loser] > 35) {
-		var pin_text = winner_name + " goes for the cover!";
-		responses.push({ channel: game.channel, text: pin_text });
+		responses.push({ channel: game.channel, text: winner_name + " goes for the cover!" });
+		var damage_factor = 1;
+		if (game.damage[loser] > 39) {
+			damage_factor++;
+		}
+		if (game.damage[loser] > 49) {
+			damage_factor++;
+		}
+		var success = getRandomInt(0,damage_factor);
+		if (success > 0) {
+			responses.push({ channel: game.channel, text: "1.. 2.. 3!  It's over!" });
+			responses.push({ channel: game.channel, text: "Here is your winner... " + wrestling.wrestlers[game.player_wrestlers[winner]] + "!" });
+			responses.push({ channel: channel, text: wrestling.gameDeclareWinner(winner) });
+		}
+		else {
+			responses.push({ channel: game.channel, text: "1.. 2.. No!  A kickout!" });
+		}
 		// Do some probability thing here based on damage to decide if he kicks out or not.
 	}
 	return responses;
@@ -324,7 +353,7 @@ wrestling.begin = function(channel) {
 	responses.push({ channel: channel, text: "Ladies and gentlemen, welcome to the GameBot Coliseum!" });
 	responses.push({ channel: channel, text: "Introducing first... " + wrestler_names[0] + "!" });
 	responses.push({ channel: channel, text: "And his opponent... " + wrestler_names[1] + "!" });
-	responses.push({ channel: channel, text: "*** The bell rings and we are underway. *** " });
+	responses.push({ channel: channel, text: "The bell rings and we are underway." });
 	game.started = true;
 	return responses;
 };
