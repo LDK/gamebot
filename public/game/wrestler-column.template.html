@@ -6,8 +6,10 @@
 		</div>
 		<li ng-show="user.logged_in && user.logged_in.username == player" 
 			ng-repeat="move in bot.wrestlers[gameState.player_wrestlers[player]].moves" 
-			class="{{$index + 1 == selected_move_index ? 'selected' : ''}}"><a ng-click="pickMove($index + 1)" href="javascript:;">{{move.name}}</a></li>
-		<li ng-show="!user.logged_in || user.logged_in.username != player" ng-repeat="move in bot.wrestlers[gameState.player_wrestlers[player]].moves">{{move.name}}</li>
+			class="{{$index == gameState.move_picks[player] ? 'selected' : ''}}"><a ng-click="pickMove($index + 1)" href="javascript:;">{{move.name}}</a></li>
+		<li ng-show="!user.logged_in || user.logged_in.username != player" 
+			ng-repeat="move in bot.wrestlers[gameState.player_wrestlers[player]].moves"
+			class="{{$index == gameState.move_picks[player] ? 'selected' : ''}}">{{move.name}}</li>
 		<li ng-show="player">Block</li>
 	</ul>
 </div>

@@ -18,12 +18,6 @@ app.directive('wrestlerColumn', function (user, gameState, bot) {
 			else {
 				scope.user_wrestler = null;
 			}
-			if (gameState.move_picks) {
-				scope.selected_move_index == gameState.move_picks[user.logged_in.username || -1] || null;
-			}
-			else {
-				scope.move_picks = null;
-			}
 			scope.pickWrestler = function() {
 				bot.command('wrestling','use',[scope.user_wrestler]);
 				scope.wrestler = bot.wrestlers[scope.user_wrestler];
@@ -33,7 +27,6 @@ app.directive('wrestlerColumn', function (user, gameState, bot) {
 					return; // Once you make your pick, it's locked in until the next round, when this value clears.
 				}
 				bot.command('wrestling','pick',[index]);
-				bot.selected_move_index = gameState.move_picks[user.logged_in.username];
 			}
 			scope.gameState = gameState;
 			scope.user = user;
