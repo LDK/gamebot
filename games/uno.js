@@ -480,7 +480,7 @@ uno.playCard = function(game, player, index) {
 	}
 	if (hand.length === 0) {
 		var winnerObj = { channel: game.channel };
-		winnerObj.text = uno.gameDeclareWinner(game, player)
+		winnerObj.text = uno.gameDeclareWinner(game, player);
 		responses.push(winnerObj);
 	}
 	else {

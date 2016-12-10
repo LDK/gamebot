@@ -31,9 +31,13 @@ var inArray = function(a,b) {
 function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+function pickOne(items) {
+	var index = getRandomInt(0, items.length - 1);
+	return items[index];
+}
 
 wrestling.move = (
-		function(name,probability,damage,finisher){ 
+		function(name,probability,damage,commentary,finisher){ 
 			if (!probability || !damage || isNaN(probability) || isNaN(damage) || !name || !name.length) { 
 				// Probability and damage must be numbers above 0.  Name can't be empty.
 				return false;
@@ -42,6 +46,7 @@ wrestling.move = (
 				name: name,
 				probability: probability,
 				damage: damage || false,
+				commentary: commentary || '',
 				finisher: finisher || false
 			};
 		}
@@ -54,16 +59,16 @@ wrestling.wrestlers['hogan'] = {
 	long_name: '"The Immortal" Hulk Hogan',
 	nickname: "The Hulkster",
 	moves: [
-		wrestling.move('Punch',20,2),
-		wrestling.move('Kick',20,2),
-		wrestling.move('Chop',20,2),
-		wrestling.move('Wrist Lock',16,3),
-		wrestling.move('Elbow Drop',16,3),
-		wrestling.move('Body Slam',12,4),
-		wrestling.move('Clothesline',12,4),
-		wrestling.move('Atomic Drop',10,5),
-		wrestling.move('Big Boot',8,6),
-		wrestling.move('Leg Drop',5,8,true)
+		wrestling.move('Punch',20,2,'%SN lands a punch on %sn.'),
+		wrestling.move('Kick',20,2,'%SN kicks %sn.'),
+		wrestling.move('Chop',20,2,'%SN assaults %sn.'),
+		wrestling.move('Wrist Lock',16,3,'%SN grabs a wrist lock on %sn.'),
+		wrestling.move('Elbow Drop',16,3,'%SN drops an elbow on %sn.'),
+		wrestling.move('Body Slam',12,4,'%SN scoops %sn up and slams him down!'),
+		wrestling.move('Clothesline',12,4,'%SN rocks %sn with a clothesline!'),
+		wrestling.move('Atomic Drop',10,5),'%SN hits an Atomic Drop on %sn!',
+		wrestling.move('Big Boot',8,6,"There's the Big Boot from %SND!  %sn is down!"),
+		wrestling.move('Leg Drop',5,8,"%SN drops the leg!  %snd is in big trouble!",true)
 	],
 };
 wrestling.wrestlers['savage'] = {
@@ -73,16 +78,16 @@ wrestling.wrestlers['savage'] = {
 	long_name: '"Macho Man" Randy Savage',
 	nickname: "Macho Man",
 	moves: [
-		wrestling.move('Stomp',20,2),
-		wrestling.move('Punch',20,2),
-		wrestling.move('Kick',20,2),
-		wrestling.move('Snap Mare',16,3),
-		wrestling.move('Elbow Smash',16,3),
-		wrestling.move('Body Block',12,4),
-		wrestling.move('Double Chop',12,4),
-		wrestling.move('Knee Drop',10,5),
-		wrestling.move('Ax Handle',8,6),
-		wrestling.move('Elbow Drop',5,8,true)
+		wrestling.move('Stomp',20,2,'%SN stomps on %sn.'),
+		wrestling.move('Punch',20,2,'%SN punches %sn.'),
+		wrestling.move('Kick',20,2,'%SN with a kick to the midsection of %sn.'),
+		wrestling.move('Snap Mare',16,3,'%SN flips %sn over with a snap mare.'),
+		wrestling.move('Elbow Smash',16,3,'%SN smashes %sn with an elbow.'),
+		wrestling.move('Body Block',12,4,'%SN takes %sn down with a running body block!'),
+		wrestling.move('Double Chop',12,4,'%SN with a hard double chop to %sn!'),
+		wrestling.move('Knee Drop',10,5,'%SN drops the knee on %sn!'),
+		wrestling.move('Ax Handle',8,6,'%SND comes off the top with a devastating double ax-handle!  %snd is down!'),
+		wrestling.move('Big Elbow',5,8,true,'%SND poses on the top rope and comes crashing down on %snd with a big flying elbow drop!  This is gonna be it!')
 	],
 };
 wrestling.wrestlers['dibiase'] = {
@@ -92,16 +97,16 @@ wrestling.wrestlers['dibiase'] = {
 	long_name: '"The Million Dollar Man" Ted Dibiase',
 	nickname: "The Million Dollar Man",
 	moves: [
-		wrestling.move('Chop',20,2),
-		wrestling.move('Head Smash',20,2),
-		wrestling.move('Punch',20,2),
-		wrestling.move('Chin Lock',16,3),
-		wrestling.move('Arm Lock',16,3),
-		wrestling.move('Knee Drop',12,4),
-		wrestling.move('Elbow Drop',12,4),
-		wrestling.move('Clothesline',10,5),
-		wrestling.move('Back Suplex',8,6),
-		wrestling.move('$1M Dream',5,8,true)
+		wrestling.move('Chop',20,2,'%SN chops %sn in the corner.'),
+		wrestling.move('Head Smash',20,2,"%SN smashes %sn's head into the turnbuckle."),
+		wrestling.move('Punch',20,2,'%SN lands a quick punch on %sn.'),
+		wrestling.move('Chin Lock',16,3,'%SN grounds %sn with a chin lock.'),
+		wrestling.move('Arm Lock',16,3,'%SN wrenches on the arm of %sn'),
+		wrestling.move('Knee Drop',12,4,'%SN drops a knee to the head of %sn!'),
+		wrestling.move('Fist Drop',12,4,'%SN measures %sn and drops a fist!'),
+		wrestling.move('Clothesline',10,5,'%SN hits %sn with a devastating clothesline!'),
+		wrestling.move('Back Suplex',8,6,'%SN takes %sn up and down with a back suplex!'),
+		wrestling.move('$1M Dream',5,8,'%SND has %snd locked in the Million Dollar Dream!  Down on the mat!',true)
 	],
 };
 
@@ -148,7 +153,34 @@ wrestling.attemptMoves = function(game) {
 	var winner_name = wrestling.wrestlers[game.player_wrestlers[winner]].short_name;
 	var loser_name = wrestling.wrestlers[game.player_wrestlers[loser]].short_name;
 	
-	response_text += winner_name + " hits a " + move.name + " on " + loser_name;
+	response_text += move.commentary;
+	response_text = response_text.replace('%SND', pickOne([
+		wrestling.wrestlers[game.player_wrestlers[winner]].short_name,
+		wrestling.wrestlers[game.player_wrestlers[winner]].display,
+		wrestling.wrestlers[game.player_wrestlers[winner]].nickname
+	]));
+	response_text = response_text.replace('%snd', pickOne([
+		wrestling.wrestlers[game.player_wrestlers[loser]].short_name,
+		wrestling.wrestlers[game.player_wrestlers[loser]].display,
+		wrestling.wrestlers[game.player_wrestlers[loser]].nickname
+	]));
+	response_text = response_text.replace('%SN', pickOne([
+		wrestling.wrestlers[game.player_wrestlers[winner]].short_name,
+		wrestling.wrestlers[game.player_wrestlers[winner]].nickname
+	]));
+	response_text = response_text.replace('%sn', pickOne([
+		wrestling.wrestlers[game.player_wrestlers[loser]].short_name,
+		wrestling.wrestlers[game.player_wrestlers[loser]].nickname
+	]));
+	response_text = response_text.replace('%S',winner_name);
+	response_text = response_text.replace('%s',loser_name);
+	response_text = response_text.replace('%N',wrestling.wrestlers[game.player_wrestlers[winner]].nickname);
+	response_text = response_text.replace('%n',wrestling.wrestlers[game.player_wrestlers[loser]].nickname);
+	response_text = response_text.replace('%D',wrestling.wrestlers[game.player_wrestlers[winner]].display);
+	response_text = response_text.replace('%d',wrestling.wrestlers[game.player_wrestlers[loser]].display);
+	response_text = response_text.replace('%L',wrestling.wrestlers[game.player_wrestlers[winner]].long_name);
+	response_text = response_text.replace('%l',wrestling.wrestlers[game.player_wrestlers[loser]].long_name);
+
 	var responses = [{ channel: game.channel, text: response_text }];
 	if (move.finisher && game.damage[loser] > 35) {
 		responses.push({ channel: game.channel, text: winner_name + " goes for the cover!" });
@@ -162,8 +194,8 @@ wrestling.attemptMoves = function(game) {
 		var success = getRandomInt(0,damage_factor);
 		if (success > 0) {
 			responses.push({ channel: game.channel, text: "1.. 2.. 3!  It's over!" });
-			responses.push({ channel: game.channel, text: "Here is your winner... " + wrestling.wrestlers[game.player_wrestlers[winner]] + "!" });
-			responses.push({ channel: channel, text: wrestling.gameDeclareWinner(winner) });
+			responses.push({ channel: game.channel, text: "Here is your winner... " + wrestling.wrestlers[game.player_wrestlers[winner]].long_name + "!" });
+			responses.push({ channel: game.channel, text: game.endGame(wrestling.gameDeclareWinner(winner)) });
 		}
 		else {
 			responses.push({ channel: game.channel, text: "1.. 2.. No!  A kickout!" });
@@ -242,7 +274,7 @@ wrestling.playerLeave = function(channel, player) {
 	}
 	// Check for last-player-standing scenario.
 	if (game.started && game.players.length < 2) {
-		responses.push({ channel: channel, text: wrestling.gameDeclareWinner(game,game.players[0]) });
+		responses.push({ channel: channel, text: wrestling.endGame(wrestling.gameDeclareWinner(game,game.players[0])) });
 	}
 	// Check for NO player-standing scenario.
 	if (!game.players.length) {
@@ -290,11 +322,11 @@ wrestling.endGame = function(game,message) {
 	}
 };
 wrestling.gameDeclareWinner = function(game, player) {
-	wrestling.games[game.channel].winner = player;
+	game.winner = player;
 	return wrestling.endGame(game, "<@" + player + "> IS THE WINNER!");
 };
 wrestling.gameDeclareDraw = function(game, player) {
-	wrestling.games[game.channel].winner = null;
+	game.winner = null;
 	return wrestling.endGame(game, "The time limit has expired.  The match is a draw!");
 };
 wrestling.gameDroppableColumns = function(game) {
