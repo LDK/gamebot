@@ -21,16 +21,16 @@
 /*		margin-bottom: 3px;*/
 	}
 	ul#header-icons li.header-icon a.profile {
-		background: url('../img/header-icons.png') no-repeat 0px -35px;
+		background: url('../img/header-icons.png') no-repeat -105px -35px;
 	}
 	ul#header-icons li.header-icon a.profile.active,
 	ul#header-icons li.header-icon a.profile:hover
 	{
-		background-position: -35px -35px;
+		background-position: -140px -35px;
 	}
 	ul#header-icons li.header-icon a.profile.alert,
 	ul#header-icons li.header-icon a.profile:active {
-		background-position: -70px -35px;
+		background-position: -175px -35px;
 	}
 	span.notification-count {
 	    display: block;
@@ -101,17 +101,17 @@
 	}
 
 	ul#header-icons li.header-icon a.notifications {
-		background: url('../img/header-icons.png') no-repeat 0px 0px;
+		background: url('../img/header-icons.png') no-repeat -105px 0px;
 	}
 	ul#header-icons li.header-icon a.notifications.active,
 	ul#header-icons li.header-icon a.notifications:hover
 	{
-		background-position: -35px 0px;
+		background-position: -140px 0px;
 	}
 	ul#header-icons li.header-icon a.notifications.alert,
 	ul#header-icons li.header-icon a.notifications:active
 	{
-		background-position: -70px 0px;
+		background-position: -175px 0px;
 	}
 
 	/* END HEADER ICONS */
