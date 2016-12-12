@@ -276,7 +276,7 @@ wrestling.gameStart = function(channel, creator) {
 		damage: {},
 		active: true
 	};
-	wrestling.games[channel].damage[creator] = 50;
+	wrestling.games[channel].damage[creator] = 0;
 	return { channel: channel, text: "Match started by <@" + creator + ">" };
 }
 
@@ -330,7 +330,7 @@ wrestling.playerJoin = function(channel, player) {
 		return responses;
 	}
 	game.players.push(player);
-	game.damage[player] = 50;
+	game.damage[player] = 0;
 	responses.push({ channel: game.channel, text: '<@' + player + '> has joined the match.' });
 	game.player_count = game.players.length;
 	return responses;
