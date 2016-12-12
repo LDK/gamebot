@@ -4,7 +4,7 @@
 angular.
 	module('channelSelector').
 	component('channelSelector', {
-		templateUrl: 'game/channel-selector.template.html',
+		templateUrl: 'bot/channel-selector.template.html',
 		controller: ['$http', '$routeParams', 'gameState', 'user', 'bot',
 		function channelSelectorController($http, $routeParams, gameState, user, bot) {
 			var self = this;

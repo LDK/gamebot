@@ -4,7 +4,7 @@
 angular.
   module('notificationList').
   component('notificationList', {
-    templateUrl: 'notifications/notification-list.template.html',
+    templateUrl: 'site/notifications/notification-list.template.html',
     controller: ['$http', '$routeParams', 'user', function NotificationListController($http, $routeParams, user) {
       var self = this;
 	  var api_server = '';

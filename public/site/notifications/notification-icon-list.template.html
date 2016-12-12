@@ -18,7 +18,7 @@
 			</li>
 			<li ng-if="!user.logged_in" class="dropdown-listing icon-dropdown-menu-item login" id="user-menu-login">
 				<span class="login-link">
-					<a ng-click="user.menu.closeDropdown()" href="/#!/login" id="login">Log In</a>
+					<a ng-click="user.menu.closeDropdown()" href="/#!/login" id="login">Log In/Register</a>
 				</span>
 			</li>
 		</ul>
@@ -44,8 +44,8 @@
 				<span class="login-link">
 					<content-link
 						ng-click="user.notifications.closeDropdown()"
-						type="{{'users'}}"
-						content-id="login"
+						type="{{'login'}}"
+						content-id=""
 						text="Log in to Check Notifications"></content-link>
 				</span>
 			</li>

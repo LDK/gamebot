@@ -2,7 +2,7 @@
 <html lang="en" ng-app="gamebotApp">
 <head>
 <meta charset="utf-8">
-<title>GameBot Interface</title>
+<title>GameBot</title>
 
 	<!-- <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/css/smoothness/jquery-ui-1.10.0.custom.min.css" /> -->
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
@@ -40,25 +40,26 @@
 
 	<script src="gamebot.app.js"></script>
 	<script src="app.config.js"></script>
-	<script src="notifications/notification-icon-list.directive.js"></script>
-	<script src="notifications/notification-listing.directive.js"></script>
-	<script src="notifications/notification-list.module.js"></script>
-	<script src="notifications/notification-list.component.js"></script>
+	<script src="site/notifications/notification-icon-list.directive.js"></script>
+	<script src="site/notifications/notification-listing.directive.js"></script>
+	<script src="site/notifications/notification-list.module.js"></script>
+	<script src="site/notifications/notification-list.component.js"></script>
+	<script src="site/content-link.directive.js"></script>
 	<script src="user/user-login-form.module.js"></script>
 	<script src="user/user-login-form.component.js"></script>
 	<script src="user/user.service.js"></script>
+	<script src="bot/bot.service.js"></script>
+	<script src="bot/channel-selector.module.js"></script>
+	<script src="bot/channel-selector.component.js"></script>
+	<script src="bot/channel-window.directive.js"></script>
 	<script src="game/game-state.service.js"></script>
-	<script src="game/bot.service.js"></script>
 	<script src="game/player-list.directive.js"></script>
-	<script src="game/channel-window.directive.js"></script>
 	<script src="game/hand.directive.js"></script>
 	<script src="game/connectfour-grid.directive.js"></script>
 	<script src="game/wrestler-column.directive.js"></script>
 	<script src="game/game-room.directive.js"></script>
 	<script src="game/play-area.directive.js"></script>
 	<script src="game/game-menu.directive.js"></script>
-	<script src="game/channel-selector.module.js"></script>
-	<script src="game/channel-selector.component.js"></script>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body id="gamebot" ng-controller="MainCtrl as main">
