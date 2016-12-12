@@ -35,6 +35,14 @@ function pickOne(items) {
 	var index = getRandomInt(0, items.length - 1);
 	return items[index];
 }
+function escapeHtml(text) {
+	return text
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&#039;");
+}
 
 wrestling.move = (
 		function(name,probability,damage,commentary,finisher){ 
@@ -87,7 +95,7 @@ wrestling.wrestlers['savage'] = {
 		wrestling.move('Double Chop',12,4,'%SN with a hard double chop to %sn!'),
 		wrestling.move('Knee Drop',10,5,'%SN drops the knee on %sn!'),
 		wrestling.move('Ax Handle',8,6,'%SND comes off the top with a devastating double ax-handle!  %snd is down!'),
-		wrestling.move('Big Elbow',5,8,true,'%SND poses on the top rope and comes crashing down on %snd with a big flying elbow drop!  This is gonna be it!')
+		wrestling.move('Big Elbow',5,8,'%SND poses on the top rope and comes crashing down on %snd with a big flying elbow drop!  This is gonna be it!', true)
 	],
 };
 wrestling.wrestlers['dibiase'] = {
@@ -117,15 +125,20 @@ wrestling.useWrestler = function(game, player, wrestler) {
 wrestling.attemptMoves = function(game) {
 	var chances = [];
 	var i = 0;
+	if (game.move_picks[game.players[0]] === 0 && game.move_picks[game.players[1]] === 0) {
+		return [{ channel: game.channel, text: 'Neither wrestler manages to gain an advantage.' }];
+	}
 	for (var player in game.move_picks) {
 		var wrestler = wrestling.wrestlers[game.player_wrestlers[player]];
 		var move = wrestler.moves[game.move_picks[player]];
-		if (move.finisher) {
+		if (!move) {
+			move = wrestling.move('Block',18,-2,"%SN blocks %sn's attempt");
+		}
+		if (move && move.finisher) {
 			var opponent_damage = i == 0 ? game.damage[game.players[1]] : game.damage[game.players[0]];
 			i++;
 			if ((opponent_damage && opponent_damage < 35) || opponent_damage === 0) {
 				// Finisher will not work until you do 35 points of damage.
-				console.log('Finisher will not work until you do 35 points of damage.',opponent_damage,game.damage,i);
 				continue;
 			}
 		}
@@ -140,14 +153,21 @@ wrestling.attemptMoves = function(game) {
 	var winner = chances[getRandomInt(0, chances.length - 1)];
 	wrestler = wrestling.wrestlers[game.player_wrestlers[winner]];
 	var loser = null;
-	var move = wrestler.moves[game.move_picks[winner]];
+	if (!move || move.name != 'Block') { 
+		move = wrestler.moves[game.move_picks[winner]];
+	}
 	for (var i in game.players) {
 		var player = game.players[i];
 		if (player != winner) { 
 			loser = player;
 		} // so poetic
 	}
-	game.damage[loser] += parseInt(move.damage);
+	if (move.damage > 0) {
+		game.damage[loser] += parseInt(move.damage);
+	}
+	else {
+		game.damage[winner] += parseInt(move.damage); // i.e. if we successfully block.
+	}
 	wrestling.clearPicks(game);
 	var response_text = '';
 	var winner_name = wrestling.wrestlers[game.player_wrestlers[winner]].short_name;
@@ -180,6 +200,7 @@ wrestling.attemptMoves = function(game) {
 	response_text = response_text.replace('%d',wrestling.wrestlers[game.player_wrestlers[loser]].display);
 	response_text = response_text.replace('%L',wrestling.wrestlers[game.player_wrestlers[winner]].long_name);
 	response_text = response_text.replace('%l',wrestling.wrestlers[game.player_wrestlers[loser]].long_name);
+	response_text = escapeHtml(response_text);
 
 	var responses = [{ channel: game.channel, text: response_text }];
 	if (move.finisher && game.damage[loser] > 35) {
@@ -194,8 +215,8 @@ wrestling.attemptMoves = function(game) {
 		var success = getRandomInt(0,damage_factor);
 		if (success > 0) {
 			responses.push({ channel: game.channel, text: "1.. 2.. 3!  It's over!" });
-			responses.push({ channel: game.channel, text: "Here is your winner... " + wrestling.wrestlers[game.player_wrestlers[winner]].long_name + "!" });
-			responses.push({ channel: game.channel, text: game.endGame(wrestling.gameDeclareWinner(winner)) });
+			responses.push({ channel: game.channel, text: "Here is your winner... " + escapeHtml(wrestling.wrestlers[game.player_wrestlers[winner]].long_name) + "!" });
+			responses.push({ channel: game.channel, text: wrestling.endGame(game, wrestling.gameDeclareWinner(winner)) });
 		}
 		else {
 			responses.push({ channel: game.channel, text: "1.. 2.. No!  A kickout!" });
@@ -255,7 +276,7 @@ wrestling.gameStart = function(channel, creator) {
 		damage: {},
 		active: true
 	};
-	wrestling.games[channel].damage[creator] = 0;
+	wrestling.games[channel].damage[creator] = 50;
 	return { channel: channel, text: "Match started by <@" + creator + ">" };
 }
 
@@ -309,7 +330,7 @@ wrestling.playerJoin = function(channel, player) {
 		return responses;
 	}
 	game.players.push(player);
-	game.damage[player] = 0;
+	game.damage[player] = 50;
 	responses.push({ channel: game.channel, text: '<@' + player + '> has joined the match.' });
 	game.player_count = game.players.length;
 	return responses;
@@ -371,15 +392,6 @@ wrestling.begin = function(channel) {
 	var wrestler_names = [];
 	var first = wrestling.wrestlers[game.player_wrestlers[game.players[0]]].long_name;
 	var second = wrestling.wrestlers[game.player_wrestlers[game.players[1]]].long_name;
-	function escapeHtml(text) {
-	  return text
-	      .replace(/&/g, "&amp;")
-	      .replace(/</g, "&lt;")
-	      .replace(/>/g, "&gt;")
-	      .replace(/"/g, "&quot;")
-	      .replace(/'/g, "&#039;");
-	}
-
 	wrestler_names.push(escapeHtml(first));
 	wrestler_names.push(escapeHtml(second));
 	responses.push({ channel: channel, text: "Ladies and gentlemen, welcome to the GameBot Coliseum!" });
