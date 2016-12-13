@@ -1,0 +1,6 @@
+<div id="game-menu" style="text-align: center">
+	<input type="button" ng-disabled="!user.logged_in || gameState.active" value="New" ng-click="bot.command('stratego','start')"></input>
+	<input type="button" ng-disabled="!user.logged_in || gameState.usernames.indexOf(user.logged_in.username) != -1 || !gameState.active || gameState.started || !gameState.active" value="Join" ng-click="bot.command('stratego','join')"></input>
+	<input type="button" ng-disabled="!user.logged_in || gameState.usernames.indexOf(user.logged_in.username) == -1 || !gameState.active" value="Leave" ng-click="bot.command('stratego','leave')"></input>
+	<input type="button" ng-disabled="!user.logged_in || gameState.usernames.indexOf(user.logged_in.username) == -1 || !gameState.active || (gameState.player_count < 2) || gameState.started || !gameState.active" value="Begin" ng-click="bot.command('stratego','begin')"></input>
+</div>

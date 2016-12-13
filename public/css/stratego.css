@@ -1,0 +1,210 @@
+/* Styles specific to Uno for GameBot */
+
+div#play-area {
+	background: #313131;
+	padding: 10px;
+}
+div#game-menu {
+	background: #313131;
+	padding: 10px;
+	}
+div#stratego-grid {
+	background white;
+	width: 320px;
+	height: 320px;
+	display: block;
+	position: relative;
+	border-right: 1px dashed black;
+	border-bottom: 1px dashed black;
+}
+body.stratego div#player-list {
+	border: 1px solid black; 
+	background: white; 
+	color: black; 
+	text-align: center;
+	width: 100%;
+	max-width: 100%;
+}
+div#player-list {
+	
+}
+
+/* Gamepiece and tileface graphics */
+.gamepiece.stratego,
+.tileface.stratego {
+	display: block;
+	height: 50px;
+	width: 40px;
+	position: absolute;
+	background-image: url('/img/stratego-pieces.png');
+	background-repeat: no-repeat;
+}
+.tileface.stratego {
+	left: -1px;
+	top: 1px;
+}
+.gamepiece.stratego {
+	background-position-x: -240px;
+	left: 5px;
+}
+.gamepiece.stratego.colorRed{
+	background-position-y: 0px;
+}
+.gamepiece.stratego.colorBlue{
+	background-position-y: -50px;
+}
+.tileface.stratego.rank-b {
+	background-position-x: 0px;
+	background-position-y: 0px;
+}
+.tileface.stratego.rank-9 {
+	background-position-x: -40px;
+	background-position-y: 0px;
+}
+.tileface.stratego.rank-8 {
+	background-position-x: -80px;
+	background-position-y: 0px;
+}
+.tileface.stratego.rank-7 {
+	background-position-x: -120px;
+	background-position-y: 0px;
+}
+.tileface.stratego.rank-6 {
+	background-position-x: -160px;
+	background-position-y: 0px;
+}
+.tileface.stratego.rank-5 {
+	background-position-x: -200px;
+	background-position-y: 0px;
+}
+.tileface.stratego.rank-4 {
+	background-position-x: 0px;
+	background-position-y: -50px;
+}
+.tileface.stratego.rank-3 {
+	background-position-x: -40px;
+	background-position-y: -50px;
+}
+.tileface.stratego.rank-2 {
+	background-position-x: -80px;
+	background-position-y: -50px;
+}
+.tileface.stratego.rank-1 {
+	background-position-x: -120px;
+	background-position-y: -50px;
+}
+.tileface.stratego.rank-s {
+	background-position-x: -160px;
+	background-position-y: -50px;
+}
+.tileface.stratego.rank-f {
+	background-position-x: -200px;
+	background-position-y: -50px;
+}
+
+/*Grid square styles*/
+.gridsquare.stratego {
+	width: 50px;
+	height: 50px;
+	position: absolute;
+	border-top: 1px dashed black;
+	border-left: 1px dashed black;
+}
+.gridsquare.stratego.col0 {
+	left: 0px;
+}
+.gridsquare.stratego.col1 {
+	left: 50px;
+}
+.gridsquare.stratego.col2 {
+	left: 100px;
+}
+.gridsquare.stratego.col3 {
+	left: 150px;
+}
+.gridsquare.stratego.col4 {
+	left: 200px;
+}
+.gridsquare.stratego.col5 {
+	left: 250px;
+}
+.gridsquare.stratego.col6 {
+	left: 300px;
+}
+.gridsquare.stratego.col7 {
+	left: 350px;
+}
+.gridsquare.stratego.col8 {
+	left: 400px;
+}
+.gridsquare.stratego.col9 {
+	left: 450px;
+}
+.gridsquare.stratego.row0 {
+	top: 0px;
+}
+.gridsquare.stratego.row1 {
+	top: 50px;
+}
+.gridsquare.stratego.row2 {
+	top: 100px;
+}
+.gridsquare.stratego.row3 {
+	top: 150px;
+}
+.gridsquare.stratego.row4 {
+	top: 200px;
+}
+.gridsquare.stratego.row5 {
+	top: 250px;
+}
+.gridsquare.stratego.row6 {
+	top: 300px;
+}
+.gridsquare.stratego.row7 {
+	top: 350px;
+}
+.gridsquare.stratego.row8 {
+	top: 400px;
+}
+.gridsquare.stratego.row9 {
+	top: 450px;
+}
+
+/*Resolution-specific styles*/
+
+/*iPhone portrait*/
+@media screen and (max-width:320px) {
+	div#stratego-grid {
+		left: 0;
+	}	
+}
+/* Small size */
+@media screen and (min-width:321px) and (max-width: 499px) {
+	div#stratego-grid {
+		left: 10%;
+	}
+}
+
+/* Room for full grid but not full size */
+@media screen and (min-width:500px) and (max-width: 768px) {
+	div#stratego-grid {
+		left: 0;
+	}
+}
+/* iPad or bigger */
+@media screen and (min-width: 769px) {
+	div#stratego-grid {
+		left: 10px;
+	}
+}
+
+
+/*Use smaller tiles*/
+@media screen and (max-width:499px) {
+
+}
+/*Use full size tiles*/
+@media screen and (min-width:500px) {
+
+}

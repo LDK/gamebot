@@ -1,0 +1,9 @@
+<div id="stratego-grid" class="col span_4_of_4">
+	<fieldset ng-repeat="col in [0,1,2,3,4,5,6,7,8,9]">
+		<div ng-repeat="row in [0,1,2,3,4,5,6,7,8,9]" owner="{{gameState.grid[col][row].owner}}" class="stratego gridsquare col{{col}} row{{row}} {{gameState.colors[gameState.grid[col][row].owner]}}">
+			<div class="stratego gamepiece colorRed">
+				<div class="stratego tileface rank-s"></div>
+			</div>
+		</div>
+	</fieldset>
+</div>

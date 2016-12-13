@@ -11,6 +11,7 @@
 	<!-- Game-specific stylesheets -->
 	<link rel="stylesheet" href="css/uno.css" />
 	<link rel="stylesheet" href="css/connectfour.css" />
+	<link rel="stylesheet" href="css/stratego.css" />
 	<link rel="stylesheet" href="css/wrestling.css" />
 	<!-- Responsive and mobile friendly stuff -->
 	<meta name="HandheldFriendly" content="True">
@@ -31,13 +32,18 @@
 	<link rel="stylesheet" href="css/grid/11cols.css" media="all">
 	<link rel="stylesheet" href="css/grid/12cols.css" media="all">
 	<!-- end grid stylesheets -->
+	
+	<link rel="stylesheet/less" type="text/css" href="css/styles.less" />
 
 	<script type="text/javascript" src="moment.js"></script>
 	<script type="text/javascript" src="angular.min.js"></script>
 	<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
 	<script type="text/javascript" src="bower_components/angular-post-fix/postfix.js"></script>
+	<script type="text/javascript" src="bower_components/prefix-free/prefixfree.min.js"></script>
+	<script type="text/javascript" src="bower_components/less/dist/less.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular.js/angular.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular.less/angular.less.js"></script>
 	<script type="text/javascript" src="ngStorage/ngStorage.min.js"></script>
-
 	<script src="gamebot.app.js"></script>
 	<script src="app.config.js"></script>
 	<script src="site/notifications/notification-icon-list.directive.js"></script>
@@ -56,13 +62,14 @@
 	<script src="game/player-list.directive.js"></script>
 	<script src="game/hand.directive.js"></script>
 	<script src="game/connectfour-grid.directive.js"></script>
+	<script src="game/stratego-grid.directive.js"></script>
 	<script src="game/wrestler-column.directive.js"></script>
 	<script src="game/game-room.directive.js"></script>
 	<script src="game/play-area.directive.js"></script>
 	<script src="game/game-menu.directive.js"></script>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
-<body id="gamebot" ng-controller="MainCtrl as main">
+<body id="gamebot" ng-controller="MainCtrl as main" class="{{bot.activeGame || 'welcome'}}">
 	<div id="header" class="section group" style="min-height: 48px; padding: 0; background: #7db6b0">
 		<channel-selector class="span_1_of_2"></channel-selector>
 		<notification-icon-list class="span_1_of_2"></notification-icon-list>

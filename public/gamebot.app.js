@@ -7,7 +7,8 @@ var app = angular.module('gamebotApp', [
 	'notificationList',
 	'channelSelector',
 	'httpPostFix',
-	'userLoginForm'
+	'userLoginForm',
+	'angular.less'
 ]).controller('MainCtrl', function (gameState, user, bot, $scope, $localStorage, $http){
 	var self = this;
 	var api_server = '';
@@ -24,4 +25,5 @@ var app = angular.module('gamebotApp', [
 			user.notifications.setItems(user.logged_in.notifications);
 		}
 	}
+	$scope.bot = bot;
 });

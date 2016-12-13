@@ -1,5 +1,5 @@
 app.factory('bot', function(user, gameState, $http, $timeout){
-	var bot = {};
+	var bot = { name: 'GameBot', activeGame: false };
 	var api_server = '';
 	bot.command = function(game, cmd, params) {
 		var source = { user: user.logged_in ? user.logged_in.username : null, channel: gameState.channel || null };

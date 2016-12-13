@@ -4,13 +4,14 @@ var sqlite3 = require('sqlite3').verbose();
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
+var less = require('angular.less');
 
 var restapi = express();
 restapi.use(bodyParser.json());
 restapi.use(bodyParser.urlencoded({ extended: true })); 
 restapi.use(express.static('public'));
 
-var games = ['uno','connectfour','wrestling'];
+var games = ['uno','connectfour','wrestling','stratego'];
 
 restapi.users = [];
 restapi.channels = [];

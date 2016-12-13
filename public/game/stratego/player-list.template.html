@@ -1,0 +1,9 @@
+<div id="player-list">
+	<span ng-show="gameState.players[0]" class="{{gameState.turn == 0 ? 'current' : ''}}">
+		{{gameState.players[0].display}}
+	</span>
+	<span ng-show="gameState.players[0] || gameState.players[1]">vs.</span>
+	<span ng-show="gameState.players[1]" class="{{gameState.turn == 1 ? 'current' : ''}}">
+		{{gameState.players[1].display}}
+	</span>
+</div>

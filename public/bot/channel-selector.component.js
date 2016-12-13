@@ -26,6 +26,7 @@ angular.
 					user.game = self.channels[user.channel].game;
 				}
 				if (user.game) {
+					self.bot.activeGame = user.game;
 					// Start with the defaults
 					self.gameState.players = [];
 					self.gameState.setGameData({ channel: user.channel });
