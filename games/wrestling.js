@@ -45,17 +45,32 @@ function escapeHtml(text) {
 }
 
 wrestling.move = (
-		function(name,probability,damage,commentary,finisher){ 
+		function(name,probability,damage,commentary,special){ 
 			if (!probability || !damage || isNaN(probability) || isNaN(damage) || !name || !name.length) { 
 				// Probability and damage must be numbers above 0.  Name can't be empty.
 				return false;
+			}
+			var finisher = false;
+			var dq = false;
+			if (special) {
+				if (special.finisher) {
+					finisher = true;
+				}
+				if (special.dq_chance) {
+					dq = { chance: special.dq_chance };
+					if (special.dq_type) {
+						dq.type = special.dq_type;
+					}
+					dq.cumulative = special.dq_cumulative ? true : false;
+				}
 			}
 			return { 
 				name: name,
 				probability: probability,
 				damage: damage || false,
 				commentary: commentary || '',
-				finisher: finisher || false
+				finisher: finisher,
+				dq: dq
 			};
 		}
 	);
@@ -76,7 +91,7 @@ wrestling.wrestlers['hogan'] = {
 		wrestling.move('Clothesline',12,4,'%SN rocks %sn with a clothesline!'),
 		wrestling.move('Atomic Drop',10,5),'%SN hits an Atomic Drop on %sn!',
 		wrestling.move('Big Boot',8,6,"There's the Big Boot from %SND!  %sn is down!"),
-		wrestling.move('Leg Drop',5,8,"%SN drops the leg!  %snd is in big trouble!",true)
+		wrestling.move('Leg Drop',5,8,"%SN drops the leg!  %snd is in big trouble!",{ finisher: true })
 	],
 };
 wrestling.wrestlers['savage'] = {
@@ -95,7 +110,7 @@ wrestling.wrestlers['savage'] = {
 		wrestling.move('Double Chop',12,4,'%SN with a hard double chop to %sn!'),
 		wrestling.move('Knee Drop',10,5,'%SN drops the knee on %sn!'),
 		wrestling.move('Ax Handle',8,6,'%SND comes off the top with a devastating double ax-handle!  %snd is down!'),
-		wrestling.move('Big Elbow',5,8,'%SND poses on the top rope and comes crashing down on %snd with a big flying elbow drop!  This is gonna be it!', true)
+		wrestling.move('Big Elbow',5,8,'%SND poses on the top rope and comes crashing down on %snd with a big flying elbow drop!  This is gonna be it!', { finisher: true })
 	],
 };
 wrestling.wrestlers['dibiase'] = {
@@ -115,6 +130,45 @@ wrestling.wrestlers['dibiase'] = {
 		wrestling.move('Clothesline',10,5,'%SN hits %sn with a devastating clothesline!'),
 		wrestling.move('Back Suplex',8,6,'%SN takes %sn up and down with a back suplex!'),
 		wrestling.move('$1M Dream',5,8,'%SND has %snd locked in the Million Dollar Dream!  Down on the mat!',true)
+	],
+};
+// throat punch, eye rake, chop, kick, hurricanrana, superkick, toprope knee drop, some kind of closed fisted face punch, almost definitely a low blow and an actual fireball -- probably not that last time.
+wrestling.wrestlers['weiss'] = {
+	id: 'weiss',
+	display: 'Adam Weiss',
+	short_name: 'Weiss',
+	long_name: '"The Fireball" Adam Weiss',
+	nickname: "The Fireball",
+	moves: [
+		wrestling.move('Chop',20,2,'%SN delivers a loud chop to %sn.'),
+		wrestling.move('Kick',20,2,"%SN smashes %sn's with a kick."),
+		wrestling.move('Eye Rake',20,4,'%SN wrenches on the arm of %sn',{ dq_chance: 5, dq_cumulative: true, dq_type: 'ref_enough' }),
+		wrestling.move('Throat Punch',18,5,'%SN with a shot to the throat of %sn.',{ dq_chance: 10, dq_cumulative: true, dq_type: 'ref_enough' }),
+		wrestling.move('Hurricanrana',12,4,'%SN grounds %sn with a chin lock.'),
+		wrestling.move('Super Kick',12,4,'%SN drops a knee to the head of %sn!'),
+		wrestling.move('KO Punch',12,7,'%SN measures %sn and pounds him with a closed fist!',{ dq_chance: 10, dq_cumulative: true, dq_type: 'ref_enough' }),
+		wrestling.move('Low Blow',8,10,'%SN with a blatant low blow on %snd!',{ dq_chance: 50, dq_cumulative: false, dq_type: 'ref_see' }),
+		wrestling.move('Flying Knee',8,6,'%SN takes %sn up and down with a back suplex!'),
+		wrestling.move('Flamedriver',5,8,'%SND has %snd locked in the Million Dollar Dream!  Down on the mat!',{ finisher: true })
+	],
+};
+wrestling.wrestlers['hectic'] = {
+	id: 'hectic',
+	display: 'Jason Hectic',
+	short_name: 'Hectic',
+	long_name: '"Frenetic" Jason Hectic',
+	nickname: "The Frenetic One",
+	moves: [
+		wrestling.move('Chop',20,2,'%SN gives %sn a vicious knife-edge chop in the corner.'),
+		wrestling.move('Back Elbow',20,2,"%SN hits a spinning back elbow that floors %sn."),
+		wrestling.move('Leg Kick',20,2,'%SN wears away at the legs of %sn with a stiff kick.'),
+		wrestling.move('Headscissors',16,3,'%SN grounds %sn with a headscissors takeover.'),
+		wrestling.move('Knee Bar',16,3,'%SN cranks on the knee and legs of %sn with a knee bar.'),
+		wrestling.move('Knee Drop',12,4,'%SN drops a knee to the head of %sn!'),
+		wrestling.move('Fist Drop',12,4,'%SN measures %sn and drops a fist!'),
+		wrestling.move('Clothesline',10,5,'%SN hits %sn with a devastating clothesline!'),
+		wrestling.move('Shooting Star',5,8,'%SN comes off the top rope with a Shooting Star Press!! Incredible!'),
+		wrestling.move('$1M Dream',5,8,'%SND has %snd locked in the Million Dollar Dream!  Down on the mat!',{ finisher: true })
 	],
 };
 
