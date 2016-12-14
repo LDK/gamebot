@@ -8,6 +8,7 @@ var app = angular.module('gamebotApp', [
 	'channelSelector',
 	'httpPostFix',
 	'userLoginForm',
+	'ngDragDrop',
 	'angular.less'
 ]).controller('MainCtrl', function (gameState, user, bot, $scope, $localStorage, $http){
 	var self = this;
@@ -26,4 +27,5 @@ var app = angular.module('gamebotApp', [
 		}
 	}
 	$scope.bot = bot;
+
 });

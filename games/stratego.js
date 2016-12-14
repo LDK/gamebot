@@ -112,18 +112,31 @@ function getRandomInt(min, max) {
 // Within the board there are two obstacles of 2 x 2 squares each. Pieces are not allowed to move there.
 // Choose who plays first.
 
-stratego.initGrid = function() {
+stratego.initPlayerTiles = function(game, player) {
+	
+};
+
+stratego.initGrid = function(game) {
 	var square = (
 		function(col,row,owner){ 
 			if (isNaN(col) || isNaN(row)) { 
 				return null;
 			}
+			var placeable = false;
+			if (row < 4) {
+				placeable = 'colorRed';
+			}
+			else if (row > 5) {
+				placeable = 'colorBlue';
+			}
 			return { 
 				col: col,
 				row: row,
-				owner: owner,
-				piece: piece || false,
-				obstacle: obstacle || false
+				owner: owner || false,
+				piece: false,
+				obstacle: false,
+				placeable: placeable,
+				terrain: 'grass' + getRandomInt(1,4)
 			};
 		}
 	);
@@ -133,11 +146,28 @@ stratego.initGrid = function() {
 	
 	for (var col = 0; col < cols; col++) {
 		grid[col] = { pieces: 0 };
-		for (var row = 0; row < rows.length; row++) {
+		for (var row = 0; row < rows; row++) {
 			grid[col][row] = new square(col, row);
 		}
 	}
-		
+	
+	grid[2][4].obstacle = true;
+	grid[2][5].obstacle = true;
+	grid[3][4].obstacle = true;
+	grid[3][5].obstacle = true;
+	grid[6][4].obstacle = true;
+	grid[6][5].obstacle = true;
+	grid[7][4].obstacle = true;
+	grid[7][5].obstacle = true;
+	grid[2][4].terrain = 'water';
+	grid[2][5].terrain = 'water';
+	grid[3][4].terrain = 'water';
+	grid[3][5].terrain = 'water';
+	grid[6][4].terrain = 'water';
+	grid[6][5].terrain = 'water';
+	grid[7][4].terrain = 'water';
+	grid[7][5].terrain = 'water';
+	
 	return grid;
 }
 
@@ -163,8 +193,9 @@ stratego.gameStart = function(channel, creator) {
 		started: false,
 		turn: null,
 		winner: null,
-		grid: stratego.initGrid(),
 		players: [creator],
+		player_pieces: {},
+		grid: {},
 		colors: {},
 		player_count: 1,
 		game: 'stratego',
@@ -172,7 +203,10 @@ stratego.gameStart = function(channel, creator) {
 		active: true,
 		last_turn_ts: null
 	};
-	stratego.games[channel].colors[creator] = 'colorRed';
+	var game = stratego.games[channel];
+	game.grid = stratego.initGrid(game);
+	game.colors[creator] = 'colorRed';
+	game.player_pieces[creator] = stratego.initPieces(game,creator,'colorRed');
 	return { channel: channel, text: "Game started by <@" + creator + ">" };
 }
 
@@ -181,7 +215,7 @@ stratego.playerLeave = function(channel, player) {
 	var game = stratego.games[channel];
 	var responses = [];
 	if (!game || !game.active) {
-		responses.push({ channel: player, text: 'No active game in <#' + channel + '>.' });
+		return [({ channel: player, text: 'No active game in <#' + channel + '>.' })];
 	}
 	for (var i=0; i < game.players.length; i++) {
  		if (game.players[i] == player) {
@@ -221,12 +255,13 @@ stratego.playerJoin = function(channel, player) {
 		}
 	}
 	if (game.players.length > 1) {
-		// More-than-2-player Connect Four is something I don't want to think about.
+		// More-than-2-player Stratego is something I don't want to think about.
 		responses.push({ channel: player, text: 'Game is full.' });
 		return responses;
 	}
-	game.colors[player] = 'colorBlack';
+	game.colors[player] = 'colorBlue';
 	game.players.push(player);
+	game.player_pieces[player] = stratego.initPieces(game,player,'colorBlue');
 	responses.push({ channel: game.channel, text: '<@' + player + '> has joined the game.' });
 	game.player_count = game.players.length;
 	return responses;
@@ -292,18 +327,24 @@ stratego.begin = function(channel) {
 	return responses;
 };
 stratego.initPieces = function(game, player, color) {
-	if (!game.player_pieces) {
-		game.player_pieces = {};
+	var pieces = {
+		unplaced: {},
+		placed: {},
+		captured: {}
+	};
+	for (var rank in stratego.settings.pieces) {
+		if (!pieces.unplaced[rank]) {
+			pieces.unplaced[rank] = [];
+		}
+		for (var i = 0; i < stratego.settings.pieces[rank].allotment; i++) {
+			pieces.unplaced[rank].push(new stratego.piece(rank,color,player));
+		}
 	}
-	game.player_pieces[player] = [];
-	for (var rank in game.settings.pieces) {
-		var piece = new stratego.piece(rank,color,player);
-		game.player_pieces[player].push(piece);
-	}
-	console.log('game.player_pieces');
-}
+	return pieces;
+};
 // Returns array 
 stratego.placePiece = function(game, player, col, row, rank) {
+	return [];
 	var grid = game.grid;
 	var col_data = grid[col];
 	var responses = [];
@@ -316,8 +357,6 @@ stratego.placePiece = function(game, player, col, row, rank) {
 	}
 
 	grid[col][row].owner = player;
-
-	responses = responses.concat(stratego.nextTurn(game));
 	return responses;
 }
 
@@ -435,6 +474,24 @@ stratego.commands.status = function(options, params) {
 		}
 		return responses;
 	}
+};
+stratego.commands.place = function(options, params) {
+	var channel = params[1] ? stratego.getChannelId(params[1], options) : options.channel;
+	if (!channel || channel == options.user || channel[0] == 'D') {
+		return { channel: options.user, text: 'Specify which channel, example: `stratego place #stratego [rank] [col] [row]`.' };
+	}
+	var game = stratego.games[channel];
+	if (!game) {
+		return { channel: options.user, text: 'No active game in this channel.' };
+	}
+	var rank = params[0];
+	var col = params[1];
+	var row = params[2];
+	var unplaced = game.player_pieces[options.user].unplaced[rank];
+	if (unplaced.length) {
+		game.grid[col][row].piece = unplaced.pop();
+	}
+	return { channel: options.user, text: 'Piece rank ' + rank + ' placed at ' + col + ', ' + row + '.' };
 };
 stratego.commands.drop = function(options, params) {
 	var channel = params[1] ? stratego.getChannelId(params[1], options) : options.channel;

@@ -6,6 +6,7 @@ app.directive('strategoGrid', function (user, gameState, bot) {
 			scope.gameState = gameState;
 			scope.grid = gameState.grid
 			scope.user = user;
+			scope.derp = function() { console.log('derp'); };
 			scope.bot = bot;
 		},
 	};

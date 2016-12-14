@@ -1,0 +1,10 @@
+#tilesheet-section(@x: 0px, @y: 0px, @height: 0px, @width: 0px) {
+	background-position-x: @x;
+	background-position-y: @y;
+	height: @height;
+	width: @width;
+}
+#rpg-tile(@x: 0px, @y: 0px, @height: 0px, @width: 0px) {
+	#tilesheet-section(@x,@y,@height,@width);
+	background-image: url('/img/rpg-tiles.jpg');
+}

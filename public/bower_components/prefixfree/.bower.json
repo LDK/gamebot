@@ -1,0 +1,34 @@
+{
+  "name": "prefixfree",
+  "version": "1.0.10",
+  "main": "prefixfree.js",
+  "author": {
+    "name": "Lea Verou"
+  },
+  "ignore": [
+    "css/",
+    "fonts/",
+    "img/",
+    "README.md",
+    "index.html",
+    "index.js",
+    "minify",
+    "**/*.min.js"
+  ],
+  "description": "A script that lets you use only unprefixed CSS properties everywhere. It works behind the scenes, adding the current browser’s prefix to any CSS code, only when it’s needed.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/LeaVerou/prefixfree.git#gh-pages"
+  },
+  "homepage": "https://github.com/LeaVerou/prefixfree",
+  "_release": "1.0.10",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.10",
+    "commit": "846904c874a2bf436ff8a9623585f935d7ef4009"
+  },
+  "_source": "https://github.com/LeaVerou/prefixfree.git",
+  "_target": "^1.0.10",
+  "_originalSource": "prefix-free",
+  "_direct": true
+}

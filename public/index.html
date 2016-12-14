@@ -4,15 +4,14 @@
 <meta charset="utf-8">
 <title>GameBot</title>
 
-	<!-- <link data-require="jqueryui@*" data-semver="1.10.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/css/smoothness/jquery-ui-1.10.0.custom.min.css" /> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
 	<link rel="stylesheet" href="css/app.css" />
 	<link rel="stylesheet" href="css/header-icons.css" />
-	<!-- Game-specific stylesheets -->
-	<link rel="stylesheet" href="css/uno.css" />
-	<link rel="stylesheet" href="css/connectfour.css" />
-	<link rel="stylesheet" href="css/stratego.css" />
-	<link rel="stylesheet" href="css/wrestling.css" />
+
+	<link rel="stylesheet/less" type="text/css" href="css/gamebot.less" />
+
 	<!-- Responsive and mobile friendly stuff -->
 	<meta name="HandheldFriendly" content="True">
 	<meta name="MobileOptimized" content="320">
@@ -33,15 +32,18 @@
 	<link rel="stylesheet" href="css/grid/12cols.css" media="all">
 	<!-- end grid stylesheets -->
 	
-	<link rel="stylesheet/less" type="text/css" href="css/styles.less" />
 
 	<script type="text/javascript" src="moment.js"></script>
 	<script type="text/javascript" src="angular.min.js"></script>
+	<script src="http://code.angularjs.org/1.2.1/angular-sanitize.min.js"></script>
+
+	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+	<script src="angular-dragdrop.min.js"></script>
+
 	<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
 	<script type="text/javascript" src="bower_components/angular-post-fix/postfix.js"></script>
-	<script type="text/javascript" src="bower_components/prefix-free/prefixfree.min.js"></script>
+	<script type="text/javascript" src="bower_components/prefix-free/prefixfree.js"></script>
 	<script type="text/javascript" src="bower_components/less/dist/less.min.js"></script>
-	<script type="text/javascript" src="bower_components/angular.js/angular.min.js"></script>
 	<script type="text/javascript" src="bower_components/angular.less/angular.less.js"></script>
 	<script type="text/javascript" src="ngStorage/ngStorage.min.js"></script>
 	<script src="gamebot.app.js"></script>
@@ -63,6 +65,7 @@
 	<script src="game/hand.directive.js"></script>
 	<script src="game/connectfour-grid.directive.js"></script>
 	<script src="game/stratego-grid.directive.js"></script>
+	<script src="game/stratego-rack.directive.js"></script>
 	<script src="game/wrestler-column.directive.js"></script>
 	<script src="game/game-room.directive.js"></script>
 	<script src="game/play-area.directive.js"></script>

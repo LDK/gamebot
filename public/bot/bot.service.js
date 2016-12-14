@@ -111,5 +111,23 @@ app.factory('bot', function(user, gameState, $http, $timeout){
 		}
 		$timeout(bot.pollGameState,4000);
 	};
+	bot.droppableCommand = function(event,ui) {
+		var params = [];
+		// TODO: Gotta get this Stratego-specific stuff outta here ASAP
+		params.push(JSON.parse(ui.draggable[0].dataset.piece).rank);
+		params.push(parseInt(event.target.attributes['data-col'].value));
+		params.push(parseInt(event.target.attributes['data-row'].value));
+		var game = event.target.attributes['data-game'].value;
+		var cmd = event.target.attributes['data-command'].value;
+		return bot.command(game, cmd, params);
+	}
+	// TODO: Gotta get this Stratego-specific stuff outta here ASAP
+	bot.pieces={};
+	for (var i = 0; i < 10; i++) {
+		bot.pieces[i] = {};
+		for (var j = 0; j < 10; j++) {
+			bot.pieces[i][j] = null;
+		}
+	}
 	return bot;
 });
