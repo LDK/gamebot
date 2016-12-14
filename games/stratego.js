@@ -31,6 +31,7 @@ stratego.piece = function(rank,color,owner) {
 stratego.settings = {
 	columns: 10,
 	rows: 10,
+	total_pieces: 80,
 	pieces: {
 		B: {
 			name: 'Bomb',
@@ -198,6 +199,7 @@ stratego.gameStart = function(channel, creator) {
 		grid: {},
 		colors: {},
 		player_count: 1,
+		placed_pieces: 0,
 		game: 'stratego',
 		poll: ['status'],
 		active: true,
@@ -318,6 +320,9 @@ stratego.begin = function(channel) {
 	}
 	if (game.started) {
 		return 'Game has already begun play.';
+	}
+	if (game.placed_pieces < 80) {
+		return 'Not all pieces have been placed.';
 	}
 	var grid = game.grid;
 	var responses = [];
@@ -490,6 +495,7 @@ stratego.commands.place = function(options, params) {
 	var unplaced = game.player_pieces[options.user].unplaced[rank];
 	if (unplaced.length) {
 		game.grid[col][row].piece = unplaced.pop();
+		game.placed_pieces++;
 	}
 	return { channel: options.user, text: 'Piece rank ' + rank + ' placed at ' + col + ', ' + row + '.' };
 };
