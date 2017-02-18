@@ -1,6 +1,38 @@
 /* Styles specific to npw for GameBot */
 
 body.npw{
+	div#gameplay-menu-wrapper {
+		background-image: url(/img/blue-gradient-200v.png);
+		background-repeat: repeat-x;
+		height: 190px;
+		position: absolute;
+		bottom: 0px;
+		width: 100%;
+	}
+	div#gameplay-menu {
+		margin-left: 1%;
+		overflow: hidden;
+		width: 98%;
+		height: 175px;
+		padding: 0;
+	}
+	div.wrestler-box-wrapper {
+		height: 160px;
+		width: 290px;
+		background: white;
+		display: block;
+		position: relative;
+		top: 15px;
+		border: 2px solid #808080;
+	}
+	div.wrestler-box-wrapper.player {
+		float: left;
+		left: 0;
+	}
+	div.wrestler-box-wrapper.opponent {
+		float: right;
+		right: 0;
+	}
 	div#play-area {
 		background: #313131;
 		padding: 10px;
@@ -58,15 +90,24 @@ body.npw{
 		#channel-window-container, div#channel-window {
 			display: none !important;
 		}
+		div#commentary-column {
+			display: none;
+		}
 	}
 	@media screen and (min-width: 320px) and (max-width: 639px) {
-
+		div#commentary-column {
+			display: none;
+		}
 	}
 	@media screen and (min-width: 640px) and (max-width: 767px) {
-
+		div#commentary-column {
+			display: none;
+		}
 	}
 	@media screen and (min-width: 768px) and (max-width: 1023px) {
-
+		div#commentary-column {
+			width: 30%;
+		}
 	}
 	@media screen and (min-width: 1024px) {
 

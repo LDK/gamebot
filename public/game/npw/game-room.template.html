@@ -1,36 +1,4 @@
 <style type="text/css">
-div#gameplay-menu-wrapper {
-	background-image: url(/img/blue-gradient-200v.png);
-	background-repeat: repeat-x;
-	height: 190px;
-	position: absolute;
-	bottom: 0px;
-	width: 100%;
-}
-div#gameplay-menu {
-	margin-left: 5%;
-	overflow: hidden;
-	width: 90%;
-	height: 175px;
-	padding: 0;
-}
-div.wrestler-box-wrapper {
-	height: 160px;
-	width: 290px;
-	background: white;
-	display: block;
-	position: relative;
-	top: 15px;
-	border: 2px solid #808080;
-}
-div.wrestler-box-wrapper.player {
-	float: left;
-	left: 0;
-}
-div.wrestler-box-wrapper.opponent {
-	float: right;
-	right: 0;
-}
 div.commentary-wrapper {
 	height: 160px;
 	width: 100%;
@@ -42,7 +10,8 @@ div.commentary-wrapper {
 	float: none;
 }
 div#commentary-column {
-	float: left;
+	width: 33%;
+	margin: auto;
 }
 div#commentary {
 	border: 1px solid black;
@@ -182,19 +151,12 @@ div.opponent div.wrestler-avatar {
 					</li>
 				</ul>
 			</div>
-			<div id="commentary-column">
-				<div class="commentary-wrapper">
-					<div id="commentary"></div>
-				</div>
-			</div>
 			<div class="wrestler-box-wrapper opponent span_1_of_4">
 				<div class="wrestler-details">
 					<h3>Adam Weiss</h3>
 				</div>				
-				<div class="wrestler-avatar" style="
-					background-image: url(/img/weiss%20avatar.png);
-
-				"></div>
+				<div class="wrestler-avatar" style="background-image: url(/img/weiss%20avatar.png);">
+				</div>
 				<ul class="playerButtons">
 					<li class="circleButton">
 						<a href="javascript:;" class="strategyButton"></a>
@@ -206,6 +168,11 @@ div.opponent div.wrestler-avatar {
 						<a href="javascript:;" class="actionButton"></a>
 					</li>
 				</ul>
+			</div>
+			<div id="commentary-column">
+				<div class="commentary-wrapper">
+					<div id="commentary"></div>
+				</div>
 			</div>
 		</div>
 	</div>
