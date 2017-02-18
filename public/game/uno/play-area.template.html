@@ -1,5 +1,5 @@
-<div ng-show="gameState.channel && gameState.started" id="play-area" class="section group" style="max-width: 400px" ng-controller="MainCtrl as main">
-	<div ng-show="gameState.current_label" style="width: 49%; float: left">
+<div ng-show="gameState.data.channel && gameState.data.started" id="play-area" class="section group" style="max-width: 400px" ng-controller="MainCtrl as main">
+	<div ng-show="gameState.data.current_label" style="width: 49%; float: left">
 		<!-- Game deck -->
 		<div id="deck">
 			<div class="uno card back"></div>
@@ -7,15 +7,15 @@
 		</div>
 		<!-- Discard pile -->
 		<div id="discard">
-			<div class="uno card {{gameState.current_color ? 'color'+gameState.current_color : ''}} label{{gameState.current_label.toLowerCase().replace(' ', '').replace(' ','')}}"></div>
+			<div class="uno card {{gameState.data.current_color ? 'color'+gameState.data.current_color : ''}} label{{gameState.data.current_label.toLowerCase().replace(' ', '').replace(' ','')}}"></div>
 			<span style="color:white; text-align: center">Active</span>
 		</div>
 	</div>
 	<div ng-show="user.cards" style="width: 49%; float: right">
 		<hand></hand>
 	</div>
-	<!-- user.logged_in && gameState.turn_user = user.logged_in.username &&  -->
-	<div ng-show="gameState.wild_active && user.logged_in && gameState.turn_user == user.logged_in.username">
+	<!-- user.logged_in && gameState.data.turn_user = user.logged_in.username &&  -->
+	<div ng-show="gameState.data.wild_active && user.logged_in && gameState.data.turn_user == user.logged_in.username">
 		<ul id="color-picker">
 			<a ng-click="bot.command('uno','color',['blue'])">Blue</a> | 
 			<a ng-click="bot.command('uno','color',['red'])">Red</a> | 

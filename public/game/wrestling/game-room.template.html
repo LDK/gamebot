@@ -4,9 +4,9 @@
 		<div class="section group">
 			<!-- <player-list game="{{user.game}}" class="col span_4_of_4"></player-list> -->
 			<div class="section group">
-				<wrestler-column player="{{gameState.players[0].username}}" side="left"></wrestler-column>
+				<wrestler-column player="{{gameState.data.players[0].username}}" side="left"></wrestler-column>
 				<channel-window id="channel-window-container" class="col span_2_of_4"></channel-window>
-				<wrestler-column player="{{gameState.players[1].username}}" side="right"></wrestler-column>
+				<wrestler-column player="{{gameState.data.players[1].username}}" side="right"></wrestler-column>
 			</div>
 		</div>
 	</div>

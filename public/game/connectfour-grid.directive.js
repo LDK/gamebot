@@ -4,7 +4,7 @@ app.directive('connectfourGrid', function (user, gameState, bot) {
 		templateUrl: 'game/connectfour-grid.template.html',
 		link: function(scope, element, attrs){
 			scope.gameState = gameState;
-			scope.grid = gameState.grid
+			scope.grid = gameState.data.grid;
 			scope.user = user;
 			scope.bot = bot;
 		},

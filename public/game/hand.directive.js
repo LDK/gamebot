@@ -8,12 +8,12 @@ app.directive('hand', function (user, gameState, bot) {
 			var cards = user.cards;
 			var playable = 0;
 			for (var i in cards) {
-				if (user.logged_in && gameState.turn_user == user.logged_in.username) {
-					if (gameState.current_color == cards[i].color) {
+				if (user.logged_in && gameState.data.turn_user == user.logged_in.username) {
+					if (gameState.data.current_color == cards[i].color) {
 						cards[i].playable = true;
 						playable++;
 					}
-					if (gameState.current_label == cards[i].label) {
+					if (gameState.data.current_label == cards[i].label) {
 						cards[i].playable = true;
 						playable++;
 					}

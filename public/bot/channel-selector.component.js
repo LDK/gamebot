@@ -28,13 +28,14 @@ angular.
 				if (user.game) {
 					self.bot.activeGame = user.game;
 					// Start with the defaults
-					self.gameState.players = [];
+					self.gameState.data.players = [];
 					self.gameState.setGameData({ channel: user.channel });
-					self.gameState.started = false;
+					self.gameState.data.started = false;
+					self.gameState.data.active = false;
 					// Then get the real deal
 					self.bot.pollMessages();
 					$http.post(api_server + '/command/status', { game: user.game, source: { channel: user.channel } } ).then(function(response){
-						self.gameState.setGameData( response.data.game_state );
+ 					self.gameState.setGameData(response.data.game_state,true);
 					});
 				}
 			}

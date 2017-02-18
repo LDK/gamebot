@@ -1,8 +1,8 @@
 <div id="stratego-grid" style="width: 500px; height: 500px; background: purple; border: 1px dashed black; float: left">
 	<div ng-repeat="col in [0,1,2,3,4,5,6,7,8,9]">
-		<div ng-repeat="row in [0,1,2,3,4,5,6,7,8,9]" owner="{{gameState.grid[col][row].owner}}" class="stratego gridsquare terrain-{{gameState.grid[col][row].terrain || 'grass1'}} col{{col}} row{{row}} {{gameState.colors[gameState.grid[col][row].owner]}}">
-			<div class="{{gameState.grid[col][row].placeable}} placeable"
-				ng-show="user.logged_in && gameState.grid[col][row].placeable && gameState.grid[col][row].placeable == gameState.colors[user.logged_in.username]" 
+		<div ng-repeat="row in [0,1,2,3,4,5,6,7,8,9]" owner="{{gameState.data.grid[col][row].owner}}" class="stratego gridsquare terrain-{{gameState.data.grid[col][row].terrain || 'grass1'}} col{{col}} row{{row}} {{gameState.data.colors[gameState.data.grid[col][row].owner]}}">
+			<div class="{{gameState.data.grid[col][row].placeable}} placeable"
+				ng-show="user.logged_in && gameState.data.grid[col][row].placeable && gameState.data.grid[col][row].placeable == gameState.data.colors[user.logged_in.username]" 
             	data-drop="true" 
 				data-game="stratego"
 				data-command="place"
@@ -12,8 +12,8 @@
 				jqyoui-droppable="{onDrop:'bot.droppableCommand'}" 
 			>
 			</div>
-			<div ng-show="gameState.grid[col][row].piece" class="stratego gamepiece {{gameState.grid[col][row].piece.color}}">
-				<div ng-show="gameState.grid[col][row].piece.owner == user.logged_in.username" class="stratego tileface rank-{{gameState.grid[col][row].piece.rank}}"></div>
+			<div ng-show="gameState.data.grid[col][row].piece" class="stratego gamepiece {{gameState.data.grid[col][row].piece.color}}">
+				<div ng-show="gameState.data.grid[col][row].piece.owner == user.logged_in.username" class="stratego tileface rank-{{gameState.data.grid[col][row].piece.rank}}"></div>
 			</div>
 		</div>
 	</div>

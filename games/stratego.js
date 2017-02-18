@@ -20,6 +20,31 @@ stratego.games = {};
 stratego.game_counter = 0;
 stratego.debug = true;
 
+stratego.defaultGameState = function(channel){
+	var gameState = {
+		game: 'stratego',
+		poll: ['status'],
+		creator: null,
+		created: null,
+		started: false,
+		turn: null,
+		winner: null,
+		players: [],
+		player_pieces: {},
+		selected_piece: {},
+		grid: {},
+		colors: {},
+		player_count: 0,
+		placed_pieces: 0,
+		active: false,
+		last_turn_ts: null
+	};
+	if (channel) {
+		gameState.data.channel = channel;
+	}
+	return gameState;
+}
+
 stratego.piece = function(rank,color,owner) {
 	return {
 		rank: rank,
@@ -27,6 +52,118 @@ stratego.piece = function(rank,color,owner) {
 		owner: owner
 	};
 };
+
+stratego.movementRange = function(game, col, row) {
+	var movement = false;
+	var square = game.grid[col][row];
+	if (square && square.piece) {
+		movement = stratego.settings.pieces[square.piece.rank].movement;
+	}
+	if (!movement) {
+		return {};
+	}
+	var range = {};
+	// Check how far north we can go within the piece's movement range without hitting an obstacle or teammate.
+	if (row == 0 || !game.grid[col][row-1] || game.grid[col][row-1].obstacle) {
+		range.north = 0;
+	}
+	else {
+		var steps = 0;
+		var stopped = false;
+		while (steps < movement && !stopped) {
+			if (!game.grid[col][row - steps - 1].piece) {
+				// Empty square to the north.  Continue.
+				steps++;
+			}
+			else if (game.grid[col][row - steps - 1].piece.owner != square.piece.owner) {
+				// Enemy square to the north.  You can advance here but no further.
+				steps++;
+				stopped = true;
+			}
+			else {
+				// Teammate to the north.  We can't advance here.
+				stopped = true;
+			}
+		}
+		range.north = steps;
+	}
+
+	// Check how far east we can go within the piece's movement range without hitting an obstacle or teammate.
+	if (col == 9 || !game.grid[col+1][row] || game.grid[col+1][row].obstacle) {
+		range.east = 0;
+	}
+	else {
+		var steps = 0;
+		var stopped = false;
+		while (steps < movement && !stopped) {
+			if (!game.grid[col + steps + 1][row].piece) {
+				// Empty square to the east.  Continue.
+				steps++;
+			}
+			else if (game.grid[col + steps + 1][row].piece.owner != square.piece.owner) {
+				// Enemy square to the east.  You can advance here but no further.
+				steps++;
+				stopped = true;
+			}
+			else {
+				// Teammate to the east.  We can't advance here.
+				stopped = true;
+			}
+		}
+		range.east = steps;
+	}
+
+	// Check how far south we can go within the piece's movement range without hitting an obstacle or teammate.
+	if (row == 9 || !game.grid[col][row+1] || game.grid[col][row+1].obstacle) {
+		range.south = 0;
+	}
+	else {
+		var steps = 0;
+		var stopped = false;
+		while (steps < movement && !stopped) {
+			if (!game.grid[col][row + steps + 1].piece) {
+				// Empty square to the south.  Continue.
+				steps++;
+			}
+			else if (game.grid[col][row + steps + 1].piece.owner != square.piece.owner) {
+				// Enemy square to the south.  You can advance here but no further.
+				steps++;
+				stopped = true;
+			}
+			else {
+				// Teammate to the south.  We can't advance here.
+				stopped = true;
+			}
+		}
+		range.south = steps;
+	}
+
+	// Check how far west we can go within the piece's movement range without hitting an obstacle or teammate.
+	if (col == 0 || !game.grid[col-1][row] || game.grid[col-1][row].obstacle) {
+		range.west = 0;
+	}
+	else {
+		var steps = 0;
+		var stopped = false;
+		while (steps < movement && !stopped) {
+			if (!game.grid[col - steps - 1][row].piece) {
+				// Empty square to the west.  Continue.
+				steps++;
+			}
+			else if (game.grid[col - steps - 1][row].piece.owner != square.piece.owner) {
+				// Enemy square to the west.  You can advance here but no further.
+				steps++;
+				stopped = true;
+			}
+			else {
+				// Teammate to the west.  We can't advance here.
+				stopped = true;
+			}
+		}
+		range.west = steps;
+	}
+	return range;
+}
 
 stratego.settings = {
 	columns: 10,
@@ -305,7 +442,7 @@ stratego.gameAdvanceTurn = function(game) {
 // Returns array
 stratego.nextTurn = function(game,skip,draw) {
 	if (!game) {
-		return [];
+		return [{ channel: null, text: null }];
 	}
 	var responses = [];
 	stratego.gameAdvanceTurn(game);
@@ -347,6 +484,16 @@ stratego.initPieces = function(game, player, color) {
 	}
 	return pieces;
 };
+stratego.selectUnplacedPiece = function(game, player, rank) {
+	if (!game.player_pieces[player] || !game.player_pieces[player].unplaced 
+		|| !game.player_pieces[player].unplaced[rank] || !game.player_pieces[player].unplaced[rank].length) {
+			return false;
+	}
+	game.selected_piece[player] = game.player_pieces[player].unplaced[rank][0];
+}
+stratego.selectPlacedPiece = function(game, player, col, row) {
+	
+}
 // Returns array 
 stratego.placePiece = function(game, player, col, row, rank) {
 	return [];
@@ -414,6 +561,7 @@ stratego.getChannelName = function(channel, options) {
 
 stratego.command = function(cmd, options, params) {
 	var res = {}
+	console.log('command options',cmd,options,params);
 	if (stratego.commands[cmd]) {
 		var channel = options.channel;
 		res.messages = stratego.commands[cmd](options, params);

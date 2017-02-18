@@ -1,15 +1,15 @@
-<div id="player-list" ng-show="gameState.channel">
+<div id="player-list" ng-show="gameState.data.channel">
 	<label>Players:</label>
-	<span style="float:right; margin-right: 5px"><b>Order:</b> {{gameState.reverse ? 'Reverse' : 'Normal'}}</span>
+	<span style="float:right; margin-right: 5px"><b>Order:</b> {{gameState.data.reverse ? 'Reverse' : 'Normal'}}</span>
 	<div class="section group">
 		<ul style="float: left; width: 49%">
-			<li data-ng-repeat="i in [0,1,2,3]" class="{{gameState.turn == i ? 'current' : ''}}"">
-				{{(i+1)}}. <span ng-show="gameState.players[i]">{{gameState.players[i].display}}</span>
+			<li data-ng-repeat="i in [0,1,2,3]" class="{{gameState.data.turn == i ? 'current' : ''}}"">
+				{{(i+1)}}. <span ng-show="gameState.data.players[i]">{{gameState.data.players[i].display}}</span>
 			</li>
 		</ul>
 		<ul style="float: right; width: 49%">
-			<li data-ng-repeat="i in [4,5,6,7]" class="{{gameState.turn == i ? 'current' : ''}}"">
-				{{(i+1)}}. <span ng-show="gameState.players[i]">{{gameState.players[i].display}}</span>
+			<li data-ng-repeat="i in [4,5,6,7]" class="{{gameState.data.turn == i ? 'current' : ''}}"">
+				{{(i+1)}}. <span ng-show="gameState.data.players[i]">{{gameState.data.players[i].display}}</span>
 			</li>
 		</ul>
 	</div>

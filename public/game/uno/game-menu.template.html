@@ -1,6 +1,6 @@
 <div id="game-menu" ng-controller="MainCtrl as main" style="text-align: center">
-	<input type="button" ng-disabled="!user.logged_in || gameState.active" value="New Game" ng-click="bot.command('uno','start')"></input>
-	<input type="button" ng-disabled="!user.logged_in || gameState.usernames.indexOf(user.logged_in.username) != -1 || !gameState.active || gameState.started || !gameState.active" value="Join Game" ng-click="bot.command('uno','join')"></input>
-	<input type="button" ng-disabled="!user.logged_in || gameState.usernames.indexOf(user.logged_in.username) == -1 || !gameState.active" value="Leave Game" ng-click="bot.command('uno','leave')"></input>
-	<input type="button" ng-disabled="!user.logged_in || gameState.usernames.indexOf(user.logged_in.username) == -1 || !gameState.active || gameState.started || !gameState.active" value="Deal Cards" ng-click="bot.command('uno','deal')"></input>
+	<input type="button" ng-disabled="!user.logged_in || gameState.data.active" value="New Game" ng-click="bot.command('uno','start')"></input>
+	<input type="button" ng-disabled="!user.logged_in || gameState.data.usernames.indexOf(user.logged_in.username) != -1 || !gameState.data.active || gameState.data.started || !gameState.data.active" value="Join Game" ng-click="bot.command('uno','join')"></input>
+	<input type="button" ng-disabled="!user.logged_in || gameState.data.usernames.indexOf(user.logged_in.username) == -1 || !gameState.data.active" value="Leave Game" ng-click="bot.command('uno','leave')"></input>
+	<input type="button" ng-disabled="!user.logged_in || gameState.data.usernames.indexOf(user.logged_in.username) == -1 || !gameState.data.active || gameState.data.started || !gameState.data.active" value="Deal Cards" ng-click="bot.command('uno','deal')"></input>
 </div>

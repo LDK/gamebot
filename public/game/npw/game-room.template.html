@@ -1,0 +1,215 @@
+<style type="text/css">
+div#gameplay-menu-wrapper {
+	background-image: url(/img/blue-gradient-200v.png);
+	background-repeat: repeat-x;
+	height: 190px;
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+}
+div#gameplay-menu {
+	margin-left: 5%;
+	overflow: hidden;
+	width: 90%;
+	height: 175px;
+	padding: 0;
+}
+div.wrestler-box-wrapper {
+	height: 160px;
+	width: 290px;
+	background: white;
+	display: block;
+	position: relative;
+	top: 15px;
+	border: 2px solid #808080;
+}
+div.wrestler-box-wrapper.player {
+	float: left;
+	left: 0;
+}
+div.wrestler-box-wrapper.opponent {
+	float: right;
+	right: 0;
+}
+div.commentary-wrapper {
+	height: 160px;
+	width: 100%;
+	background: white;
+	display: block;
+	position: relative;
+	top: 15px;
+	border: 2px solid #808080;
+	float: none;
+}
+div#commentary-column {
+	float: left;
+}
+div#commentary {
+	border: 1px solid black;
+	width: 96%;
+	height: 96%;
+	background-color: #fff;
+	background-image: url(/img/grey-gradient-135v.png);
+	background-position: bottom;
+	background-repeat: repeat-x;
+	left: 2%;
+	position: relative;
+	top: 2%;
+}
+div.wrestler-details {
+	border: 3px solid black;
+	width: 96%;
+	height: 96%;
+	background: #273444;
+	left: 2%;
+	position: relative;
+	top: 2%;
+}
+div#gameplay-area {
+	height: 680px; 
+	position: relative; 
+	top: 0; 
+	background-image: url(http://i.imgur.com/ixGaiKV.png);
+	background-repeat: no-repeat; 
+	background-position: top;
+	max-width: 1280px;
+	margin: auto;
+}
+div.wrestler-details h3 {
+    color: gold;
+	font-family: Fighting Spirit turbo;
+	position: absolute;
+}
+div.opponent div.wrestler-details h3 {
+	right: 8px;
+}
+div.player div.wrestler-details h3 {
+	left: 8px;
+}
+.circleButton {
+    border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+    width: 50px;
+    height: 50px;
+    background: #a2a2a2;
+    border: 2px solid black;
+}
+.circleButton:hover {
+	background: red;
+}
+li.circleButton a {
+	display: block;
+}
+.strategyButton {
+	width: 40px;
+	height: 40px;
+	background: url(../img/site-icons.png) no-repeat -240px 0px;
+	position: relative;
+	left: 6px;
+	top: 3px;
+}
+.actionButton {
+	width: 40px;
+	height: 40px;
+	background: url(../img/site-icons.png) no-repeat -320px 0px;
+	position: relative;
+	left: 4px;
+	top: 3px;
+}
+.healthButton {
+	width: 40px;
+	height: 40px;
+	background: url(../img/site-icons.png) no-repeat -280px 0px;
+	position: relative;
+	left: 3px;
+	top: 6px;
+}
+ul.playerButtons {
+	list-style-type: none;
+	width: 50px;
+	height: 148px;
+	position: absolute;
+	top: 3px;
+}
+ul.playerButtons li {
+	height: 51px;
+	width: 51px;
+	margin-bottom: -2px;
+}
+div.player ul.playerButtons {
+	float: left;
+	right: 8px;
+}
+div.opponent ul.playerButtons {
+	float: right;
+	left: 8px;
+}
+div.wrestler-avatar {
+	width: 52px;
+	height: 106px;
+	background-repeat: no-repeat;
+	position: absolute;
+	top: 45px;
+}
+div.player div.wrestler-avatar {
+	float: left;
+	left: 8px;
+}
+div.opponent div.wrestler-avatar {
+	float: right;
+	right: 8px;
+}
+</style>
+<div class="section group" id="gameplay-area">
+	<div id="gameplay-menu-wrapper">
+		<div id="gameplay-menu">
+			<div class="wrestler-box-wrapper player span_1_of_4">
+				<div class="wrestler-details">
+					<h3>Mike Stanley</h3>
+				</div>
+				<div class="wrestler-avatar" style="
+					background-image: url(/img/stanley%20avatar.png);
+				"></div>
+				<ul class="playerButtons">
+					<li class="circleButton">
+						<a href="javascript:;" class="strategyButton"></a>
+					</li>
+					<li class="circleButton">
+						<a href="javascript:;" class="healthButton"></a>
+					</li>
+					<li class="circleButton">
+						<a href="javascript:;" class="actionButton"></a>
+					</li>
+				</ul>
+			</div>
+			<div id="commentary-column" class="span_3_of_8">
+				<div class="commentary-wrapper">
+					<div id="commentary"></div>
+				</div>
+			</div>
+			<div class="wrestler-box-wrapper opponent span_1_of_4">
+				<div class="wrestler-details">
+					<h3>Adam Weiss</h3>
+				</div>				
+				<div class="wrestler-avatar" style="
+					background-image: url(/img/weiss%20avatar.png);
+
+				"></div>
+				<ul class="playerButtons">
+					<li class="circleButton">
+						<a href="javascript:;" class="strategyButton"></a>
+					</li>
+					<li class="circleButton">
+						<a href="javascript:;" class="healthButton"></a>
+					</li>
+					<li class="circleButton">
+						<a href="javascript:;" class="actionButton"></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- <npw-wrestler-column player="{{gameState.data.players[0].username}}" side="left"></npw-wrestler-column> -->
+<!-- <npw-wrestler-column player="{{gameState.data.players[1].username}}" side="right"></npw-wrestler-column> -->

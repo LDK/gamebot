@@ -11,7 +11,7 @@ restapi.use(bodyParser.json());
 restapi.use(bodyParser.urlencoded({ extended: true })); 
 restapi.use(express.static('public'));
 
-var games = ['uno','connectfour','wrestling','stratego'];
+var games = ['uno','connectfour','wrestling','stratego','npw'];
 
 restapi.users = [];
 restapi.channels = [];
@@ -108,6 +108,7 @@ db.serialize(function() {
 restapi.post('/command/:command', function(req, res){
 	var command = req.params.command;
 	var game = req.body.game;
+	console.log('game command',game,command);
 	if (!game) {
 		res.json([]);
 	}
@@ -115,11 +116,19 @@ restapi.post('/command/:command', function(req, res){
 	var params = req.body.params || [];
 	var username = req.body.user || null;
 	var cmd_result = restapi[game].command(command, options, params);
+	if (command != 'status') {
+		console.log('command',command,cmd_result);
+	}
 	var messages = cmd_result.messages;
 	var game_state = cmd_result.game_state;
 	var response = {};
 	if (game_state) {
 		response.game_state = game_state || null;
+		console.log('ho',response.game_state);
+	}
+	else if (restapi[game].defaultGameState) {
+		response.game_state = restapi[game].defaultGameState(req.body.channel || false);
+		console.log('hi',response.game_state);
 	}
 	response.messages = messages;
 	if (cmd_result.data && cmd_result.type) {

@@ -1,4 +1,4 @@
-<div class="wrestler-column" id="wrestler-column-{{side}}">
+<div class="npw-wrestler-column" id="npw-wrestler-column-{{side}}">
 	<ul>
 		<div class="wrestler-name">
 			<select ng-disabled="!bot.wrestlers" ng-show="!gameState.data.started && user.logged_in && user.logged_in.username == player" ng-model="user_wrestler" ng-options="wrestler.id as wrestler.display for wrestler in bot.wrestlers" ng-change="pickWrestler()"></select>

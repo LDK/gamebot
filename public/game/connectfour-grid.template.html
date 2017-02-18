@@ -1,12 +1,12 @@
 <div id="connectfour-grid" class="col span_4_of_4">
-	<a ng-click="bot.command('connectfour','drop',['0'])" class="connectfour {{gameState.turn_user && user.logged_in && gameState.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col0"></a>
-	<a ng-click="bot.command('connectfour','drop',['1'])" class="connectfour {{gameState.turn_user && user.logged_in && gameState.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col1"></a>
-	<a ng-click="bot.command('connectfour','drop',['2'])" class="connectfour {{gameState.turn_user && user.logged_in && gameState.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col2"></a>
-	<a ng-click="bot.command('connectfour','drop',['3'])" class="connectfour {{gameState.turn_user && user.logged_in && gameState.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col3"></a>
-	<a ng-click="bot.command('connectfour','drop',['4'])" class="connectfour {{gameState.turn_user && user.logged_in && gameState.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col4"></a>
-	<a ng-click="bot.command('connectfour','drop',['5'])" class="connectfour {{gameState.turn_user && user.logged_in && gameState.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col5"></a>
-	<a ng-click="bot.command('connectfour','drop',['6'])" class="connectfour {{gameState.turn_user && user.logged_in && gameState.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col6"></a>
+	<a ng-click="bot.command('connectfour','drop',['0'])" class="connectfour {{gameState.data.turn_user && user.logged_in && gameState.data.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col0"></a>
+	<a ng-click="bot.command('connectfour','drop',['1'])" class="connectfour {{gameState.data.turn_user && user.logged_in && gameState.data.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col1"></a>
+	<a ng-click="bot.command('connectfour','drop',['2'])" class="connectfour {{gameState.data.turn_user && user.logged_in && gameState.data.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col2"></a>
+	<a ng-click="bot.command('connectfour','drop',['3'])" class="connectfour {{gameState.data.turn_user && user.logged_in && gameState.data.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col3"></a>
+	<a ng-click="bot.command('connectfour','drop',['4'])" class="connectfour {{gameState.data.turn_user && user.logged_in && gameState.data.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col4"></a>
+	<a ng-click="bot.command('connectfour','drop',['5'])" class="connectfour {{gameState.data.turn_user && user.logged_in && gameState.data.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col5"></a>
+	<a ng-click="bot.command('connectfour','drop',['6'])" class="connectfour {{gameState.data.turn_user && user.logged_in && gameState.data.turn_user == user.logged_in.username ? 'dropArrow' : ''}} col6"></a>
 	<fieldset ng-repeat="col in [0,1,2,3,4,5,6]">
-		<div ng-repeat="row in [0,1,2,3,4,5]" owner="{{gameState.grid[col][row].owner}}" class="connectfour gamepiece col{{col}} row{{row}} {{gameState.colors[gameState.grid[col][row].owner]}}"></div>
+		<div ng-repeat="row in [0,1,2,3,4,5]" owner="{{gameState.data.grid[col][row].owner}}" class="connectfour gamepiece col{{col}} row{{row}} {{gameState.data.colors[gameState.data.grid[col][row].owner]}}"></div>
 	</fieldset>
 </div>

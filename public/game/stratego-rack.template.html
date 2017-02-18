@@ -1,17 +1,17 @@
-<div id="stratego-rack" ng-show="user.logged_in && gameState.active && gameState.player_pieces && gameState.player_pieces[user.logged_in.username]" style="width: 256px; height: 500px; background: #bababa; border: 1px dashed black; float: left">
+<div id="stratego-rack" ng-show="user.logged_in && gameState.data.active && gameState.data.player_pieces && gameState.data.player_pieces[user.logged_in.username]" style="width: 256px; height: 500px; background: #bababa; border: 1px dashed black; float: left">
 	<div class="section group">
 		<div class="span_4_of_4">
 			<label>Unplaced</label><br />
-			<div class="col span_2_of_5" ng-repeat="pieces in gameState.player_pieces[user.logged_in.username].unplaced">
-				<div class="stratego gamepiece {{gameState.colors[user.logged_in.username]}}"
+			<div class="col span_2_of_5" ng-repeat="pieces in gameState.data.player_pieces[user.logged_in.username].unplaced">
+				<div class="stratego gamepiece {{gameState.data.colors[user.logged_in.username]}}"
 					data-drag="true"
 					data-piece="{{pieces[0]}}"
 					data-jqyoui-options="{revert: true, revertDuration: 200, helper: 'clone'}"
-					ng-show="gameState.player_pieces[user.logged_in.username].unplaced[pieces[0].rank].length"
+					ng-show="gameState.data.player_pieces[user.logged_in.username].unplaced[pieces[0].rank].length"
 					jqyoui-draggable="{index: {{$index}}, animate: true, placeholder: true, deepCopy: true}"
 					>
 						<div class="stratego tileface rank-{{pieces[0].rank}}"></div>
-						<span style="position: relative; top: 34px; left: 38px">x{{gameState.player_pieces[user.logged_in.username].unplaced[pieces[0].rank].length}}</span>
+						<span style="position: relative; top: 34px; left: 38px">x{{gameState.data.player_pieces[user.logged_in.username].unplaced[pieces[0].rank].length}}</span>
 				</div>
 			</div>
 		</div>
@@ -19,12 +19,12 @@
 	<div class="section group">
 		<div class="span_4_of_4">
 			<label>Active</label><br />
-			<div class="col span_2_of_5" ng-repeat="pieces in gameState.player_pieces[user.logged_in.username].active">
-				<div class="stratego gamepiece {{gameState.colors[user.logged_in.username]}}"
-					ng-show="gameState.player_pieces[user.logged_in.username].active[pieces[0].rank].length"
+			<div class="col span_2_of_5" ng-repeat="pieces in gameState.data.player_pieces[user.logged_in.username].active">
+				<div class="stratego gamepiece {{gameState.data.colors[user.logged_in.username]}}"
+					ng-show="gameState.data.player_pieces[user.logged_in.username].active[pieces[0].rank].length"
 					>
 						<div class="stratego tileface rank-{{pieces[0].rank}}"></div>
-						<span style="position: relative; top: 34px; left: 38px">x{{gameState.player_pieces[user.logged_in.username].active[pieces[0].rank].length}}</span>
+						<span style="position: relative; top: 34px; left: 38px">x{{gameState.data.player_pieces[user.logged_in.username].active[pieces[0].rank].length}}</span>
 				</div>
 			</div>
 		</div>
@@ -32,11 +32,11 @@
 	<div class="section group">
 		<div class="span_4_of_4">
 			<label>Captured</label><br />
-			<div class="col span_2_of_5" ng-repeat="pieces in gameState.player_pieces[user.logged_in.username].captured">
-				<div class="stratego gamepiece {{gameState.colors[user.logged_in.username]}}"
-					ng-show="gameState.player_pieces[user.logged_in.username].captured[pieces[0].rank].length">
+			<div class="col span_2_of_5" ng-repeat="pieces in gameState.data.player_pieces[user.logged_in.username].captured">
+				<div class="stratego gamepiece {{gameState.data.colors[user.logged_in.username]}}"
+					ng-show="gameState.data.player_pieces[user.logged_in.username].captured[pieces[0].rank].length">
 						<div class="stratego tileface rank-{{pieces[0].rank}}"></div>
-						<span style="position: relative; top: 34px; left: 38px">x{{gameState.player_pieces[user.logged_in.username].captured[pieces[0].rank].length}}</span>
+						<span style="position: relative; top: 34px; left: 38px">x{{gameState.data.player_pieces[user.logged_in.username].captured[pieces[0].rank].length}}</span>
 				</div>
 			</div>
 		</div>
