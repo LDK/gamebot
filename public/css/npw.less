@@ -1,12 +1,16 @@
 /* Styles specific to npw for GameBot */
 
+@font-face {
+    font-family: fightingSpirit;
+    src: url(/fonts/fighting-spirit.ttf);
+}
 body.npw{
 	div#header {
-		opacity: 0.9;
 		width: 100%;
 		z-index: 3000;
 		position: fixed;
 		min-height: 48px;
+		opacity: 0.9;
 	}
 	div#gameplay-menu-wrapper {
 		background-image: url(/img/blue-gradient-200v.png);
@@ -39,6 +43,17 @@ body.npw{
 	div.wrestler-box-wrapper.opponent {
 		float: right;
 		right: 0;
+	}
+	div.wrestler-details h3 {
+	    color: gold;
+		font-family: fightingSpirit;
+		position: absolute;
+	}
+	div.opponent div.wrestler-details h3 {
+		right: 8px;
+	}
+	div.player div.wrestler-details h3 {
+		left: 8px;
 	}
 	div#play-area {
 		background: #313131;
@@ -114,6 +129,9 @@ body.npw{
 	@media screen and (min-width: 768px) and (max-width: 1023px) {
 		div#commentary-column {
 			width: 30%;
+		}
+		div.wrestler-box-wrapper {
+			width: 260px;
 		}
 	}
 	@media screen and (min-width: 1024px) {
