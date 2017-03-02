@@ -1,4 +1,4 @@
-app.directive('gameRoom', function (user, gameState, bot) {
+app.directive('gameRoom', function (user, gameState, bot, stage) {
 	var gameRoomUrl = user.game ? 'game/'+user.game+'/game-room.template.html' : false;
 	return {
 		restrict: 'E',
@@ -13,6 +13,7 @@ app.directive('gameRoom', function (user, gameState, bot) {
 			scope.gameState = gameState;
 			scope.user = user;
 			scope.bot = bot;
+			scope.stage = stage;
 		},
 	};
 });

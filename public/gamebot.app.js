@@ -10,7 +10,7 @@ var app = angular.module('gamebotApp', [
 	'userLoginForm',
 	'ngDragDrop',
 	'angular.less'
-]).controller('MainCtrl', function (gameState, user, bot, $scope, $localStorage, $http){
+]).controller('MainCtrl', function (gameState, user, bot, stage, $scope, $localStorage, $http){
 	var self = this;
 	var api_server = '';
 	self.closeDropdowns = function() {

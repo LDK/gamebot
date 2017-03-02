@@ -1,9 +1,12 @@
-app.directive('npwWrestlerColumn', function (user, gameState, bot) {
+app.directive('npwWrestlerColumn', function (user, gameState, bot, stage) {
 	return {
 		restrict: 'E',
 		scope: {
 			side: '@',
-			player: '@'
+			player: '@',
+			role: '@',
+			wrestler: '@',
+			img: '@'
 		},
 		templateUrl: 'game/npw-wrestler-column.template.html',
 		link: function(scope, element, attrs){
@@ -18,15 +21,30 @@ app.directive('npwWrestlerColumn', function (user, gameState, bot) {
 			else {
 				scope.user_wrestler = null;
 			}
-			scope.pickWrestler = function() {
-				bot.command('npw','use',[scope.user_wrestler]);
-				scope.wrestler = bot.wrestlers[scope.user_wrestler];
-			}
-			scope.pickMove = function(index) {
-				if (!user.logged_in || gameState.move_picks[user.logged_in.username]) {
-					return; // Once you make your pick, it's locked in until the next round, when this value clears.
+			scope.menuOpen = false;
+			scope.menuPage = 'strategy';
+			scope.playerMenu = function(role, section) {
+				var role = 'player';
+				var playerOffset = jQuery('div.'+role).offset().top;
+				var menuHeight = jQuery('div.wrestler-submenu').height();
+				if (scope.menuOpen && scope.menuPage == section) {
+					jQuery('div.wrestler-submenu')
+					.animate({ top: playerOffset },300,function(){ 
+						jQuery(this).hide(); 
+						scope.menuOpen = false; 
+					});
 				}
-				bot.command('npw','pick',[index]);
+				else if (!scope.menuOpen) {
+					jQuery('div.wrestler-submenu')
+					.width(jQuery('div.player').width())
+					.css('top', playerOffset)
+					.css('display','block')
+					.show()
+					.animate({ top: playerOffset - menuHeight },300,function(){ 
+						scope.menuOpen = true;
+					});
+				}
+				gameState.menuPage = scope.menuPage = section;
 			}
 			scope.gameState = gameState;
 			scope.user = user;

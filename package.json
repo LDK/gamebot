@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "angular-modal-service": "^0.10.1",
     "async": "^2.1.2",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",

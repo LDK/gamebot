@@ -1,23 +1,27 @@
-<div class="npw-wrestler-column" id="npw-wrestler-column-{{side}}">
-	<ul>
-		<div class="wrestler-name">
-			<select ng-disabled="!bot.wrestlers" ng-show="!gameState.data.started && user.logged_in && user.logged_in.username == player" ng-model="user_wrestler" ng-options="wrestler.id as wrestler.display for wrestler in bot.wrestlers" ng-change="pickWrestler()"></select>
-			<label ng-show="gameState.data.started || (player && (!user.logged_in || user.logged_in.username != player))">{{bot.wrestlers[gameState.data.player_wrestlers[player]].short_name}}<br /></label>
-		</div>
-		<li ng-show="user.logged_in && user.logged_in.username == player" 
-			ng-repeat="move in bot.wrestlers[gameState.data.player_wrestlers[player]].moves" 
-			class="{{$index == gameState.data.move_picks[player] ? 'selected' : ''}}"><a ng-click="pickMove($index + 1)" href="javascript:;">{{move.name}}</a></li>
-		<li ng-show="!user.logged_in || user.logged_in.username != player" 
-			ng-repeat="move in bot.wrestlers[gameState.data.player_wrestlers[player]].moves"
-			class="{{$index == gameState.data.move_picks[player] ? 'selected' : ''}}">{{move.name}}</li>
-		<li ng-show="player && gameState.data.player_wrestlers[player] && user.logged_in && user.logged_in.username == player" 
-			class="{{gameState.data.move_picks[player] === 0 ? 'selected' : ''}}"><a ng-click="pickMove(0)" href="javascript:;">Block</a></li>
-		<li ng-show="player && gameState.data.player_wrestlers[player] && (!user.logged_in || user.logged_in.username != player)">Block</li>
-		<li ng-show="player && gameState.data.player_wrestlers[player]" class="damage">
-			<p style="width: 100%;color: white;text-align: center;text-transform: uppercase;position: relative;top: 6px;margin-bottom: -16px;">Health</p>
-			<div class="damage-bar-container" style="width: 100%; border: 1px solid #A8A8A8; height: 24px; background: #000000">
-				<div class="damage-bar" style="float: {{side}}; background: red; height: 24px; width: {{100 - (gameState.data.damage[player] > 0 ? gameState.data.damage[player] * 2 : 0)}}%"></div>
-			</div>
+<style type="text/css">
+div.wrestler-submenu {
+	width: 290px; 
+	height:100px; 
+	background: white; 
+	border: 2px solid #808080;
+}
+</style>
+<div class="wrestler-box-wrapper {{role}}">
+	<div class="wrestler-details">
+		<h3>{{wrestler}}</h3>
+	</div>
+	<div class="wrestler-avatar" style="
+		background-image: url({{img}});
+	"></div>
+	<ul class="playerButtons">
+		<li class="circleButton">
+			<a href="javascript:;" class="strategyButton" ng-click="playerMenu(role,'strategy')" title="Psychology & Strategy"></a>
+		</li>
+		<li class="circleButton">
+			<a href="javascript:;" class="healthButton" ng-click="playerMenu(role,'health')" title="Health & Injuries"></a>
+		</li>
+		<li class="circleButton">
+			<a href="javascript:;" class="actionButton" ng-click="playerMenu(role,'action')" title="Actions"></a>
 		</li>
 	</ul>
 </div>

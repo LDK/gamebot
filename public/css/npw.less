@@ -4,13 +4,23 @@
     font-family: fightingSpirit;
     src: url(/fonts/fighting-spirit.ttf);
 }
-body.npw{
+body#gamebot.npw{
+	background-color: black;
 	div#header {
 		width: 100%;
 		z-index: 3000;
 		position: fixed;
 		min-height: 48px;
 		opacity: 0.9;
+	}
+	div#gameplay-area {
+		height: 680px; 
+		position: relative; 
+		top: 0; 
+		background-repeat: no-repeat; 
+		background-position: top;
+		max-width: 1024px;
+		margin: auto;
 	}
 	div#gameplay-menu-wrapper {
 		background-image: url(/img/blue-gradient-200v.png);
@@ -22,7 +32,6 @@ body.npw{
 	}
 	div#gameplay-menu {
 		margin-left: 1%;
-		overflow: hidden;
 		width: 98%;
 		height: 175px;
 		padding: 0;
