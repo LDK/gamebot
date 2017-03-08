@@ -18,7 +18,9 @@ var app = angular.module('gamebotApp', [
 		user.menu.closeDropdown();
 	}
 
-	bot.pollGameState();
+	if (!bot.pollingGameState) {
+		bot.pollGameState();
+	}
 	
 	if ($localStorage.user && $localStorage.user.id) {
 		user.logged_in = $localStorage.user;

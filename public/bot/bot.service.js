@@ -95,6 +95,7 @@ app.factory('bot', function(user, gameState, $http, $timeout){
 		}
 	};
 	bot.pollGameState = function() {
+		bot.pollingGameState = true;
 		var list = null;
 		if (user.channel) {
 			var game = user.game;
