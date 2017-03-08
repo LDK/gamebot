@@ -1,4 +1,3 @@
-<div style="height: 200px; width: 200px; border: 1px solid white; color: white; background: red">
+<div class="arena">
 	<div data-top="{{element.options.top}}" ng-show="{{element.enabled}}" data-left="{{element.options.left}}" ng-repeat="element in arena.elements" id="{{element.id}}" data-element-key="{{element.elements_key}}" class="stage-element {{element.item_class}} {{element.options.classes[0]}}"></div>
 </div>
-	{{JSON.parse(arena.elements[0].options).top}}

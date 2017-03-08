@@ -20,8 +20,6 @@ app.directive('stageDisplay', function (user, gameState, bot, stage) {
 				var topOffset = Math.abs(stageHeight - displayHeight) / -2;
 				jQuery('#stage').animate({ left: leftOffset, top: topOffset }, 500, 'swing', function() { });
 			};
-
-			console.log('scope',scope);
 		},
 	};
 });
