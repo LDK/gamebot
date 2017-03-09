@@ -14,8 +14,9 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 			scope.stageDisplay = attrs.stagedisplay;
 			scope.arenaId = attrs.arenaid;
 			scope.drawArena = function() {
+				scope.ringDrawn = false;
 				var checkElements = setInterval(function(){
-					jQuery('div.stage-element').each(function(key,obj){
+					jQuery('div.stage-element:not(.sub-element)').each(function(key,obj){
 						clearInterval(checkElements);
 						var etop = parseInt(jQuery(this).attr('data-top'));
 						var eleft = parseInt(jQuery(this).attr('data-left'));

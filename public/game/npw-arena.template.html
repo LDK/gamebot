@@ -11,6 +11,7 @@ div.arena {
 }
 .stage-element {
 	position: absolute;
+	background-repeat: no-repeat !important;
 }
 .crowd {
 	background: url('/img/npw_ring_sprites.png') 0px -837px;
@@ -319,7 +320,7 @@ div.arena {
 	top: 34px;
 	left: 37px;
 	background-image: url('/img/ring_ropes.png');
-	background-position: -406px -632px;
+	background-position: -406px -32px;
 	z-index: 120;
 }
 #leftropes-middle.white {
@@ -340,7 +341,7 @@ div.arena {
 	top: 34px;
 	left: 37px;
 	background-image: url('/img/ring_ropes.png');
-	background-position: url('/img/ring_ropes.png') -812px -32px;
+	background-position: -812px -32px;
 	z-index: 120;
 }
 #leftropes-bottom.white {
@@ -452,7 +453,7 @@ div.arena {
 	z-index: 101;
 }
 #stage .actor {
-	z-index: 150;
+	z-index: 2023;
 }
 div.barricades.back, 
 div.barricades2.back,
@@ -480,5 +481,25 @@ table#commands td{
 }
 </style>
 <div class="arena">
-	<div data-top="{{element.options.top}}" ng-show="{{element.enabled}}" data-left="{{element.options.left}}" ng-repeat="element in arena.elements" id="{{element.id}}" data-element-key="{{element.elements_key}}" class="stage-element {{element.item_class}} {{element.options.classes}}"></div>
+<div data-top="{{element.options.top}}" ng-show="{{element.enabled}}" data-left="{{element.options.left}}" ng-repeat="element in arena.elements" id="{{element.id}}" data-element-key="{{element.elements_key}}" class="stage-element {{element.item_class}} {{element.options.classes}}">
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="mat"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="ringlogo"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="frontApron"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="backcorners"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="backbuckles"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="backropes-top"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="backropes-middle"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="backropes-bottom"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="leftropes-top"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="leftropes-middle"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="leftropes-bottom"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="frontropes-top"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="frontropes-middle"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="frontropes-bottom"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="rightropes-top"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="rightropes-middle"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="rightropes-bottom"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="frontcorners"></div>
+		<div ng-if="element.item_class=='ring'" class="stage-element ring sub-element" id="frontbuckles"></div>
+	</div>
 </div>
