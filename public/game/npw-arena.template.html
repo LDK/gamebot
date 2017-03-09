@@ -1,3 +1,484 @@
+<style type="text/css">
+div.arena {
+	display: none;
+}
+#stage {
+    top: 0px;
+    left: 0px;
+    z-index: 100;
+    display: block;
+	background: black;
+}
+.stage-element {
+	position: absolute;
+}
+.crowd {
+	background: url('/img/npw_ring_sprites.png') 0px -837px;
+	z-index: 5;
+	width: 640px;
+	height: 240px;
+}
+.crowd2 {
+	background: url('/img/npw_ring_sprites.png') -320px -1409px;
+	z-index: 4;
+	width: 256px;
+	height: 192px;
+}
+.rafters {
+	background: url('/img/npw_ring_sprites.png') 0px -302px;
+	z-index: 20;
+	width: 640px;
+	height: 65px;
+}
+.ramp {
+	background: url('/img/npw_ring_sprites.png') 0px -1600px;
+	z-index: 20;
+	width: 320px;
+	height: 164px;
+}
+.platform1 {
+	background: url('/img/npw_ring_sprites.png') -318px -1600px;
+	z-index: 20;
+	width: 64px;
+	height: 164px;
+}
+.ramp-stairs1 {
+  background: url('/img/npw_ring_sprites.png') 0px -1940px;
+  z-index: 20;
+  width: 140px;
+  height: 164px;
+}
+.platform-left {
+  background: url('/img/npw_ring_sprites.png') -188px -1950px;
+  z-index: 21;
+  width: 90px;
+  height: 164px;
+}
+.platform-middle {
+  background: url('/img/npw_ring_sprites.png') -329px -1950px;
+  z-index: 22;
+  width: 96px;
+  height: 164px;
+}
+.platform-right {
+  background: url('/img/npw_ring_sprites.png') -329px -1950px;
+  z-index: 21;
+  width: 59px;
+  height: 164px;
+}
+.stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    background-repeat: no-repeat;
+}
+.stage.ring {
+	position: absolute;
+}
+.ring {
+    width: 480px;
+    height: 300px;
+}
+.ringside {
+    background: url('/img/npw_ring_sprites.png') 0 -367px;
+    width: 640px;
+    height: 248px;
+    z-index: 0;
+}
+.floormats {
+    background: url('/img/floormats.png') 0px 0px;
+    width: 686px;
+    height: 242px;
+    z-index: 0;
+}
+#frontApron{
+	height: 66px;
+	width: 480px;
+	background: url('/img/ring_aprons.png') 0px -0px no-repeat;
+	left: 0px;
+	top: 234px;  
+	z-index: 2000;
+}
+#backcorners{
+	height:75px;
+	width: 375px;
+	top: 12px;
+	left: 53px;
+	background-image: url('/img/ringposts.png');
+	background-position: -0px -22px;
+	z-index: 115;
+}
+#backcorners.blue {
+	background-position: -0px -22px;
+}
+#backcorners.black {
+	background-position: -0px -122px;
+}
+#backbuckles{
+	height:75px;
+	width: 375px;
+	top: 12px;
+	left: 54px;
+	background-image: url('/img/turnbuckles.png');
+	background-position: -0px -22px;
+	z-index: 120;
+}
+#backbuckles.blue {
+	background-position: -0px -22px;
+}
+#backbuckles.black {
+	background-position: -0px -122px;
+}
+#backropes-top {
+	height: 25px;
+	width: 406px;
+	top: 12px;
+	left: 53px;
+	background-image: url('/img/ring_ropes.png');
+	background-position: -16px -10px;
+	z-index: 120;
+}
+#backropes-top.white {
+	background-position: -16px -10px;
+}
+#backropes-top.red {
+	background-position: -16px -210px;
+}
+#backropes-top.blue {
+	background-position: -16px -410px;
+}
+#backropes-top.black {
+	background-position: -16px -610px;
+}
+#backropes-middle {
+    height: 25px;
+    width: 300px;
+    top: 38px;
+    left: 89px;
+    background-image: url('/img/ring_ropes.png');
+	background-position: -458px -36px;
+    z-index: 120;
+}
+#backropes-middle.white {
+	background-position: -458px -36px;
+}
+#backropes-middle.red {
+	background-position: -458px -236px;
+}
+#backropes-middle.blue {
+	background-position: -458px -436px;
+}
+#backropes-middle.black {
+	background-position: -458px -636px;
+}
+#backropes-bottom {
+    height: 25px;
+    width: 297px;
+    top: 57px;
+    left: 91px;
+    background-image: url('/img/ring_ropes.png');
+	background-position: -866px -53px;
+    z-index: 120;
+}
+#backropes-bottom.white {
+	background-position: -866px -53px;
+}
+#backropes-bottom.red {
+	background-position: -866px -253px;
+}
+#backropes-bottom.blue {
+	background-position: -866px -453px;
+}
+#backropes-bottom.black {
+	background-position: -866px -653px;
+}
+#frontcorners {
+	height:87px;
+	width: 640px;
+	top: 146px;
+	left: 3px;
+	background-image: url('/img/ringposts.png');
+	background-position: -400px -12px;
+	z-index: 2010;
+}
+#frontcorners.blue {
+	background-position: -400px -12px;
+}
+#frontcorners.black {
+	background-position: -400px -112px;
+}
+#frontbuckles{
+	height:75px;
+	width: 455px;
+	top: 136px;
+	left: 15px;
+	background-image: url('/img/turnbuckles.png');
+	background-position: -412px -0px;
+	z-index: 2020;
+}
+#frontbuckles.blue {
+	background-position: -412px -0px;
+}
+#frontbuckles.black {
+	background-position: -412px -100px;
+}
+#frontropes-top{
+    height: 15px;
+    width: 406px;
+    top: 153px;
+    left: 37px;
+    background-image: url('/img/ring_ropes.png');
+	background-position: 0px -150px;
+    z-index: 2010;
+}
+#frontropes-top.white {
+	background-position: -0px -150px;
+}
+#frontropes-top.red {
+	background-position: -0px -350px;
+}
+#frontropes-top.blue {
+	background-position: -0px -550px;
+}
+#frontropes-top.black {
+	background-position: -0px -750px;
+}
+#frontropes-middle{
+    height: 15px;
+    width: 395px;
+    top: 170px;
+    left: 37px;
+    background-image: url('/img/ring_ropes.png');
+	background-position: -406px -167px;
+    z-index: 2010;
+}
+#frontropes-middle.white {
+	background-position: -406px -167px;
+}
+#frontropes-middle.red {
+	background-position: -406px -367px;
+}
+#frontropes-middle.blue {
+	background-position: -406px -567px;
+}
+#frontropes-middle.black {
+	background-position: -406px -767px;
+}
+#frontropes-bottom{
+    height: 15px;
+    width: 406px;
+    top: 188px;
+    left: 37px;
+    background: url('/img/ring_ropes.png') -812px -184px;
+    z-index: 2010;
+}
+#frontropes-bottom.white {
+	background-position: -812px -184px;
+}
+#frontropes-bottom.red {
+	background-position: -812px -384px;
+}
+#frontropes-bottom.blue {
+	background-position: -812px -584px;
+}
+#frontropes-bottom.black {
+	background-position: -812px -784px;
+}
+#sideropes{
+	height:118px;
+	width: 640px;
+	top: 33px;
+	left: 3px;
+	background: url('/img/npw_ring_sprites.png') 0 -615px;
+	z-index: 120;
+}
+#leftropes-top {
+	height: 118px;
+	width: 200px;
+	top: 34px;
+	left: 37px;
+	background: url('/img/ring_ropes.png') 0px -32px;
+	z-index: 120;
+}
+#leftropes-top.white {
+	background-position: -0px -32px;
+}
+#leftropes-top.red {
+	background-position: -0px -232px;
+}
+#leftropes-top.blue {
+	background-position: -0px -432px;
+}
+#leftropes-top.black {
+	background-position: -0px -632px;
+}
+#leftropes-middle {
+	height: 138px;
+	width: 42px;
+	top: 34px;
+	left: 37px;
+	background-image: url('/img/ring_ropes.png');
+	background-position: -406px -632px;
+	z-index: 120;
+}
+#leftropes-middle.white {
+	background-position: -406px -32px;
+}
+#leftropes-middle.red {
+	background-position: -406px -232px;
+}
+#leftropes-middle.blue {
+	background-position: -406px -432px;
+}
+#leftropes-middle.black {
+	background-position: -406px -632px;
+}
+#leftropes-bottom {
+	height: 158px;
+	width: 42px;
+	top: 34px;
+	left: 37px;
+	background-image: url('/img/ring_ropes.png');
+	background-position: url('/img/ring_ropes.png') -812px -32px;
+	z-index: 120;
+}
+#leftropes-bottom.white {
+	background-position: -812px -32px;
+}
+#leftropes-bottom.red {
+	background-position: -812px -232px;
+}
+#leftropes-bottom.blue {
+	background-position: -812px -432px;
+}
+#leftropes-bottom.black {
+	background-position: -812px -632px;
+}
+#rightropes-top {
+	height: 115px;
+	width: 40px;
+	top: 34px;
+	left: 401px;
+	background: url('/img/ring_ropes.png') -364px -32px;
+	z-index: 120;
+}
+#rightropes-top.white {
+	background-position: -364px -32px;
+}
+#rightropes-top.red {
+	background-position: -364px -232px;
+}
+#rightropes-top.blue {
+	background-position: -364px -432px;
+}
+#rightropes-top.black {
+	background-position: -364px -632px;
+}
+#rightropes-middle {
+	height: 138px;
+	width: 42px;
+	top: 34px;
+	left: 401px;
+	background-image: url('/img/ring_ropes.png'); 
+	background-position: -770px -32px;
+	z-index: 120;
+}
+#rightropes-middle.white {
+	background-position: -770px -32px;
+}
+#rightropes-middle.red {
+	background-position: -770px -232px;
+}
+#rightropes-middle.blue {
+	background-position: -770px -432px;
+}
+#rightropes-middle.black {
+	background-position: -770px -632px;
+}
+#rightropes-bottom {
+	height: 158px;
+	width: 42px;
+	top: 34px;
+	left: 401px;
+	background-image: url('/img/ring_ropes.png'); 
+	background-position: -1176px -32px;
+	z-index: 120;
+}
+#rightropes-bottom.white {
+	background-position: -1176px -32px;
+}
+#rightropes-bottom.red {
+	background-position: -1176px -232px;
+}
+#rightropes-bottom.blue {
+	background-position: -1176px -432px;
+}
+#rightropes-bottom.black {
+	background-position: -1176px -632px;
+}
+#mat{
+	height:160px;
+	width: 640px;
+	top: 74px;
+	left: 0px;
+	background: url('/img/ring_mats.png') -0px 0px;
+	z-index: 110;
+}
+#ringlogo{
+	height:105px;
+	width: 201px;
+	top: 98px;
+	left: 142px;
+	background: url('/img/ring_logos.png') 0px -0px no-repeat;
+	z-index: 120;
+}
+.barricades{
+	height:46px;
+	width: 96px;
+	background: url('/img/npw_ring_sprites.png') 0px -1409px;
+	z-index: 101;
+}
+.barricades2 {
+	height: 125px;
+	width: 53px;
+	background: url('/img/npw_ring_sprites.png') -140px -1409px;
+	z-index: 101;
+}
+.barricades3 {
+	height: 125px;
+	width: 53px;
+	background: url('/img/npw_ring_sprites.png') -192px -1409px;
+	z-index: 101;
+}
+#stage .actor {
+	z-index: 150;
+}
+div.barricades.back, 
+div.barricades2.back,
+div.barricades3.back {
+	z-index: 15;
+}
+div.barricades.front, 
+div.barricades2.front,
+div.barricades3.front {
+	z-index: 2025;
+}
+.floating {
+	z-index: 49999 !important;
+	opacity: .5;
+}
+table#commands{
+	left: 610px;
+	top: 45px;	
+	position: absolute;
+	width: 200px;	
+}
+table#commands th,
+table#commands td{
+	text-align: center;
+}
+</style>
 <div class="arena">
-	<div data-top="{{element.options.top}}" ng-show="{{element.enabled}}" data-left="{{element.options.left}}" ng-repeat="element in arena.elements" id="{{element.id}}" data-element-key="{{element.elements_key}}" class="stage-element {{element.item_class}} {{element.options.classes[0]}}"></div>
+	<div data-top="{{element.options.top}}" ng-show="{{element.enabled}}" data-left="{{element.options.left}}" ng-repeat="element in arena.elements" id="{{element.id}}" data-element-key="{{element.elements_key}}" class="stage-element {{element.item_class}} {{element.options.classes}}"></div>
 </div>
