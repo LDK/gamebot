@@ -25,6 +25,17 @@ app.directive('npwWrestlerColumn', function (user, gameState, bot, stage) {
 			scope.menuPage = 'strategy';
 			scope.playerMenu = function(role, section) {
 				var role = 'player';
+				switch(section) {
+					case 'strategy':
+						jQuery('#brethart').animateSprite('play','walkSE',{ loop: true });
+					break;
+					case 'health':
+						jQuery('#brethart').animateSprite('play','fallE',{ loop: false });
+					break;
+					case 'action':
+						jQuery('#brethart').animateSprite('play','rollEUpSE',{ loop: false });
+					break;
+				}
 				var playerOffset = jQuery('div.'+role).offset().top;
 				var menuHeight = jQuery('div.wrestler-submenu').height();
 				if (scope.menuOpen && scope.menuPage == section) {
