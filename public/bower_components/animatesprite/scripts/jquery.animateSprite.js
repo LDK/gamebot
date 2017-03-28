@@ -1,6 +1,7 @@
 /*! jqueryanimatesprite - v1.3.5 - 2014-10-17
 * http://blaiprat.github.io/jquery.animateSprite/
 * Copyright (c) 2014 blai Pratdesaba; Licensed MIT */
+// MODIFIED BY DANIEL SWINNEY IN 2017
 (function ($, window, undefined) {
 
     'use strict';
@@ -9,7 +10,6 @@
         return this.each(function () {
             var $this = $(this),
                 data  = $this.data('animateSprite');
-
             // ASYNC
             // If we don't specify the columns, we
             // can discover using the background size
@@ -42,6 +42,57 @@
 
                         var checkLoop = function (currentFrame, finalFrame) {
                             currentFrame++;
+							if (this.settings.keysteps !== undefined) {
+								if (this.settings.keysteps[this.animationName] && this.settings.keysteps[this.animationName][currentFrame]) {
+
+									for (var keystepSetting in this.settings.keysteps[this.animationName][currentFrame]) {
+										var keystepValue = this.settings.keysteps[this.animationName][currentFrame][keystepSetting];
+										if (keystepSetting.indexOf('parent_') === 0) {
+											keystepSetting = keystepSetting.replace('parent_','');
+											var el = $this.parent();
+										}
+										else {
+											var el = $this;
+										}
+										if (keystepSetting == 'addClass') {
+											el.addClass(keystepValue);
+										}
+										else if (keystepSetting == 'removeClass') {
+											el.removeClass(keystepValue);
+										}
+										else if (keystepSetting == 'toggleClass') {
+											el.toggleClass(keystepValue);
+										}
+										else if (keystepSetting.indexOf('css_') === 0) {
+											var styleName = keystepSetting.replace('css_','');
+											if (keystepValue.toString().indexOf('-') === 0) {
+												var keystepOffset = parseFloat(keystepValue.replace('-',''));
+												keystepValue = parseFloat(el.css(styleName)) - keystepOffset;
+											}
+											if (keystepValue.toString().indexOf('+') === 0) {
+												var keystepOffset = parseFloat(keystepValue.replace('+',''));
+												keystepValue = parseFloat(el.css(styleName)) + keystepOffset;
+											}
+											console.log('?',el,styleName,keystepValue,el.css(styleName));
+											el.css(styleName,keystepValue);
+										}
+										else {
+											console.log('!',keystepSetting,keystepValue);
+											if (keystepValue.toString().indexOf('-') === 0) {
+												var keystepOffset = parseFloat(keystepValue.replace('-',''));
+												keystepValue = parseFloat(el.attr(keystepSetting)) - keystepOffset;
+											}
+											if (keystepValue.toString().indexOf('+') === 0) {
+												var keystepOffset = parseFloat(keystepValue.replace('-',''));
+												keystepValue = parseFloat(el.attr(keystepSetting)) + keystepOffset;
+											}
+											el.attr(keystepSetting,keystepValue);
+										}
+									}
+
+									console.log('KEYSTEPS',this.settings.keysteps[this.animationName][currentFrame]);
+								}
+							}
                             if (currentFrame >= finalFrame) {
                                 if (this.settings.loop === true) {
                                     currentFrame = 0;
@@ -67,11 +118,58 @@
                             if (this.currentAnimation === undefined) {
                                 for (var k in this.settings.animations) {
                                     this.currentAnimation = this.settings.animations[k];
+									this.animationName = k;
                                     break;
                                 }
                             }
                             var newFrame  = this.currentAnimation[this.currentFrame];
-
+							if (this.settings.keyframes !== undefined) {
+								if (this.settings.keyframes[newFrame]) {
+									for (var keyframeSetting in this.settings.keyframes[newFrame]) {
+										var keyframeValue = this.settings.keyframes[newFrame][keyframeSetting];
+										if (keyframeSetting.indexOf('parent_') === 0) {
+											keyframeSetting = keyframeSetting.replace('parent_','');
+											var el = $this.parent();
+										}
+										else {
+											var el = $this;
+										}
+										if (keyframeSetting == 'addClass') {
+											el.addClass(keyframeValue);
+										}
+										else if (keyframeSetting == 'removeClass') {
+											el.removeClass(keyframeValue);
+										}
+										else if (keyframeSetting == 'toggleClass') {
+											el.toggleClass(keyframeValue);
+										}
+										else if (keyframeSetting.indexOf('css_') === 0) {
+											var styleName = keyframeSetting.replace('css_','');
+											if (keyframeValue.toString().indexOf('-') === 0) {
+												var keyframeOffset = parseFloat(keyframeValue.replace('-',''));
+												keyframeValue = parseFloat(el.css(keyframeSetting)) - keyframeOffset;
+											}
+											if (keyframeValue.toString().indexOf('+') === 0) {
+												var keyframeOffset = parseFloat(keyframeValue.replace('-',''));
+												keyframeValue = parseFloat(el.css(keyframeSetting)) + keyframeOffset;
+											}
+											el.css(styleName,keyframeValue);
+										}
+										else {
+											console.log('!',keyframeSetting,keyframeValue);
+											if (keyframeValue.toString().indexOf('-') === 0) {
+												var keyframeOffset = parseFloat(keyframeValue.replace('-',''));
+												keyframeValue = parseFloat(el.attr(keyframeSetting)) - keyframeOffset;
+											}
+											if (keyframeValue.toString().indexOf('+') === 0) {
+												var keyframeOffset = parseFloat(keyframeValue.replace('-',''));
+												keyframeValue = parseFloat(el.attr(keyframeSetting)) + keyframeOffset;
+											}
+											el.attr(keyframeSetting,keyframeValue);
+										}
+									}
+								}
+							}
                             $this.animateSprite('frame', newFrame);
                             this.currentFrame = checkLoop.call(this, this.currentFrame, this.currentAnimation.length);
 
@@ -175,11 +273,14 @@
 
     var play = function (animationName, options) {
 		var data  = $(this).data('animateSprite');
+		if (options === undefined && data.settings.animationOptions[animationName] !== undefined) {
+			options = data.settings.animationOptions[animationName];
+		}
         return this.each(function () {
             var $this = $(this);
 
             if (typeof animationName === 'string') {
-
+				data.animationName = animationName;
                 $this.animateSprite('stopAnimation');
                 if (data.settings.animations[animationName] !== data.currentAnimation) {
                     data.currentFrame = 0;
@@ -196,6 +297,9 @@
 						}
 					}
                 }
+				else if (options && typeof options.retrigger == 'boolean' && options.retrigger) {
+					data.currentFrame = 0;
+				}
                 data.controlTimer();
             } else {
                 $this.animateSprite('stopAnimation');
