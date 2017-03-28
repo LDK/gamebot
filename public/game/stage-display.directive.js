@@ -11,6 +11,7 @@ app.directive('stageDisplay', function (user, gameState, bot, stage) {
 			scope.gameState = gameState;
 			scope.user = user;
 			scope.bot = bot;
+			scope.stage = stage;
 			scope.centerStage = function(){
 				var stageWidth = jQuery('#stage').width();
 				var displayWidth = jQuery('stage-display').width();
@@ -18,7 +19,7 @@ app.directive('stageDisplay', function (user, gameState, bot, stage) {
 				var stageHeight = jQuery('#stage').height();
 				var displayHeight = jQuery('stage-display').height();
 				var topOffset = Math.abs(stageHeight - displayHeight) / -2;
-				jQuery('#stage').animate({ left: leftOffset, top: topOffset }, 500, 'swing', function() { });
+				// jQuery('#stage').animate({ left: leftOffset, top: topOffset }, 500, 'swing', function() { });
 			};
 		},
 	};

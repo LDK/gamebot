@@ -6,22 +6,22 @@ div.wrestler-submenu {
 	border: 2px solid #808080;
 }
 </style>
-<div class="wrestler-box-wrapper {{role}}">
+<div class="wrestler-box-wrapper {{side}}">
 	<div class="wrestler-details">
 		<h3>{{wrestler}}</h3>
 	</div>
 	<div class="wrestler-avatar" style="
 		background-image: url({{img}});
 	"></div>
-	<ul class="playerButtons">
+	<ul class="playerButtons" rel="{{actorId}}">
 		<li class="circleButton">
-			<a href="javascript:;" class="strategyButton" ng-click="playerMenu(role,'strategy')" title="Psychology & Strategy"></a>
+			<a href="javascript:;" class="strategyButton" ng-click="playerMenu(actorId, role, 'strategy')" title="Psychology & Strategy"></a>
 		</li>
 		<li class="circleButton">
-			<a href="javascript:;" class="healthButton" ng-click="playerMenu(role,'health')" title="Health & Injuries"></a>
+			<a href="javascript:;" class="healthButton" ng-click="playerMenu(actorId, role, 'health')" title="Health & Injuries"></a>
 		</li>
 		<li class="circleButton">
-			<a href="javascript:;" class="actionButton" ng-click="playerMenu(role,'action')" title="Actions"></a>
+			<a href="javascript:;" class="actionButton" ng-click="playerMenu(actorId, role, 'action')" title="Actions"></a>
 		</li>
 	</ul>
 </div>

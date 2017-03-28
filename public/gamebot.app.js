@@ -21,7 +21,7 @@ var app = angular.module('gamebotApp', [
 	if (!bot.pollingGameState) {
 		bot.pollGameState();
 	}
-	
+	user.channel = 'C10';
 	if ($localStorage.user && $localStorage.user.id) {
 		user.logged_in = $localStorage.user;
 		if (user.logged_in.notifications && user.logged_in.notifications.length) {

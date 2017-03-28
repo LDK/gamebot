@@ -1,6 +1,5 @@
-<div id="game-menu" ng-controller="MainCtrl as main" style="text-align: center">
-	<input type="button" ng-disabled="!user.logged_in || gameState.data.active" value="New" ng-click="bot.command('npw','start')"></input>
-	<input type="button" ng-disabled="!user.logged_in || gameState.data.usernames.indexOf(user.logged_in.username) != -1 || !gameState.data.active || gameState.data.started || !gameState.data.active" value="Join" ng-click="bot.command('npw','join')"></input>
-	<input type="button" ng-disabled="!user.logged_in || gameState.data.usernames.indexOf(user.logged_in.username) == -1 || !gameState.data.active" value="Leave" ng-click="bot.command('npw','leave')"></input>
-	<input type="button" ng-disabled="!user.logged_in || gameState.data.usernames.indexOf(user.logged_in.username) == -1 || !gameState.data.active || (gameState.data.player_count < 2) || !gameState.data.player_wrestlers || !gameState.data.player_wrestlers[gameState.data.players[0].username] || !gameState.data.player_wrestlers[gameState.data.players[1].username] || gameState.data.started || !gameState.data.active" value="Begin" ng-click="bot.command('npw','begin')"></input>
+<div id="game-menu" ng-controller="MainCtrl as main">
+	<input type="button" ng-disabled="!user.logged_in || gameState.data.active" value="Start" ng-click="bot.command('npw','start')"></input>
+	<input type="button" ng-disabled="!user.logged_in || !gameState.data.active" value="Next" ng-click="bot.command('npw','next')"></input>
+	<input type="button" ng-disabled="!user.logged_in || !gameState.data.active" value="End" ng-click="bot.command('npw','end')"></input>
 </div>

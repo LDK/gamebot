@@ -13,15 +13,16 @@ angular.
 			self.gameState = gameState;
 			self.user = user;
 			self.bot = bot;
+			self.user.channel = 'C10';
 			var dataUrl = api_server + '/channels';
 			$http.get(dataUrl).then(function(response) {
 				for (var i in response.data) {
 					var channel = response.data[i];
 					self.channels[channel.name] = channel;
 				}
+				self.update();
 			});
 			self.update = function() {
-				var game = false;
 				if (self.channels && user.channel && self.channels[user.channel] && self.channels[user.channel].game) {
 					user.game = self.channels[user.channel].game;
 				}
@@ -39,5 +40,6 @@ angular.
 					});
 				}
 			}
+			self.update();
 		}]
 	});

@@ -33,7 +33,7 @@ div.arena {
 }
 .ramp {
 	background: url('/img/npw_ring_sprites.png') 0px -1600px;
-	z-index: 20;
+	z-index: 120;
 	width: 320px;
 	height: 164px;
 }
@@ -87,6 +87,9 @@ div.arena {
     height: 248px;
     z-index: 0;
 }
+.stage-element.floor {
+    z-index: -10;
+}
 .floormats {
     background: url('/img/floormats.png') 0px 0px;
     width: 686px;
@@ -123,7 +126,7 @@ div.arena {
 	left: 54px;
 	background-image: url('/img/turnbuckles.png');
 	background-position: -0px -22px;
-	z-index: 120;
+	z-index: 111;
 }
 #backbuckles.blue {
 	background-position: -0px -22px;
@@ -452,8 +455,20 @@ div.arena {
 	background: url('/img/npw_ring_sprites.png') -192px -1409px;
 	z-index: 101;
 }
-#stage .actor {
+#stage .actor.zone-floor {
 	z-index: 2023;
+}
+#stage .actor.zone-apron-south {
+	z-index: 2020;
+}
+#stage .actor.zone-apron-west, #stage .actor.zone-apron-east {
+	z-index: 117;
+}
+#stage npw-actor[position='standing'] div.actor.zone-ring {
+	z-index: 130;
+}
+#stage npw-actor[position='lying'] div.actor.zone-ring {
+	z-index: 120;
 }
 div.barricades.back, 
 div.barricades2.back,

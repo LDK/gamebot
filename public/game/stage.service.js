@@ -3,14 +3,8 @@
 app.factory('stage', function(user, $http, $timeout){
 	var stage = {};
 	stage.element_types = {};
-	stage.addActor = function(options) {
-		stage.addElement('wrestler', 'character', options);
-		$('#wrestler').sprite({
-		    fps: 9, 
-		    no_of_frames: 8,
-		    // the following are optional: new in version 0.6...
-		    start_at_frame: 1,
-		}).active();
+	stage.addActor = function(options) {	
+
 	};
 	stage.getElementTypes = function() {
 		

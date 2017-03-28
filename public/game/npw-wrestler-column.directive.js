@@ -6,6 +6,7 @@ app.directive('npwWrestlerColumn', function (user, gameState, bot, stage) {
 			player: '@',
 			role: '@',
 			wrestler: '@',
+			actorId: '@',
 			img: '@'
 		},
 		templateUrl: 'game/npw-wrestler-column.template.html',
@@ -23,43 +24,44 @@ app.directive('npwWrestlerColumn', function (user, gameState, bot, stage) {
 			}
 			scope.menuOpen = false;
 			scope.menuPage = 'strategy';
-			scope.playerMenu = function(role, section) {
-				var role = 'player';
+			scope.playerMenu = function(id, role, section) {
+				var selector = '#'+id;
 				switch(section) {
 					case 'strategy':
-						jQuery('#brethart').animateSprite('play','walkSE',{ loop: true });
+						jQuery(selector).animateSprite('play','exitRingApronWSE');
 					break;
 					case 'health':
-						jQuery('#brethart').animateSprite('play','fallE',{ loop: false });
+						jQuery(selector).animateSprite('play','enterRingApronWSE');
 					break;
 					case 'action':
-						jQuery('#brethart').animateSprite('play','rollEUpSE',{ loop: false });
+						jQuery(selector).animateSprite('play','fallE');
 					break;
 				}
-				var playerOffset = jQuery('div.'+role).offset().top;
-				var menuHeight = jQuery('div.wrestler-submenu').height();
-				if (scope.menuOpen && scope.menuPage == section) {
-					jQuery('div.wrestler-submenu')
-					.animate({ top: playerOffset },300,function(){ 
-						jQuery(this).hide(); 
-						scope.menuOpen = false; 
-					});
-				}
-				else if (!scope.menuOpen) {
-					jQuery('div.wrestler-submenu')
-					.width(jQuery('div.player').width())
-					.css('top', playerOffset)
-					.css('display','block')
-					.show()
-					.animate({ top: playerOffset - menuHeight },300,function(){ 
-						scope.menuOpen = true;
-					});
-				}
-				gameState.menuPage = scope.menuPage = section;
+				// var playerOffset = jQuery('div.'+role).offset().top;
+				// var menuHeight = jQuery('div.wrestler-submenu').height();
+				// if (scope.menuOpen && scope.menuPage == section) {
+				// 	jQuery('div.wrestler-submenu')
+				// 	.animate({ top: playerOffset },300,function(){
+				// 		jQuery(this).hide();
+				// 		scope.menuOpen = false;
+				// 	});
+				// }
+				// else if (!scope.menuOpen) {
+				// 	jQuery('div.wrestler-submenu')
+				// 	.width(jQuery('div.player').width())
+				// 	.css('top', playerOffset)
+				// 	.css('display','block')
+				// 	.show()
+				// 	.animate({ top: playerOffset - menuHeight },300,function(){
+				// 		scope.menuOpen = true;
+				// 	});
+				// }
+				// gameState.menuPage = scope.menuPage = section;
 			}
 			scope.gameState = gameState;
 			scope.user = user;
 			scope.bot = bot;
+			scope.actorId = attrs.actorid;
 		},
 	};
 });

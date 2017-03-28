@@ -74,23 +74,26 @@ li.circleButton a {
 }
 ul.playerButtons {
 	list-style-type: none;
-	width: 50px;
-	height: 148px;
+	width: 180px;
+	height: 54px;
 	position: absolute;
-	top: 3px;
+	top: 48px;
+	left: 12px;
 }
 ul.playerButtons li {
 	height: 51px;
 	width: 51px;
 	margin-bottom: -2px;
+	display: inline-block;
 }
-div.player ul.playerButtons {
+div.wrestler-box-wrapper.left ul.playerButtons {
 	float: left;
 	right: 8px;
 }
-div.opponent ul.playerButtons {
+div.wrestler-box-wrapper.right ul.playerButtons {
 	float: right;
-	left: 8px;
+	right: -6px;
+	left: auto;
 }
 div.wrestler-avatar {
 	width: 52px;
@@ -99,11 +102,11 @@ div.wrestler-avatar {
 	position: absolute;
 	top: 45px;
 }
-div.player div.wrestler-avatar {
+div.wrestler-box-wrapper.left div.wrestler-avatar {
 	float: left;
 	left: 8px;
 }
-div.opponent div.wrestler-avatar {
+div.wrestler-box-wrapper.right div.wrestler-avatar {
 	float: right;
 	right: 8px;
 }
@@ -120,28 +123,19 @@ div.wrestler-submenu {
 <div class="section group" id="gameplay-area">
 	<stage-display id="arena-stage" image="/img/npw-lucha-wide.png" height="506px" width="1440px">
 	</stage-display>
-	<npw-arena arenaId="1" stageDisplay="arena-stage"></npw-arena>
+	<npw-arena arenaId="{{gameState.data.arena_id}}" stageDisplay="arena-stage"></npw-arena>
 	<div id="gameplay-menu-wrapper">
 		<div id="gameplay-menu">
 			<npw-wrestler-column 
-				wrestler="Mike Stanley" 
-				img="/img/stanley%20avatar.png" 
-				role="player" 
+				ng-repeat="item in gameState.data.wrestlers track by $index"
+				wrestler="{{item.name}}" 
+				actorId="{{item.id}}"
+				owner="{{item.owner}}" 
+				element="{{item.id}}"
 				player="{{gameState.data.players[0].username}}" 
-				side="left">
+				side="{{$index == 0 ? 'left' : 'right'}}">
 			</npw-wrestler-column>
-			<npw-wrestler-column 
-				wrestler="Adam Weiss" 
-				img="/img/weiss%20avatar.png" 
-				role="opponent" 
-				player="{{gameState.data.players[1].username}}" 
-				side="right">
-			</npw-wrestler-column>
-			<div id="commentary-column">
-				<div class="commentary-wrapper">
-					<div id="commentary"></div>
-				</div>
-			</div>
+			<game-menu game="{{user.game}}"></game-menu>
 		</div>
 	</div>
 	<div class="wrestler-submenu">
