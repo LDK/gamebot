@@ -4,7 +4,14 @@ var exports = exports || {};
 var npw = exports;
 
 // Each player selects a wrestler before "Begin Match" is available.
-// Each player in his turn selects a move to attempt (with finishing moves not available until a player has 32+ damage).
+
+// Defining a turn:
+// - Player move options are populated based on match situation.
+// - Players submit moves
+// - Sequence plays out in simulator.
+// - Gamestate updates based on sequence results.
+// - If the match has not ended, next turn.
+
 // A weighted-probability draw based on move probability and player damage determines whose move is successful.
 // - Damage is applied.
 // - If a finishing move was executed, a pin attempt occurs.
@@ -17,7 +24,6 @@ npw.games = {};
 console.log('npw games initialized');
 npw.game_counter = 0;
 npw.debug = true;
-
 npw.settings = {
 };
 
@@ -76,222 +82,110 @@ npw.move = (
 		}
 	);
 npw.wrestlers = {};
-npw.wrestlers['hogan'] = {
-	id: 'hogan',
-	display: 'Hulk Hogan',
-	short_name: 'Hogan',
-	long_name: '"The Immortal" Hulk Hogan',
-	nickname: "The Hulkster",
-	moves: [
-		npw.move('Punch',20,2,'%SN lands a punch on %sn.'),
-		npw.move('Kick',20,2,'%SN kicks %sn.'),
-		npw.move('Chop',20,2,'%SN assaults %sn.'),
-		npw.move('Wrist Lock',16,3,'%SN grabs a wrist lock on %sn.'),
-		npw.move('Elbow Drop',16,3,'%SN drops an elbow on %sn.'),
-		npw.move('Body Slam',12,4,'%SN scoops %sn up and slams him down!'),
-		npw.move('Clothesline',12,4,'%SN rocks %sn with a clothesline!'),
-		npw.move('Atomic Drop',10,5),'%SN hits an Atomic Drop on %sn!',
-		npw.move('Big Boot',8,6,"There's the Big Boot from %SND!  %sn is down!"),
-		npw.move('Leg Drop',5,8,"%SN drops the leg!  %snd is in big trouble!",{ finisher: true })
-	],
-};
-npw.wrestlers['savage'] = {
-	id: 'savage',
-	display: 'Randy Savage',
-	short_name: 'Savage',
-	long_name: '"Macho Man" Randy Savage',
-	nickname: "Macho Man",
-	moves: [
-		npw.move('Stomp',20,2,'%SN stomps on %sn.'),
-		npw.move('Punch',20,2,'%SN punches %sn.'),
-		npw.move('Kick',20,2,'%SN with a kick to the midsection of %sn.'),
-		npw.move('Snap Mare',16,3,'%SN flips %sn over with a snap mare.'),
-		npw.move('Elbow Smash',16,3,'%SN smashes %sn with an elbow.'),
-		npw.move('Body Block',12,4,'%SN takes %sn down with a running body block!'),
-		npw.move('Double Chop',12,4,'%SN with a hard double chop to %sn!'),
-		npw.move('Knee Drop',10,5,'%SN drops the knee on %sn!'),
-		npw.move('Ax Handle',8,6,'%SND comes off the top with a devastating double ax-handle!  %snd is down!'),
-		npw.move('Big Elbow',5,8,'%SND poses on the top rope and comes crashing down on %snd with a big flying elbow drop!  This is gonna be it!', { finisher: true })
-	],
-};
-npw.wrestlers['dibiase'] = {
-	id: 'dibiase',
-	display: 'Ted Dibiase',
-	short_name: 'Dibiase',
-	long_name: '"The Million Dollar Man" Ted Dibiase',
-	nickname: "The Million Dollar Man",
-	moves: [
-		npw.move('Chop',20,2,'%SN chops %sn in the corner.'),
-		npw.move('Head Smash',20,2,"%SN smashes %sn's head into the turnbuckle."),
-		npw.move('Punch',20,2,'%SN lands a quick punch on %sn.'),
-		npw.move('Chin Lock',16,3,'%SN grounds %sn with a chin lock.'),
-		npw.move('Arm Lock',16,3,'%SN wrenches on the arm of %sn'),
-		npw.move('Knee Drop',12,4,'%SN drops a knee to the head of %sn!'),
-		npw.move('Fist Drop',12,4,'%SN measures %sn and drops a fist!'),
-		npw.move('Clothesline',10,5,'%SN hits %sn with a devastating clothesline!'),
-		npw.move('Back Suplex',8,6,'%SN takes %sn up and down with a back suplex!'),
-		npw.move('$1M Dream',5,8,'%SND has %snd locked in the Million Dollar Dream!  Down on the mat!',true)
-	],
-};
 // throat punch, eye rake, chop, kick, hurricanrana, superkick, toprope knee drop, some kind of closed fisted face punch, almost definitely a low blow and an actual fireball -- probably not that last time.
-npw.wrestlers['weiss'] = {
-	id: 'weiss',
-	display: 'Adam Weiss',
-	short_name: 'Weiss',
-	long_name: '"The Fireball" Adam Weiss',
-	nickname: "The Fireball",
-	moves: [
-		npw.move('Chop',20,2,'%SN delivers a loud chop to %sn.'),
-		npw.move('Kick',20,2,"%SN smashes %sn's with a kick."),
-		npw.move('Eye Rake',20,4,'%SN wrenches on the arm of %sn',{ dq_chance: 5, dq_cumulative: true, dq_type: 'ref_enough' }),
-		npw.move('Throat Punch',18,5,'%SN with a shot to the throat of %sn.',{ dq_chance: 10, dq_cumulative: true, dq_type: 'ref_enough' }),
-		npw.move('Hurricanrana',12,4,'%SN grounds %sn with a chin lock.'),
-		npw.move('Super Kick',12,4,'%SN drops a knee to the head of %sn!'),
-		npw.move('KO Punch',12,7,'%SN measures %sn and pounds him with a closed fist!',{ dq_chance: 10, dq_cumulative: true, dq_type: 'ref_enough' }),
-		npw.move('Low Blow',8,10,'%SN with a blatant low blow on %snd!',{ dq_chance: 50, dq_cumulative: false, dq_type: 'ref_see' }),
-		npw.move('Flying Knee',8,6,'%SN takes %sn up and down with a back suplex!'),
-		npw.move('Flamedriver',5,8,'%SND has %snd locked in the Million Dollar Dream!  Down on the mat!',{ finisher: true })
-	],
+npw.wrestlers.razor = {
+	name: 'Razor Ramon',
+	id: 'razor',
+	tendency: 'power',
+	position: 'standing',
+	facing: 'NW',
+	location: 'ASE',
+	zone: 'apron-south',
+	damage: {
+		head: 0,
+		neck: 0,
+		chest: 0,
+		back: 0,
+		leftAnkle: 0,
+		rightAnkle: 0,
+		leftKnee: 0,
+		rightKnee: 0,
+		leftLeg: 0,
+		rightLeg: 0,
+		leftArm: 0,
+		rightArm: 0,
+		leftShoulder: 0,
+		rightShoulder: 0
+	}
 };
-npw.wrestlers['hectic'] = {
-	id: 'hectic',
-	display: 'Jason Hectic',
-	short_name: 'Hectic',
-	long_name: '"Frenetic" Jason Hectic',
-	nickname: "The Frenetic One",
-	moves: [
-		npw.move('Chop',20,2,'%SN gives %sn a vicious knife-edge chop in the corner.'),
-		npw.move('Back Elbow',20,2,"%SN hits a spinning back elbow that floors %sn."),
-		npw.move('Leg Kick',20,2,'%SN wears away at the legs of %sn with a stiff kick.'),
-		npw.move('Headscissors',16,3,'%SN grounds %sn with a headscissors takeover.'),
-		npw.move('Knee Bar',16,3,'%SN cranks on the knee and legs of %sn with a knee bar.'),
-		npw.move('Knee Drop',12,4,'%SN drops a knee to the head of %sn!'),
-		npw.move('Fist Drop',12,4,'%SN measures %sn and drops a fist!'),
-		npw.move('Clothesline',10,5,'%SN hits %sn with a devastating clothesline!'),
-		npw.move('Shooting Star',5,8,'%SN comes off the top rope with a Shooting Star Press!! Incredible!'),
-		npw.move('$1M Dream',5,8,'%SND has %snd locked in the Million Dollar Dream!  Down on the mat!',{ finisher: true })
-	],
+npw.wrestlers.bret = {
+	name: 'Bret Hart',
+	id: 'bret',
+	tendency: 'submission',
+	position: 'standing',
+	facing: 'SE',
+	location: 'AWN',
+	zone: 'apron-west',
+	damage: {
+		head: 0,
+		neck: 0,
+		chest: 0,
+		back: 0,
+		leftAnkle: 0,
+		rightAnkle: 0,
+		leftKnee: 0,
+		rightKnee: 0,
+		leftLeg: 0,
+		rightLeg: 0,
+		leftArm: 0,
+		rightArm: 0,
+		leftShoulder: 0,
+		rightShoulder: 0
+	}
 };
-
+npw.wrestlers.hbk = {
+	name: 'Shawn Michaels',
+	id: 'hbk',
+	tendency: 'aerial',
+	position: 'standing',
+	facing: 'NW',
+	location: 'SEC',
+	zone: 'ring',
+	damage: {
+		head: 0,
+		neck: 0,
+		chest: 0,
+		back: 0,
+		leftAnkle: 0,
+		rightAnkle: 0,
+		leftKnee: 0,
+		rightKnee: 0,
+		leftLeg: 0,
+		rightLeg: 0,
+		leftArm: 0,
+		rightArm: 0,
+		leftShoulder: 0,
+		rightShoulder: 0
+	}
+};
+npw.wrestlers.undertaker = {
+	name: 'The Undertaker',
+	id: 'undertaker',
+	tendency: 'power',
+	position: 'standing',
+	facing: 'SE',
+	location: 'NWC',
+	zone: 'ring',
+	damage: {
+		head: 0,
+		neck: 0,
+		chest: 0,
+		back: 0,
+		leftAnkle: 0,
+		rightAnkle: 0,
+		leftKnee: 0,
+		rightKnee: 0,
+		leftLeg: 0,
+		rightLeg: 0,
+		leftArm: 0,
+		rightArm: 0,
+		leftShoulder: 0,
+		rightShoulder: 0
+	}
+};
 npw.useWrestler = function(game, player, wrestler) {
 	game.player_wrestlers[player] = wrestler;
 }
-
-npw.attemptMoves = function(game) {
-	var chances = [];
-	var i = 0;
-	if (game.move_picks[game.players[0]] === 0 && game.move_picks[game.players[1]] === 0) {
-		return [{ channel: game.channel, text: 'Neither wrestler manages to gain an advantage.' }];
-	}
-	for (var player in game.move_picks) {
-		var wrestler = npw.wrestlers[game.player_wrestlers[player]];
-		var move = wrestler.moves[game.move_picks[player]];
-		if (!move) {
-			move = npw.move('Block',18,-2,"%SN blocks %sn's attempt");
-		}
-		if (move && move.finisher) {
-			var opponent_damage = i == 0 ? game.damage[game.players[1]] : game.damage[game.players[0]];
-			i++;
-			if ((opponent_damage && opponent_damage < 35) || opponent_damage === 0) {
-				// Finisher will not work until you do 35 points of damage.
-				continue;
-			}
-		}
-		for (var j = 0; j < parseInt(move.probability); j++) {
-			chances.push(player);
-		}
-	}
-	if (chances.length < 1) {
-		npw.clearPicks(game);
-		return [{ channel: game.channel, text: 'Neither wrestler manages to gain an advantage.' }];
-	}
-	var winner = chances[getRandomInt(0, chances.length - 1)];
-	wrestler = npw.wrestlers[game.player_wrestlers[winner]];
-	var loser = null;
-	if (!move || move.name != 'Block') { 
-		move = wrestler.moves[game.move_picks[winner]];
-	}
-	for (var i in game.players) {
-		var player = game.players[i];
-		if (player != winner) { 
-			loser = player;
-		} // so poetic
-	}
-	if (move.damage > 0) {
-		game.damage[loser] += parseInt(move.damage);
-	}
-	else {
-		game.damage[winner] += parseInt(move.damage); // i.e. if we successfully block.
-	}
-	npw.clearPicks(game);
-	var response_text = '';
-	var winner_name = npw.wrestlers[game.player_wrestlers[winner]].short_name;
-	var loser_name = npw.wrestlers[game.player_wrestlers[loser]].short_name;
-	
-	response_text += move.commentary;
-	response_text = response_text.replace('%SND', pickOne([
-		npw.wrestlers[game.player_wrestlers[winner]].short_name,
-		npw.wrestlers[game.player_wrestlers[winner]].display,
-		npw.wrestlers[game.player_wrestlers[winner]].nickname
-	]));
-	response_text = response_text.replace('%snd', pickOne([
-		npw.wrestlers[game.player_wrestlers[loser]].short_name,
-		npw.wrestlers[game.player_wrestlers[loser]].display,
-		npw.wrestlers[game.player_wrestlers[loser]].nickname
-	]));
-	response_text = response_text.replace('%SN', pickOne([
-		npw.wrestlers[game.player_wrestlers[winner]].short_name,
-		npw.wrestlers[game.player_wrestlers[winner]].nickname
-	]));
-	response_text = response_text.replace('%sn', pickOne([
-		npw.wrestlers[game.player_wrestlers[loser]].short_name,
-		npw.wrestlers[game.player_wrestlers[loser]].nickname
-	]));
-	response_text = response_text.replace('%S',winner_name);
-	response_text = response_text.replace('%s',loser_name);
-	response_text = response_text.replace('%N',npw.wrestlers[game.player_wrestlers[winner]].nickname);
-	response_text = response_text.replace('%n',npw.wrestlers[game.player_wrestlers[loser]].nickname);
-	response_text = response_text.replace('%D',npw.wrestlers[game.player_wrestlers[winner]].display);
-	response_text = response_text.replace('%d',npw.wrestlers[game.player_wrestlers[loser]].display);
-	response_text = response_text.replace('%L',npw.wrestlers[game.player_wrestlers[winner]].long_name);
-	response_text = response_text.replace('%l',npw.wrestlers[game.player_wrestlers[loser]].long_name);
-	response_text = escapeHtml(response_text);
-
-	var responses = [{ channel: game.channel, text: response_text }];
-	if (move.finisher && game.damage[loser] > 35) {
-		responses.push({ channel: game.channel, text: winner_name + " goes for the cover!" });
-		var damage_factor = 1;
-		if (game.damage[loser] > 39) {
-			damage_factor++;
-		}
-		if (game.damage[loser] > 49) {
-			damage_factor++;
-		}
-		var success = getRandomInt(0,damage_factor);
-		if (success > 0) {
-			responses.push({ channel: game.channel, text: "1.. 2.. 3!  It's over!" });
-			responses.push({ channel: game.channel, text: "Here is your winner... " + escapeHtml(npw.wrestlers[game.player_wrestlers[winner]].long_name) + "!" });
-			responses.push({ channel: game.channel, text: npw.endGame(game, npw.gameDeclareWinner(winner)) });
-		}
-		else {
-			responses.push({ channel: game.channel, text: "1.. 2.. No!  A kickout!" });
-		}
-		// Do some probability thing here based on damage to decide if he kicks out or not.
-	}
-	return responses;
-}
-
-npw.pickMove = function(game, player, index) {
-	game.move_picks[player] = index - 1;
-	if (game.move_picks[game.players[0]] && game.move_picks[game.players[1]]) {
-		// Both players have picked
-		return npw.attemptMoves(game);
-	}
-	else {
-
-	}
-}
-
 npw.playerInGame = function(user, game) {
 	for (i = 0; i < game.players.length; i++) {
 		if (user == game.players[i]) {
@@ -300,13 +194,66 @@ npw.playerInGame = function(user, game) {
 	}
 	return false;
 }
-
 npw.clearPicks = function(game) {
 	for (var key in game.players) {
 		var player = game.players[key];
 		game.move_picks[player] = null;
 	}
 }
+npw.moves = {
+	dropkick: {
+		name: 'dropkick',
+		risk: 10,
+		impact: 12,
+		factors: {
+			impact: {
+				aerial: 1.5,
+				kick: 1.5
+			},
+			risk: {
+				aerial: -1.25
+			}
+		},
+		type: 'aerial',
+		positions: ['standing','topRope','secondRope','running']
+	},
+	kick: {
+		name: 'kick',
+		risk: 4,
+		impact: 4,
+		factors: {
+			impact: {
+				kick: 2.0
+			}
+		},
+		type: 'striking',
+		positions: ['standing','topRope','secondRope','running']
+	},
+	punch: {
+		name: 'punch',
+		risk: 3,
+		impact: 2,
+		factors: {
+			impact: {
+				punch: 2.5
+			}
+		},
+		type: 'striking',
+		positions: ['standing','topRope','secondRope','running']
+	},
+	punch: {
+		name: 'punch',
+		risk: 3,
+		impact: 2,
+		factors: {
+			impact: {
+				punch: 2.5
+			}
+		},
+		type: 'striking',
+		positions: ['standing','topRope','secondRope','running']
+	},
+};
 
 npw.gameStart = function(channel, creator) {
 	console.log('gameStart');
@@ -321,24 +268,24 @@ npw.gameStart = function(channel, creator) {
 		channel: channel,
 		creator: creator,
 		created: (Date.now() / 1000 | 0),
-		started: false,
-		turn: null,
+		started: true,
 		winner: null,
 		players: [creator],
-		player_wrestlers: {},
 		wrestlers: npw.wrestlers,
+		wrestler_owners: {},
 		move_picks: {},
 		player_count: 1,
 		game: 'npw',
 		poll: ['status'],
-		damage: {},
-		active: true
+		active: true,
+		arena_id: 1,
+		log: []
 	};
-	npw.games[channel].damage[creator] = 0;
+	npw.wrestlers.razor.owner = creator;
+	npw.games[channel].wrestler_owners.razor = creator;
 	console.log('after game start',npw.games);
 	return { channel: channel, text: "Match started by <@" + creator + ">" + JSON.stringify(npw) };
 }
-
 // Returns array
 npw.playerLeave = function(channel, player) {
 	var game = npw.games[channel];
@@ -389,7 +336,8 @@ npw.playerJoin = function(channel, player) {
 		return responses;
 	}
 	game.players.push(player);
-	game.damage[player] = 0;
+	npw.wrestlers.bret.owner = creator;
+	npw.games[channel].wrestler_owners.bret = creator;
 	responses.push({ channel: game.channel, text: '<@' + player + '> has joined the match.' });
 	game.player_count = game.players.length;
 	return responses;
@@ -610,6 +558,21 @@ npw.commands.pick = function(options, params) {
 npw.commands.join = function(options, params) {
 	var channel = params[0] ? npw.getChannelId(params[0], options) : options.channel;
 	return npw.playerJoin(channel, options.user);
+};
+npw.endGame = function(game,message) {
+	if (game.channel) {
+		npw.games[game.channel].active = false;
+		npw.games[game.channel].started = false;
+		return message;
+	}
+};
+npw.commands.end = function(options, params) {
+	var channel = params[0] ? npw.getChannelId(params[0], options) : options.channel;
+	var game = npw.games[channel];
+	console.log('GAME',game);
+	console.log('GAMES',npw.games);
+	var responses = [{ channel: channel, text: npw.endGame(game, 'Game is ova!') }];
+	return responses;
 };
 npw.commands.leave = function(options, params) {
 	var channel = params[0] ? npw.getChannelId(params[0], options) : options.channel;
