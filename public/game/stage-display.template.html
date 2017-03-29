@@ -40,5 +40,5 @@ stage-display {
 
 </style>
 <div id="stage" ng-click="centerStage()">
-	<npw-actor ng-repeat="wrestler in gameState.data.wrestlers" actorId="{{wrestler.id}}" location="{{wrestler.location}}" position="{{wrestler.position}}" facing="{{wrestler.facing}}" zone="{{wrestler.zone}}"></npw-actor>
+	<npw-actor ng-repeat="wrestler in gameState.data.wrestlers" actorId="{{wrestler.id}}" location="{{wrestler.location}}" position="{{wrestler.position}}" facing="{{wrestler.facing}}" zone="{{wrestler.zone}}" team="{{wrestler.team}}"></npw-actor>
 </div>

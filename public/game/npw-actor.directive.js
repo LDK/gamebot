@@ -6,7 +6,8 @@ app.directive('npwActor', function (user, gameState, bot, stage, $http) {
 			facing: '@',
 			location: '@',
 			zone: '@',
-			actorId: '@'
+			actorId: '@',
+			team: '@'
 		},
 		templateUrl: 'game/npw-actor.template.html',
 		link: function(scope, element, attrs){
@@ -21,7 +22,8 @@ app.directive('npwActor', function (user, gameState, bot, stage, $http) {
 				position: scope.position,
 				facing: scope.facing,
 				location: scope.location,
-				zone: scope.zone
+				zone: scope.zone,
+				team: scope.team
 			};
 		},
 	};

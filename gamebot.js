@@ -108,7 +108,6 @@ db.serialize(function() {
 restapi.post('/command/:command', function(req, res){
 	var command = req.params.command;
 	var game = req.body.game;
-	console.log('game command',game,command);
 	if (!game) {
 		res.json([]);
 	}
@@ -124,11 +123,9 @@ restapi.post('/command/:command', function(req, res){
 	var response = {};
 	if (game_state) {
 		response.game_state = game_state || null;
-		console.log('ho',response.game_state);
 	}
 	else if (restapi[game].defaultGameState) {
 		response.game_state = restapi[game].defaultGameState(req.body.channel || false);
-		console.log('hi',response.game_state);
 	}
 	response.messages = messages;
 	if (cmd_result.data && cmd_result.type) {

@@ -6,7 +6,7 @@ div.wrestler-submenu {
 	border: 2px solid #808080;
 }
 </style>
-<div class="wrestler-box-wrapper {{side}}">
+<div class="wrestler-box-wrapper slot-{{slot}}">
 	<div class="wrestler-details">
 		<h3>{{wrestler}}</h3>
 	</div>
@@ -15,7 +15,7 @@ div.wrestler-submenu {
 	"></div>
 	<ul class="playerButtons" rel="{{actorId}}">
 		<li class="circleButton">
-			<a href="javascript:;" class="strategyButton" ng-click="playerMenu(actorId, role, 'strategy')" title="Psychology & Strategy"></a>
+			<a href="javascript:;" class="strategyButton" ng-click="tagOut(actorId)" title="Psychology & Strategy"></a>
 		</li>
 		<li class="circleButton">
 			<a href="javascript:;" class="healthButton" ng-click="playerMenu(actorId, role, 'health')" title="Health & Injuries"></a>

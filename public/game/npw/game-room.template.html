@@ -1,4 +1,14 @@
 <style type="text/css">
+npw-wrestler-column[slot="1"],
+npw-wrestler-column[slot="3"]
+ {
+	float: left;
+}
+npw-wrestler-column[slot="2"],
+npw-wrestler-column[slot="4"]
+ {
+	float: right;
+}
 div.commentary-wrapper {
 	height: 160px;
 	width: 100%;
@@ -86,11 +96,11 @@ ul.playerButtons li {
 	margin-bottom: -2px;
 	display: inline-block;
 }
-div.wrestler-box-wrapper.left ul.playerButtons {
+div.wrestler-box-wrapper.slot-1 ul.playerButtons {
 	float: left;
 	right: 8px;
 }
-div.wrestler-box-wrapper.right ul.playerButtons {
+div.wrestler-box-wrapper.slot-2 ul.playerButtons {
 	float: right;
 	right: -6px;
 	left: auto;
@@ -102,11 +112,11 @@ div.wrestler-avatar {
 	position: absolute;
 	top: 45px;
 }
-div.wrestler-box-wrapper.left div.wrestler-avatar {
+div.wrestler-box-wrapper.slot-1 div.wrestler-avatar {
 	float: left;
 	left: 8px;
 }
-div.wrestler-box-wrapper.right div.wrestler-avatar {
+div.wrestler-box-wrapper.slot-2 div.wrestler-avatar {
 	float: right;
 	right: 8px;
 }
@@ -128,12 +138,13 @@ div.wrestler-submenu {
 		<div id="gameplay-menu">
 			<npw-wrestler-column 
 				ng-repeat="item in gameState.data.wrestlers track by $index"
+				ng-show="!gameState.data.teams || item.legal"
 				wrestler="{{item.name}}" 
 				actorId="{{item.id}}"
 				owner="{{item.owner}}" 
 				element="{{item.id}}"
-				player="{{gameState.data.players[0].username}}" 
-				side="{{$index == 0 ? 'left' : 'right'}}">
+				slot="{{gameState.data.teams ? item.team : $index+1}}"
+				player="{{gameState.data.players[0].username}}" >
 			</npw-wrestler-column>
 			<game-menu game="{{user.game}}"></game-menu>
 		</div>

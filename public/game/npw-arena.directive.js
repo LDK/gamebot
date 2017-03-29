@@ -24,7 +24,7 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 				},
 				SEC: {
 					top: 92,
-					left: 365
+					left: 363
 				},
 				AWN: {
 					top:-12,
@@ -33,6 +33,10 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 				ASE: {
 					top: 110,
 					left: 365
+				},
+				AES: {
+					top: 92,
+					left: 405
 				},
 				ASW: {
 					top: 110,
@@ -55,8 +59,6 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 					left: 122
 				}
 			};
-			console.log('attrs',attrs);
-			console.log('scope',scope);
 			scope.stageDisplay = attrs.stagedisplay;
 			scope.arenaId = attrs.arenaid;
 			scope.setRingOptions = function(options) {
@@ -78,14 +80,12 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 					$('#rightropes-'+rope).removeClass(ropeColors[key]);
 					$('#backropes-'+rope).removeClass(ropeColors[key]);
 				};
-				console.log('!',rope,color);
 				$('#frontropes-'+rope).addClass(color);
 				$('#leftropes-'+rope).addClass(color);
 				$('#rightropes-'+rope).addClass(color);
 				$('#backropes-'+rope).addClass(color);
 			};
 			scope.setRopesColors = function(colors) {
-				console.log('colors',colors);
 				scope.setRopesColor('top', colors.top);
 				scope.setRopesColor('middle', colors.middle);
 				scope.setRopesColor('bottom', colors.bottom);
@@ -135,7 +135,6 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 							var actor = stage.actors[actorId];
 							stage.placeActor(actorId,actor.location,actor.position,actor.facing);
 							$('div.actor#'+actorId).show();
-							console.log(actorId,stage.actors[actorId]);
 					    }
 					}
 
@@ -182,18 +181,14 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 			stage.placeActor = function(id,location,position,facing){
 				var actor = jQuery('div.actor#'+id);
 				var ringPos = jQuery('div.stage-element.ring:not(.sub-element)').position();
-				console.log('ringPos',ringPos,jQuery('div.stage-element.ring:not(.sub-element)'));
 				var ringTop = ringPos.top;
 				var ringLeft = ringPos.left;
-				console.log('location',location);
-				console.log('alocation',stage.arena_locations[location]);
-				console.log('locations',stage.arena_locations);
 				var actorTop = ringTop + stage.arena_locations[location].top;
 				var actorLeft = ringLeft + stage.arena_locations[location].left;
 				var currentFps = 12;
 				var animationSettings = {
 					fps: currentFps,
-					loop: true,
+					loop: false,
 					autoplay: false,
 					animations: {
 						standingSE: [27],
@@ -222,8 +217,8 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 						enterRingApronENW: [80,79,78,77,76,24],
 						enterRingApronESW: [80,79,78,77,76,26],
 						tagInE: [68,68,68,69,69,69,76,75,74,73,72,27],
-						tagOutE: [70,70,70,71,71,71],
-						tagInW: [80,80,80,81,81,81,28,28,28],
+						tagInW: [80,80,80,81,81,81,72,79,78,77,76,24],
+						tagOutE: [70,70,70,71,71,71,76,77,78,79,72,24],
 						tagOutW: [82,82,82,83,83,83,72,73,74,75,76,27],
 						rollE: [60,61,62,63],
 						rollW: [67,66,65,64],
@@ -237,12 +232,37 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 						standingSW: { loop: false },
 						standingNE: { loop: false },
 						standingNW: { loop: false },
-						rollEUpNE: 	{ loop: false },
-						rollEUpSE: 	{ loop: false },
-						rollWUpNW: 	{ loop: false },
-						rollWUpNW: 	{ loop: false },
-						fallE: 		{ loop: false },
-						fallW: 		{ loop: false }
+						standingE: { loop: false },
+						standingW: { loop: false },
+						walkNW: { loop: true },
+						walkSE: { loop: true },
+						walkNE: { loop: true }, 
+						walkSW: { loop: true },
+						lateralPressS: { loop: false },
+						fallE: { loop: false },
+						fallW: { loop: false },
+						getUpSE: { loop: false },
+						getUpSW: { loop: false },
+						getUpNE: { loop: false },
+						getUpNW: { loop: false },
+						exitRingApronWNE: { loop: false },
+						exitRingApronWSE: { loop: false },
+						exitRingApronENW: { loop: false },
+						exitRingApronESW: { loop: false },
+						enterRingApronWNE: { loop: false },
+						enterRingApronWSE: { loop: false },
+						enterRingApronENW: { loop: false },
+						enterRingApronESW: { loop: false },
+						tagInE: { loop: false },
+						tagOutE: { loop: false },
+						tagInW: { loop: false },
+						tagOutW: { loop: false },
+						rollE: { loop: false },
+						rollW: { loop: false },
+						rollEUpSE: { loop: false },
+						rollEUpNE: { loop: false },
+						rollWUpSW: { loop: false },
+						rollWUpNW: { loop: false }
 					},
 					keyframes: {
 						24: { parent_facing: 'NW', parent_position: 'standing' },
@@ -269,11 +289,23 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 							4: { parent_zone: 'apron-west', removeClass: 'zone-ring', addClass: 'zone-apron-west' },
 							6: { css_left: '-39' }
 						},
+						exitRingApronENE: {
+							4: { parent_zone: 'apron-east', removeClass: 'zone-ring', addClass: 'zone-apron-west' },
+							6: { css_left: '+39' }
+						},
+						exitRingApronESE: {
+							4: { parent_zone: 'apron-east', removeClass: 'zone-ring', addClass: 'zone-apron-west' },
+							6: { css_left: '+39' }
+						},
 						tagOutW: {
 							10: { parent_zone: 'apron-west', removeClass: 'zone-ring', addClass: 'zone-apron-west' },
 							12: { css_left: '-39' }
 						},
-						enterRingApronWNE: {
+						tagOutE: {
+							10: { parent_zone: 'apron-east', removeClass: 'zone-ring', addClass: 'zone-apron-east' },
+							7: { css_left: '+39' }
+						},
+						enterRingApronENW: {
 							1: { css_left: '+39' },
 							3: { parent_zone: 'ring', addClass: 'zone-ring', removeClass: 'zone-apron-west' }
 						},
@@ -284,6 +316,10 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 						tagInE: {
 							7: { css_left: '+39' },
 							9: { parent_zone: 'ring', addClass: 'zone-ring', removeClass: 'zone-apron-west' }
+						},
+						tagInW: {
+							12: { css_left: '-39' },
+							10: { parent_zone: 'ring', addClass: 'zone-ring', removeClass: 'zone-apron-west' }
 						},
 						exitRingApronENW: {
 							4: { parent_zone: 'apron-east' }
@@ -296,7 +332,6 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 
 					}
 				};
-				console.log('ac el',actor);
 				actor.animateSprite(animationSettings);
 				actor.animateSprite('play',position+facing);
 				actor.css('top',actorTop);
@@ -310,5 +345,8 @@ app.directive('npwArena', function (user, gameState, bot, stage, $http) {
 		},
 	};
 });
-$('#undertaker').animateSprite('play','tagOutW', { retrigger: true });
-$('#undertaker').animateSprite('play','exitApronWSE', { retrigger: false });
+$('#undertaker').animateSprite('play','tagOutW');
+$('#bret').animateSprite('play','tagInE');
+
+$('#bret').animateSprite('play','tagOutW');
+$('#undertaker').animateSprite('play','tagInE');

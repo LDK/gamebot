@@ -73,11 +73,9 @@
 												var keystepOffset = parseFloat(keystepValue.replace('+',''));
 												keystepValue = parseFloat(el.css(styleName)) + keystepOffset;
 											}
-											console.log('?',el,styleName,keystepValue,el.css(styleName));
 											el.css(styleName,keystepValue);
 										}
 										else {
-											console.log('!',keystepSetting,keystepValue);
 											if (keystepValue.toString().indexOf('-') === 0) {
 												var keystepOffset = parseFloat(keystepValue.replace('-',''));
 												keystepValue = parseFloat(el.attr(keystepSetting)) - keystepOffset;
@@ -89,8 +87,6 @@
 											el.attr(keystepSetting,keystepValue);
 										}
 									}
-
-									console.log('KEYSTEPS',this.settings.keysteps[this.animationName][currentFrame]);
 								}
 							}
                             if (currentFrame >= finalFrame) {
@@ -156,7 +152,6 @@
 											el.css(styleName,keyframeValue);
 										}
 										else {
-											console.log('!',keyframeSetting,keyframeValue);
 											if (keyframeValue.toString().indexOf('-') === 0) {
 												var keyframeOffset = parseFloat(keyframeValue.replace('-',''));
 												keyframeValue = parseFloat(el.attr(keyframeSetting)) - keyframeOffset;
@@ -273,14 +268,16 @@
 
     var play = function (animationName, options) {
 		var data  = $(this).data('animateSprite');
-		if (options === undefined && data.settings.animationOptions[animationName] !== undefined) {
+		if (options === undefined && data && data.settings && data.settings.animationOptions && data.settings.animationOptions[animationName] !== undefined) {
 			options = data.settings.animationOptions[animationName];
 		}
         return this.each(function () {
             var $this = $(this);
 
             if (typeof animationName === 'string') {
-				data.animationName = animationName;
+				if (data) { 
+					data.animationName = animationName; 
+				}
                 $this.animateSprite('stopAnimation');
                 if (data.settings.animations[animationName] !== data.currentAnimation) {
                     data.currentFrame = 0;

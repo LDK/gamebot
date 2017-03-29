@@ -7,6 +7,7 @@ app.directive('npwWrestlerColumn', function (user, gameState, bot, stage) {
 			role: '@',
 			wrestler: '@',
 			actorId: '@',
+			slot: '@',
 			img: '@'
 		},
 		templateUrl: 'game/npw-wrestler-column.template.html',
@@ -24,6 +25,29 @@ app.directive('npwWrestlerColumn', function (user, gameState, bot, stage) {
 			}
 			scope.menuOpen = false;
 			scope.menuPage = 'strategy';
+			scope.tagOut = function(id) {
+				var play_params = {};
+				play_params[id] = { type: 'tag' };
+				var wrestler = $('npw-actor[actorid="'+id+'"]');
+				var zone = wrestler.attr('zone');
+				var team = wrestler.attr('team');
+				var teammate = $('npw-actor[team="'+team+'"]:not([actorid="'+id+'"])');
+				var teammate_id = teammate.attr('actorid');
+				var teammate_zone = teammate.attr('zone');
+				switch (teammate_zone) {
+					case 'apron-east':
+						$('div.actor#'+id).animateSprite('play','tagOutE');
+						$('div.actor#'+teammate_id).animateSprite('play','tagInW');
+						// TODO: Replace these setTimeouts with a callback from the animation layer
+						setTimeout( function(){ bot.command('npw','play', play_params); }, 1000 );
+					break;
+					case 'apron-west':
+						$('div.actor#'+id).animateSprite('play','tagOutW');
+						$('div.actor#'+teammate_id).animateSprite('play','tagInE');
+						setTimeout( function(){ bot.command('npw','play', play_params); }, 1000 );
+					break;
+				}
+			}
 			scope.playerMenu = function(id, role, section) {
 				var selector = '#'+id;
 				switch(section) {

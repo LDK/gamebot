@@ -21,7 +21,6 @@ var npw = exports;
 // If the game reaches its time limit without a winner, then the game is a draw.
 
 npw.games = {};
-console.log('npw games initialized');
 npw.game_counter = 0;
 npw.debug = true;
 npw.settings = {
@@ -86,32 +85,9 @@ npw.wrestlers = {};
 npw.wrestlers.razor = {
 	name: 'Razor Ramon',
 	id: 'razor',
+	team: 1,
+	legal: false,
 	tendency: 'power',
-	position: 'standing',
-	facing: 'NW',
-	location: 'ASE',
-	zone: 'apron-south',
-	damage: {
-		head: 0,
-		neck: 0,
-		chest: 0,
-		back: 0,
-		leftAnkle: 0,
-		rightAnkle: 0,
-		leftKnee: 0,
-		rightKnee: 0,
-		leftLeg: 0,
-		rightLeg: 0,
-		leftArm: 0,
-		rightArm: 0,
-		leftShoulder: 0,
-		rightShoulder: 0
-	}
-};
-npw.wrestlers.bret = {
-	name: 'Bret Hart',
-	id: 'bret',
-	tendency: 'submission',
 	position: 'standing',
 	facing: 'SE',
 	location: 'AWN',
@@ -136,32 +112,9 @@ npw.wrestlers.bret = {
 npw.wrestlers.hbk = {
 	name: 'Shawn Michaels',
 	id: 'hbk',
+	team: 1,
+	legal: true,
 	tendency: 'aerial',
-	position: 'standing',
-	facing: 'NW',
-	location: 'SEC',
-	zone: 'ring',
-	damage: {
-		head: 0,
-		neck: 0,
-		chest: 0,
-		back: 0,
-		leftAnkle: 0,
-		rightAnkle: 0,
-		leftKnee: 0,
-		rightKnee: 0,
-		leftLeg: 0,
-		rightLeg: 0,
-		leftArm: 0,
-		rightArm: 0,
-		leftShoulder: 0,
-		rightShoulder: 0
-	}
-};
-npw.wrestlers.undertaker = {
-	name: 'The Undertaker',
-	id: 'undertaker',
-	tendency: 'power',
 	position: 'standing',
 	facing: 'SE',
 	location: 'NWC',
@@ -183,6 +136,63 @@ npw.wrestlers.undertaker = {
 		rightShoulder: 0
 	}
 };
+npw.wrestlers.bret = {
+	name: 'Bret Hart',
+	id: 'bret',
+	team: 2,
+	legal: false,
+	tendency: 'submission',
+	position: 'standing',
+	facing: 'NW',
+	location: 'AES',
+	zone: 'apron-east',
+	damage: {
+		head: 0,
+		neck: 0,
+		chest: 0,
+		back: 0,
+		leftAnkle: 0,
+		rightAnkle: 0,
+		leftKnee: 0,
+		rightKnee: 0,
+		leftLeg: 0,
+		rightLeg: 0,
+		leftArm: 0,
+		rightArm: 0,
+		leftShoulder: 0,
+		rightShoulder: 0
+	}
+};
+npw.wrestlers.undertaker = {
+	name: 'The Undertaker',
+	id: 'undertaker',
+	team: 2,
+	legal: true,
+	tendency: 'power',
+	position: 'standing',
+	facing: 'SE',
+	location: 'SEC',
+	zone: 'ring',
+	damage: {
+		head: 0,
+		neck: 0,
+		chest: 0,
+		back: 0,
+		leftAnkle: 0,
+		rightAnkle: 0,
+		leftKnee: 0,
+		rightKnee: 0,
+		leftLeg: 0,
+		rightLeg: 0,
+		leftArm: 0,
+		rightArm: 0,
+		leftShoulder: 0,
+		rightShoulder: 0
+	}
+};
+var singlesWrestlers = {};
+singlesWrestlers.bret = npw.wrestlers.bret;
+singlesWrestlers.undertaker = npw.wrestlers.undertaker;
 npw.useWrestler = function(game, player, wrestler) {
 	game.player_wrestlers[player] = wrestler;
 }
@@ -254,15 +264,11 @@ npw.moves = {
 		positions: ['standing','topRope','secondRope','running']
 	},
 };
-
 npw.gameStart = function(channel, creator) {
-	console.log('gameStart');
 	if (npw.games[channel] && npw.games[channel].active) {
-		console.log('whatttt',npw);
 		return { channel: creator, text: 'There is already a match in <#' + channel + '>.' };
 	}
 	npw.game_counter++;
-	console.log('starting game in '+channel);
 	npw.games[channel] = {
 		id: npw.game_counter,
 		channel: channel,
@@ -272,19 +278,32 @@ npw.gameStart = function(channel, creator) {
 		winner: null,
 		players: [creator],
 		wrestlers: npw.wrestlers,
+		teams: true,
 		wrestler_owners: {},
 		move_picks: {},
 		player_count: 1,
 		game: 'npw',
-		poll: ['status'],
+		poll: [],
 		active: true,
-		arena_id: 1,
+		arena_id: 2,
 		log: []
 	};
-	npw.wrestlers.razor.owner = creator;
+	// npw.teams[1].owner = creator;
 	npw.games[channel].wrestler_owners.razor = creator;
-	console.log('after game start',npw.games);
 	return { channel: channel, text: "Match started by <@" + creator + ">" + JSON.stringify(npw) };
+}
+npw.getTeammates = function(game, wrestler) {
+	if (!game || !game.wrestlers) {
+		return [];
+	}
+	var teammates = [];
+	for (var actor_id in game.wrestlers) {
+		console.log('!',actor_id,game.wrestlers[actor_id]);
+		if (wrestler.id != actor_id && wrestler.team == game.wrestlers[actor_id].team) {
+			teammates.push(game.wrestlers[actor_id]);
+		}
+	}
+	return teammates;
 }
 // Returns array
 npw.playerLeave = function(channel, player) {
@@ -311,7 +330,6 @@ npw.playerLeave = function(channel, player) {
 	game.player_count = game.players.length;
 	return responses;
 }
-
 // Returns array
 npw.playerJoin = function(channel, player) {
 	var game = npw.games[channel];
@@ -357,16 +375,6 @@ npw.gameDeclareDraw = function(game, player) {
 	game.winner = null;
 	return npw.endGame(game, "The time limit has expired.  The match is a draw!");
 };
-npw.gameDroppableColumns = function(game) {
-	var droppable = [];
-	for (var i in game.grid) {
-		var col = game.grid[i];
-		if (col && game.grid[i].pieces < npw.settings.rows) {
-			droppable.push(i);
-		}
-	}
-	return droppable;
-};
 npw.gameAdvanceTurn = function(game) { 
 	if (game.turn >= game.players.length - 1) {
 		game.turn = 0;
@@ -375,16 +383,6 @@ npw.gameAdvanceTurn = function(game) {
 		game.turn++;
 	}
 	game.last_turn_ts = (Date.now() / 1000 | 0);
-};
-// Returns array
-npw.nextTurn = function(game,skip,draw) {
-	if (!game) {
-		return [];
-	}
-	var responses = [];
-	npw.gameAdvanceTurn(game);
-	var player = game.players[game.turn];
-	return responses;
 };
 npw.begin = function(channel) {
 	var game = npw.games[channel];
@@ -456,6 +454,40 @@ npw.getChannelName = function(channel, options) {
 	return channel_name;
 };
 
+npw.playerTurn = function(game, params) {
+	if (params === undefined || game === undefined) {
+		return [];
+	}
+	for (var actor_id in params) {
+		var turn = params[actor_id];
+		var wrestler = npw.wrestlers[actor_id];
+		switch (turn.type) {
+			case 'tag':
+				if (!game.teams) {
+					return ['Not a tag-team match.'];
+				}
+				else {
+					var teammates = npw.getTeammates(game, wrestler);
+					if (!teammates[0]) {
+						return ['Teammate not found.'];
+					}
+					game.wrestlers[actor_id].legal = false;
+					game.wrestlers[teammates[0].id].legal = true;
+					var zone = game.wrestlers[actor_id].zone;
+					game.wrestlers[actor_id].zone = game.wrestlers[teammates[0].id].zone;
+					game.wrestlers[teammates[0].id].zone = zone;
+					var ring_loc = game.wrestlers[actor_id].location;
+					game.wrestlers[actor_id].location = game.wrestlers[teammates[0].id].location;
+					game.wrestlers[teammates[0].id].location = ring_loc;
+				}
+			break;
+		}
+	}
+	switch (params.type) {
+		case 'tag':
+		break;
+	}
+}
 /**
 	THE COMMAND FUNCTION
 	This is the function that serves as the bridge between the slack (or web) interface and the game module.
@@ -486,7 +518,6 @@ npw.command = function(cmd, options, params) {
 
 npw.commands = {};
 npw.commands.begin = function(options, params) {
-	console.log('begin',options,params);
 	var channel = params[0] ? npw.getChannelId(params[0], options) : options.channel;
 	var game = npw.games[channel];
 	if (!game) {
@@ -508,51 +539,21 @@ npw.commands.status = function(options, params) {
 		return ['No active game in <#' + channel + '>.', { channel: channel } ] ;
 	}
 	else {
-		var player_count = game.players.length;
-		var status_message = '';
-		var player_list = 'None';
 		var responses = [];
-		if (player_count > 0) {
-			player_list = '';
-			for (var i = 0; i < player_count; i++) {
-			    player_list += '<@' + game.players[i] + '>';
-				if (i < player_count - 1) {
-					player_list += ', ';
-				} 
-			}
-		}
-		responses.push({ channel: channel, text:  "Channel: <#" + channel + ">" });
-		responses.push({ channel: channel, text:  "Players: " + player_list + "" });
-		responses.push({ channel: channel, text:  "Started: " + (game.started ? 'Yes' : 'No') + "" });
 		return responses;
 	}
 };
 npw.commands.use = function(options, params) {
-	console.log('use options',options,'params',params);
 	var channel = params[1] ? npw.getChannelId(params[1], options) : options.channel;
 	if (!channel || channel == options.user || channel[0] == 'D') {
 		return { channel: options.user, text: 'Specify which channel, example: `npw use (wrestler) #npw`.' };
 	}
 	var game = npw.games[channel];
-	console.log('use game',channel,game,npw.games);
 	var wrestler_id = params[0] || 0;
 	if (!game) {
 		return { channel: options.user, text: 'No active match in this channel.' };
 	}
 	var result = npw.useWrestler(game, options.user, wrestler_id);
-	return result;
-};
-npw.commands.pick = function(options, params) {
-	var channel = params[1] ? npw.getChannelId(params[1], options) : options.channel;
-	if (!channel || channel == options.user || channel[0] == 'D') {
-		return { channel: options.user, text: 'Specify which channel, example: `npw pick (move number) #npw`.' };
-	}
-	var game = npw.games[channel];
-	var index = params[0] || 0;
-	if (!game) {
-		return { channel: options.user, text: 'No active match in this channel.' };
-	}
-	var result = npw.pickMove(game, options.user, index);
 	return result;
 };
 npw.commands.join = function(options, params) {
@@ -566,11 +567,15 @@ npw.endGame = function(game,message) {
 		return message;
 	}
 };
+npw.commands.play = function(options, params) {
+	console.log('play',params);
+	var channel = params[0] ? npw.getChannelId(params[0], options) : options.channel;
+	var game = npw.games[channel];
+	return npw.playerTurn(game,params);
+};
 npw.commands.end = function(options, params) {
 	var channel = params[0] ? npw.getChannelId(params[0], options) : options.channel;
 	var game = npw.games[channel];
-	console.log('GAME',game);
-	console.log('GAMES',npw.games);
 	var responses = [{ channel: channel, text: npw.endGame(game, 'Game is ova!') }];
 	return responses;
 };
@@ -581,7 +586,6 @@ npw.commands.leave = function(options, params) {
 npw.commands.start = function(options, params) {
 	options = options || {};
 	var channel = params[0] ? npw.getChannelId(params[0], options) : options.channel;
-	console.log('HELLO',channel,options);
 	npw.gameStart(channel,options.user);
 	return { channel: channel, text: "Game started by <@" + options.user + ">" };
 };
